@@ -1,0 +1,9 @@
+{
+    "editor.wordWrapColumn": 80,
+    "editor.wrappingStrategy": "advanced",
+    "editor.rulers": [4,80,85],
+    "dotnet-test-explorer.testProjectPath": "**/*test.@(csproj|vbproj|fsproj)",
+    "files.watcherExclude": {
+        "**/target": true
+    }
+}
