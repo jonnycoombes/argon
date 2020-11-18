@@ -1,2 +1,4 @@
 \contentsline {chapter}{\numberline {1}General Notes}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Baseline Development Environment}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.1}Notes on Versioning}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Source Control Notes}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Library Dependencies}{2}{section.1.3}%

@@ -28,17 +28,46 @@
 \pagenumbering{arabic}
 
 \chapter{General Notes}
+\section{Notes on Versioning}
+The general versioning scheme for Argon builds will comprise of three main components:
+\begin{enumerate}
+    \item The \textit{major} version number.
+    \item The \textit{minor} version number.
+    \item Either:
+    \begin{enumerate}
+        \item A specific build identifier (monotonically increasing).
+        \item A specific patch/correlated fix identifier.
+    \end{enumerate}
+\end{enumerate}
 
-\section{Baseline Development Environment}
-The general set of dependent libraries used throughout the initial build of the Argon project as given in table \ref*{table:1} below:\\
+\section{Source Control Notes}
+The Git versioning scheme for Argon is straightforward:
+\begin{enumerate}
+    \item The main development branch is \textit{mainline}.
+    \item Each intermediate release will have a specific branch, named in accordance with the release.  Currently planned intermediate releases are as follows:
+    \begin{enumerate}
+        \item 0.1.0 - build after the initial development sprint.
+        \item 0.2.0 - build after the second development sprint.
+        \item 0.3.0 - build after the third development sprint.
+    \end{enumerate}
+    \item Individual feature implementations will be carried out on a dedicated branch, prefixed with the corresponding \textbf{Jira} ticket.  For example, ticket number \textbf{JA-15} would have a branch named \textit{feature\\JA-15-Summary}, where the summary is automatically generated as part of the development toolchain.
+    \item Within the local development environment, changes are mastered and then pushed to multiple remotes.  (There may be multiple remotes based on the number of environments stood up).
+\end{enumerate}
+
+\section{Library Dependencies}
+The key libraries used throughout the build of the Argon project as given in table \ref*{table:1} below:\\
 \begin{table}[h!]
     \centering
-    \begin{tabular}{||l | l | l ||}
+    \begin{tabular}{||l | c | l ||}
         \hline
-        Library & Version & Description \\
+        \textbf{Library} & \textbf{Version} & \textbf{Description} \\
         \hline
         .NET Core & 5.0 & Core .NET platform runtime\\
-        Serilog & X.X & Logging library\\
+        ASP.NET & 5.0 & ASP.NET Core library \\
+        EF Core & 5.0 & EF framework (plus RDBMS specifics)\\
+        Serilog & 2.10.0 & Logging library\\
+        Serilog.Sinks.Console & 3.1.1 & Console sink for Serilog \\
+        Polly & X.X & Policy library\\
         \hline 
     \end{tabular}
     \caption{Key Argon Dependencies}
