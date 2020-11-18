@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace JCS.Argon
 {
@@ -50,6 +51,7 @@ namespace JCS.Argon
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseSerilogRequestLogging();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

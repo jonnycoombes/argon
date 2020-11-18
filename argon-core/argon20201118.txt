@@ -38,3 +38,224 @@
 [13:08:09 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 104.6007ms <Microsoft.AspNetCore.Hosting.Diagnostics>
 [13:08:09 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
 [13:08:09 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 83.6517ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:21:49 INF] Starting Argon Version 0.1.1 <>
+[13:21:49 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:21:49 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:21:49 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:21:49 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:21:49 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:21:50 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:21:50 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 111.8341ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:21:50 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:21:50 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 85.7334ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:16 INF] Request starting HTTP/1.1 GET https://localhost:8443/WeatherForecast - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:16 INF] Executing endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:17 INF] Route matched with {action = "Get", controller = "WeatherForecast"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.WeatherForecast] Get() on controller JCS.Argon.Controllers.WeatherForecastController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:17 INF] Executing ObjectResult, writing value of type 'JCS.Argon.WeatherForecast[]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[13:22:17 INF] Executed action JCS.Argon.Controllers.WeatherForecastController.Get (argon-core) in 21.078ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:17 INF] Executed endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:17 INF] Request finished HTTP/1.1 GET https://localhost:8443/WeatherForecast - - - 200 - application/json;+charset=utf-8 85.7292ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:25 INF] Request starting HTTP/1.1 GET https://localhost:8443/WeatherForecast - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:25 INF] Executing endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:25 INF] Route matched with {action = "Get", controller = "WeatherForecast"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.WeatherForecast] Get() on controller JCS.Argon.Controllers.WeatherForecastController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:25 INF] Executing ObjectResult, writing value of type 'JCS.Argon.WeatherForecast[]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[13:22:25 INF] Executed action JCS.Argon.Controllers.WeatherForecastController.Get (argon-core) in 0.4683ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:25 INF] Executed endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:25 INF] Request finished HTTP/1.1 GET https://localhost:8443/WeatherForecast - - - 200 - application/json;+charset=utf-8 1.7086ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:25 INF] Request starting HTTP/1.1 GET https://localhost:8443/WeatherForecast - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:22:25 INF] Executing endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:25 INF] Route matched with {action = "Get", controller = "WeatherForecast"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.WeatherForecast] Get() on controller JCS.Argon.Controllers.WeatherForecastController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:25 INF] Executing ObjectResult, writing value of type 'JCS.Argon.WeatherForecast[]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[13:22:25 INF] Executed action JCS.Argon.Controllers.WeatherForecastController.Get (argon-core) in 0.268ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:22:25 INF] Executed endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:22:25 INF] Request finished HTTP/1.1 GET https://localhost:8443/WeatherForecast - - - 200 - application/json;+charset=utf-8 1.1484ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:23:09 INF] Starting Argon Version 0.1.1 <>
+[13:23:10 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:23:10 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:23:10 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:23:10 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:23:10 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:23:11 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:23:11 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 90.2864ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:23:11 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:23:11 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 66.0758ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:26:54 INF] Starting Argon Version 0.1.1 <>
+[13:26:55 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:26:55 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:26:55 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:26:55 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:26:55 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:26:55 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:26:55 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 89.6663ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:26:56 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:26:56 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 62.0470ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:27:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/WeatherForecast - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:27:02 INF] Executing endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:27:02 INF] Route matched with {action = "Get", controller = "WeatherForecast"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.WeatherForecast] Get() on controller JCS.Argon.Controllers.WeatherForecastController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:27:02 INF] Executed action JCS.Argon.Controllers.WeatherForecastController.Get (argon-core) in 2.787ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:27:02 INF] Executed endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:27:02 ERR] HTTP GET /WeatherForecast responded 500 in 25.0564 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.WeatherForecastController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[13:27:02 ERR] An unhandled exception has occurred while executing the request. <Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.WeatherForecastController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[13:27:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/WeatherForecast - - - 500 - text/plain 119.6119ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:28:52 INF] Starting Argon Version 0.1.1 <>
+[13:28:53 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:28:53 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:28:53 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:28:53 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:28:53 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:28:54 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:28:54 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 90.5653ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:28:54 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:28:54 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 61.3293ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:28:59 INF] Request starting HTTP/1.1 GET https://localhost:8443/WeatherForecast - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:29:00 INF] Executing endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:29:00 INF] Route matched with {action = "Get", controller = "WeatherForecast"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.WeatherForecast] Get() on controller JCS.Argon.Controllers.WeatherForecastController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:29:00 INF] Instantiating new instance <JCS.Argon.WeatherForecast>
+[13:29:00 INF] Executing ObjectResult, writing value of type 'JCS.Argon.WeatherForecast[]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[13:29:00 INF] Executed action JCS.Argon.Controllers.WeatherForecastController.Get (argon-core) in 12.8058ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:29:00 INF] Executed endpoint 'JCS.Argon.Controllers.WeatherForecastController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:29:00 INF] HTTP GET /WeatherForecast responded 200 in 33.3514 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[13:29:00 INF] Request finished HTTP/1.1 GET https://localhost:8443/WeatherForecast - - - 200 - application/json;+charset=utf-8 57.5529ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:24 INF] Starting Argon Version 0.1.1 <>
+[13:33:25 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:33:25 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:33:25 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:33:25 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:33:25 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:33:26 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:26 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 88.4392ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:26 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:26 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 59.5327ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:33 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:33:33 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:33:33 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.String Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:33:33 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 1.0503ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:33:33 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:33:33 ERR] HTTP GET /Configuration responded 500 in 22.5452 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.ConfigurationController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[13:33:33 ERR] An unhandled exception has occurred while executing the request. <Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.ConfigurationController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[13:33:33 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 500 - text/plain 116.4627ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:32 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:32 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 0.6386ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:32 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:32 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 1.4173ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:39 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:39 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:34:39 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.String Get() on controller JCS.Argon.Controllers.ConfigurationController (__DisplayClass3_0). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:34:39 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 0.2361ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:34:39 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:34:39 ERR] HTTP GET /Configuration responded 500 in 1.2175 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.ConfigurationController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[13:34:39 ERR] An unhandled exception has occurred while executing the request. <Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware>
+System.InvalidOperationException: Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'JCS.Argon.Controllers.ConfigurationController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method3(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[13:34:39 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 500 - text/plain 5.8171ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:47 INF] Starting Argon Version 0.1.1 <>
+[13:34:48 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:34:48 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:34:48 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:34:48 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:34:48 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:34:49 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:49 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 87.8637ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:49 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:49 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 64.4239ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:53 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:34:53 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:34:53 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.String Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:34:53 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[13:34:53 INF] Executing ObjectResult, writing value of type 'System.String'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[13:34:53 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 5.868ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[13:34:53 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[13:34:53 INF] HTTP GET /Configuration responded 200 in 27.3395 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[13:34:53 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - text/plain;+charset=utf-8 57.5756ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:38:50 INF] Starting Argon Version 0.1.1 <>
+[13:38:51 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:38:51 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:38:51 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:38:51 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:38:51 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:38:52 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:38:52 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 87.5437ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:38:52 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:38:52 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 58.9751ms <Microsoft.AspNetCore.Hosting.Diagnostics>

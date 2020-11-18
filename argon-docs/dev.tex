@@ -73,7 +73,30 @@ The key libraries used throughout the build of the Argon project as given in tab
 General DB notes:
 \begin{enumerate}
     \item \textbf{Development SQL Server Version (Ryleh)}: Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64) (Sep 24 2019 13:48:23)
+    \item \textbf{Development Argon Login Name} : \textit{argon}
+    \item \textbf{Development Argon Db Name}: \textit{argon}
+    \item \textbf{Core Schema Name}: \textit{core} 
 \end{enumerate}
+
+\section{AWS Deployments}
+Current AWS deployment details in table \ref{table:2} below:
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|| l | l | l | l ||}
+        \hline 
+        \textbf{Component} & \textbf{Type} & \textbf{Name} & \textbf{Details} \\
+        \hline
+        VPC & Virtual Private Cloud & Argon-Dev-VPC & Partitioned VPC \\
+        Subnet & VPC Subnet & Argon-Dev-SN-1 & 10.0.0.0/24 CIDR \\
+        Sec. Group & Security Group & Argon-Dev-SG-1 & SSH, HTTPS, SQL (Restricted) \\
+        Internet Gateway & (E/I) Gateway & Argon-Dev-IG & Ingress and outgress \\
+        EIP & Elastic IP & No public DNS yet & 34.249.105.124 \\
+        Host & t3a.small & argon-dev-1 & Ubuntu 18.04 LTS \\
+        \hline
+    \end{tabular}
+    \caption{AWS Deployment Artifacts}
+    \label{table:2}
+\end{table}   
 
 \section{Code Notes}
 \subsection{Namespaces}
