@@ -1,0 +1,40 @@
+[13:02:18 INF] Starting Argon... <s:>
+[13:02:18 INF] Now listening on: https://localhost:8443 <s:Microsoft.Hosting.Lifetime>
+[13:02:18 INF] Now listening on: http://localhost:8080 <s:Microsoft.Hosting.Lifetime>
+[13:02:18 INF] Application started. Press Ctrl+C to shut down. <s:Microsoft.Hosting.Lifetime>
+[13:02:18 INF] Hosting environment: Development <s:Microsoft.Hosting.Lifetime>
+[13:02:18 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <s:Microsoft.Hosting.Lifetime>
+[13:02:19 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:19 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 108.6567ms <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:19 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:19 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 88.3796ms <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:48 INF] Starting Argon... <s:>
+[13:02:48 INF] Now listening on: https://localhost:8443 <s:Microsoft.Hosting.Lifetime>
+[13:02:48 INF] Now listening on: http://localhost:8080 <s:Microsoft.Hosting.Lifetime>
+[13:02:48 INF] Application started. Press Ctrl+C to shut down. <s:Microsoft.Hosting.Lifetime>
+[13:02:48 INF] Hosting environment: Development <s:Microsoft.Hosting.Lifetime>
+[13:02:48 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <s:Microsoft.Hosting.Lifetime>
+[13:02:49 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:49 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 109.9808ms <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:49 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:02:49 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 85.8567ms <s:Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:03:58 INF] Starting Argon... <>
+[13:03:59 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:03:59 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:03:59 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:03:59 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:03:59 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:03:59 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:03:59 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 111.4693ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:03:59 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:03:59 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 83.7816ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:08:08 INF] Starting Argon Version 0.1.1 <>
+[13:08:08 INF] Now listening on: https://localhost:8443 <Microsoft.Hosting.Lifetime>
+[13:08:08 INF] Now listening on: http://localhost:8080 <Microsoft.Hosting.Lifetime>
+[13:08:08 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[13:08:08 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[13:08:08 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[13:08:09 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:08:09 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 104.6007ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:08:09 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[13:08:09 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 83.6517ms <Microsoft.AspNetCore.Hosting.Diagnostics>

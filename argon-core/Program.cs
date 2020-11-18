@@ -1,36 +1,41 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Serilog.Events;
-using Serilog.Core;
-using Serilog.Extensions;
 using Serilog;
 
 namespace JCS.Argon
 {
     public class Program
     {
+    
+        /// <summary>
+        /// Generate a configuration object based on the current working directory and the
+        /// root-level appsettings.json file
+        /// </summary>
+        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build(); 
+        
         public static void Main(string[] args)
         {
-            var log = new LoggerConfiguration()
-                .Enrich.FromLogContext()
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
                 .WriteTo.Console()
                 .CreateLogger();
             try
             {
-                log.Information("Starting Argon...");
+                Log.Information($"Starting Argon Version {AppVersion.ToString()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();
             }
             catch (Exception ex)
             {
-                log.Fatal("Argon start-up failed", ex);
+                Log.Fatal("Argon start-up failed", ex);
             }
             finally
             {
