@@ -28,7 +28,7 @@ namespace JCS.Argon
                 .CreateLogger();
             try
             {
-                Log.Information($"Starting Argon Version {AppVersion.ToString()}");
+                Log.Information($"Starting Argon Version {new AppVersion().ToString()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();

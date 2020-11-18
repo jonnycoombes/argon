@@ -1,6 +1,6 @@
 namespace JCS.Argon
 {
-    public static class AppVersion
+    public class AppVersion
     {
         public static int Major { get; }= 0;
 
@@ -8,7 +8,7 @@ namespace JCS.Argon
 
         public static int Patch { get; } = 1;
 
-        public static string ToString()
+        public override string ToString()
         {
             return $"{Major}.{Minor}.{Patch}";
         }
