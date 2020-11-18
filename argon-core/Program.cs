@@ -29,14 +29,16 @@ namespace JCS.Argon
                 .CreateLogger();
             try
             {
-                Log.Information($"Starting Argon Version {new AppVersion().ToString()}");
+                Log.ForContext("SourceContext", "JCS.Argon.Program")
+                    .Information($"Starting Argon Version {new AppVersion().ToString()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();
             }
             catch (Exception ex)
             {
-                Log.Fatal("Argon start-up failed", ex);
+                Log.ForContext("SourceContext", "JCS.Argon.Program")
+                    .Fatal("Argon start-up failed", ex);
             }
             finally
             {

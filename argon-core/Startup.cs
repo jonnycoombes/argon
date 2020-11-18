@@ -33,30 +33,56 @@ namespace JCS.Argon
             Environment = env;
         }
 
+        /// <summary>
+        /// Register the db context, optional branching here to allow for different connection strings based on the
+        /// currently configured environment
+        /// </summary>
+        /// <param name="services"></param>
         private void RegisterDbContext(IServiceCollection services)
         {
-            Log.Information("Registering Db context");
-            if (Environment.IsDevelopment())
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Registering Db context");
+            try
             {
-                services.AddDbContext<SqlDbContext>(options =>
-                    options
-                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                if (Environment.IsDevelopment())
+                {
+                    Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                        .Information("In development so using default connection string");
+                    services.AddDbContext<SqlDbContext>(options =>
+                        options
+                            .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                }
+                else
+                {
+                    services.AddDbContext<SqlDbContext>(options =>
+                        options
+                            .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                services.AddDbContext<SqlDbContext>(options =>
-                    options
-                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                    .Fatal("Caught an exception whilst attempting to register Db context", ex);
             }
         }
 
         private void RegisterCoreConfiguration(IServiceCollection services)
         {
-            var apiConfiguration = new ApiConfiguration
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Binding to main API configuration");
+            try
             {
-                VspConfigurationOptions = new VSPConfigurationOptions(Configuration)
-            };
-            services.AddSingleton(apiConfiguration);
+                var apiConfiguration = new ApiConfiguration
+                {
+                    VspConfigurationOptions = new VSPConfigurationOptions(Configuration)
+                };
+                services.AddSingleton(apiConfiguration);
+            }
+            catch (Exception ex)
+            {
+                Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                    .Fatal("Caught exception whilst attempting to bind to API configuration", ex);
+            }
         }
         
         /// <summary>
@@ -66,6 +92,8 @@ namespace JCS.Argon
         /// <param name="services">Current services collection</param>
         protected void ConfigureApiServices(IServiceCollection services)
         {
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Configuring controllers and Swagger components");
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -82,16 +110,23 @@ namespace JCS.Argon
         /// <param name="services">The current services collection</param>
         protected void ConfigureCoreServices(IServiceCollection services)
         {
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Configuring core API services");
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Registering a scoped VSP factory");
             services.AddScoped<IVSPFactory, VSPFactory>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Configuring services");
             RegisterCoreConfiguration(services);
             RegisterDbContext(services);
             ConfigureApiServices(services);
             ConfigureCoreServices(services);
+            Log.Information("Service configuration and registration completed");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,6 +138,8 @@ namespace JCS.Argon
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
+                logger.LogInformation("Enabling request logging...for development purposes");
+                app.UseSerilogRequestLogging();
             }
             else
             {
@@ -112,7 +149,6 @@ namespace JCS.Argon
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseSerilogRequestLogging();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

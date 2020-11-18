@@ -15,7 +15,7 @@ namespace JCS.Argon.Controllers
         
         public ConfigurationController(ILogger<ConfigurationController> log, IVSPFactory registry) : base(log)
         {
-            Log.LogInformation("Instantiating new instance");
+            Log.LogDebug("Creating new instance");
             IvspFactory = registry;
         }
 

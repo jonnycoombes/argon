@@ -12,8 +12,8 @@ namespace JCS.Argon.Contexts
         /// <summary>
         /// The set of all <see cref="Collection"/> model elements
         /// </summary>
-        public DbSet<Collection> Collections { get; set; }
-        
+        public DbSet<Collection> Collections { get; set; } = null!;
+
         public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
             

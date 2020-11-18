@@ -12,8 +12,8 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The name of the collection
         /// </summary>
-        public string Name { get; set; }
-        
+        public string Name { get; set; } = null!;
+
         /// <summary>
         /// The description for the collection (optional)
         /// </summary>

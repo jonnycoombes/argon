@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 #pragma warning disable 8618
 
 namespace JCS.Argon.Model.Configuration
@@ -36,5 +39,9 @@ namespace JCS.Argon.Model.Configuration
             
         }
 
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }
