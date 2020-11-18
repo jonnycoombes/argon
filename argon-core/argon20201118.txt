@@ -259,3 +259,10 @@ System.InvalidOperationException: Unable to resolve service for type 'Serilog.IL
 [13:38:52 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 87.5437ms <Microsoft.AspNetCore.Hosting.Diagnostics>
 [13:38:52 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
 [13:38:52 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 58.9751ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[14:58:30 INF] Starting Argon Version 0.1.1 <>
+[14:58:31 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[14:58:31 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[14:58:31 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[14:58:31 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[14:58:31 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[14:58:35 INF] Application is shutting down... <Microsoft.Hosting.Lifetime>
