@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace JCS.Argon
@@ -24,7 +25,7 @@ namespace JCS.Argon
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
-                .WriteTo.Console()
+                .Enrich.WithMachineName()
                 .CreateLogger();
             try
             {
@@ -45,6 +46,10 @@ namespace JCS.Argon
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.ClearProviders();
+                })
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

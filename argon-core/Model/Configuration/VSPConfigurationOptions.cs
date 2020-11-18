@@ -7,13 +7,11 @@ namespace JCS.Argon.Model.Configuration
 {
     public class VSPConfigurationOptions : ConfigurationSection
     {
-        public string Name { get; set; }
-        
         public List<VSPBindingOptions> Bindings { get; set; }
 
         public VSPConfigurationOptions(IConfiguration configuration) : base(configuration)
         {
-            Bind("vspConfiguration");
+            Bind("vsp");
         }
 
     }

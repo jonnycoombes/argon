@@ -2,37 +2,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Core;
+using ILogger = Serilog.ILogger;
 
 namespace JCS.Argon
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private IWebHostEnvironment Environment {get;}
+
+        public IConfiguration Configuration { get; } 
+        
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
-        public IConfiguration Configuration { get; }
+        private void RegisterDbContext(IServiceCollection services)
+        {
+            Log.Information("Registering Db context");
+            if (Environment.IsDevelopment())
+            {
+                services.AddDbContext<SqlDbContext>(options =>
+                    options
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            {
+                services.AddDbContext<SqlDbContext>(options =>
+                    options
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
+        }
 
         private void RegisterCoreConfiguration(IServiceCollection services)
         {
-            var coreConfiguration = new ApiConfiguration
+            var apiConfiguration = new ApiConfiguration
             {
                 VspConfigurationOptions = new VSPConfigurationOptions(Configuration)
             };
-            services.AddSingleton(coreConfiguration);
+            services.AddSingleton(apiConfiguration);
         }
         
         /// <summary>
@@ -65,18 +89,24 @@ namespace JCS.Argon
         public void ConfigureServices(IServiceCollection services)
         {
             RegisterCoreConfiguration(services);
+            RegisterDbContext(services);
             ConfigureApiServices(services);
             ConfigureCoreServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
+                logger.LogInformation("Starting within a development environment");
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
+            }
+            else
+            {
+                logger.LogInformation("Starting within a non-development environment");
             }
 
             app.UseHttpsRedirection();

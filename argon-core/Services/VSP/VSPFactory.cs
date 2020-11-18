@@ -12,12 +12,7 @@ namespace JCS.Argon.Services.VSP
         /// <summary>
         /// The overall application configuration, used to extract VSP bindings
         /// </summary>
-        private ApiConfiguration _apiConfiguration; 
-
-        /// <summary>
-        /// A list of <see cref="VSPBindingOptions" instances/>
-        /// </summary>
-        private List<VSPBindingOptions> _vspConfigurations = new List<VSPBindingOptions>();
+        private readonly ApiConfiguration _apiConfiguration; 
 
         public VSPFactory(ApiConfiguration apiConfiguration)
         {
@@ -26,7 +21,7 @@ namespace JCS.Argon.Services.VSP
         
         public IEnumerable<VSPBindingOptions> GetConfigurations()
         {
-            return new List<VSPBindingOptions>();
+            return _apiConfiguration.VspConfigurationOptions.Bindings;
         }
 
         public IVSPProvider GetProvider(string tag)
