@@ -22,12 +22,12 @@ namespace JCS.Argon.Services.VSP
             log.LogDebug("Creating new instance");
             _apiConfiguration = apiConfiguration;
             _log = log;
-            _apiConfiguration.VspConfigurationOptions.DumpToLog(_log);
+            _apiConfiguration.VspConfiguration.DumpToLog(_log);
         }
         
-        public IEnumerable<VSPBindingOptions> GetConfigurations()
+        public IEnumerable<VSPBinding> GetConfigurations()
         {
-            return _apiConfiguration.VspConfigurationOptions.Bindings;
+            return _apiConfiguration.VspConfiguration.Bindings;
         }
 
         public IVSPProvider GetProvider(string tag)

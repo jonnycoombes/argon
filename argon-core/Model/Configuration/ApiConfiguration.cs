@@ -2,6 +2,6 @@ namespace JCS.Argon.Model.Configuration
 {
     public class ApiConfiguration
     {
-        public VSPConfigurationOptions VspConfigurationOptions { get; init; } = null!;
+        public VSPConfiguration VspConfiguration { get; init; } = null!;
     }
 }

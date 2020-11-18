@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>JCS.Argon</RootNamespace>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,9 +8,9 @@ namespace JCS.Argon.Services.VSP
     public interface IVSPProvider
     {
         /// <summary>
-        /// Return the <see cref="VSPBindingOptions"/> for this provider
+        /// Return the <see cref="VSPBinding"/> for this provider
         /// </summary>
         /// <returns></returns>
-        public VSPBindingOptions GetConfiguration();
+        public VSPBinding GetConfiguration();
     }
 }

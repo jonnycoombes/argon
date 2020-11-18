@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,16 +7,18 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Configuration
 {
-    public class VSPBindingOptions
+    public class VSPBinding
     {
         /// <summary>
         /// The tag for VSP provider
         /// </summary>
+        [Required]
         public string Tag { get; set; }
         
         /// <summary>
         /// The provider type of the VSP provider 
         /// </summary>
+        [Required]
         public string ProviderType { get; set; }
         
         /// <summary>
@@ -26,6 +29,7 @@ namespace JCS.Argon.Model.Configuration
         /// <summary>
         /// The class that implements this particular provider
         /// </summary>
+        [Required]
         public string ProviderClass { get; set; }
 
         /// <summary>
@@ -34,7 +38,7 @@ namespace JCS.Argon.Model.Configuration
         /// </summary>
         public Dictionary<string, object> Properties { get; set; }
 
-        public VSPBindingOptions()
+        public VSPBinding()
         {
             
         }

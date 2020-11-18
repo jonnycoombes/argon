@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
@@ -74,7 +76,7 @@ namespace JCS.Argon
             {
                 var apiConfiguration = new ApiConfiguration
                 {
-                    VspConfigurationOptions = new VSPConfigurationOptions(Configuration)
+                    VspConfiguration = new VSPConfiguration(Configuration)
                 };
                 services.AddSingleton(apiConfiguration);
             }
@@ -98,10 +100,14 @@ namespace JCS.Argon
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Argon", 
+                    Title = "Argon - Content Service Layer", 
                     Version = "v1",
-                    Description = "Glencore General Content Service Layer" });
+                    Description = $"Glencore Content Service Layer. (Build Version: {new AppVersion().ToString()})" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             }); 
+            
         }
 
         /// <summary>

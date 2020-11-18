@@ -14,7 +14,7 @@ namespace JCS.Argon.Services.VSP
         /// Returns a list of currently reigstered VSP providers
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<VSPBindingOptions> GetConfigurations();
+        public IEnumerable<VSPBinding> GetConfigurations();
 
         /// <summary>
         /// Get the provider interface for a given tag
