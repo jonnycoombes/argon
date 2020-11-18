@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JCS.Argon.Model.Configuration;
+using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,10 +26,22 @@ namespace JCS.Argon
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        private void RegisterCoreConfiguration(IServiceCollection services)
         {
-
+            var coreConfiguration = new ApiConfiguration
+            {
+                VspConfigurationOptions = new VSPConfigurationOptions(Configuration)
+            };
+            services.AddSingleton(coreConfiguration);
+        }
+        
+        /// <summary>
+        /// Do anything specific to controller bindings, Swagger configuratino etc...
+        /// in here
+        /// </summary>
+        /// <param name="services">Current services collection</param>
+        protected void ConfigureApiServices(IServiceCollection services)
+        {
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -35,7 +49,24 @@ namespace JCS.Argon
                     Title = "Argon", 
                     Version = "v1",
                     Description = "Glencore General Content Service Layer" });
-            });
+            }); 
+        }
+
+        /// <summary>
+        /// Register all application-specific services such as the VSP registry etc...
+        /// </summary>
+        /// <param name="services">The current services collection</param>
+        protected void ConfigureCoreServices(IServiceCollection services)
+        {
+            services.AddScoped<IVSPFactory, VSPFactory>();
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            RegisterCoreConfiguration(services);
+            ConfigureApiServices(services);
+            ConfigureCoreServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

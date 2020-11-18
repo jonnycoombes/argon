@@ -266,3 +266,244 @@ System.InvalidOperationException: Unable to resolve service for type 'Serilog.IL
 [14:58:31 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
 [14:58:31 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
 [14:58:35 INF] Application is shutting down... <Microsoft.Hosting.Lifetime>
+[15:30:24 INF] Starting Argon Version 0.1.1 <>
+[15:30:26 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[15:30:26 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[15:30:26 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[15:30:26 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[15:30:26 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[15:30:51 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:51 INF] HTTP GET / responded 404 in 0.6012 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:30:51 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 61.7627ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] HTTP GET / responded 404 in 0.0120 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:30:58 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 0.8895ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 52.3980ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:58 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 50.6695ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:59 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:59 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 0.5781ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:59 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:30:59 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 0.9737ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:31:08 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:31:08 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:31:08 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.String Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:31:08 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[15:31:20 INF] Executing ObjectResult, writing value of type 'System.String'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[15:31:20 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 12368.0657ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:31:20 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:31:20 INF] HTTP GET /Configuration responded 200 in 12388.6441 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:31:20 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - text/plain;+charset=utf-8 12390.2016ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:36:43 INF] Starting Argon Version 0.1.1 <>
+[15:36:44 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[15:36:44 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[15:36:44 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[15:36:44 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[15:36:44 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[15:36:56 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:36:56 INF] HTTP GET / responded 404 in 0.6218 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:36:56 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 59.3657ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] HTTP GET / responded 404 in 0.0126 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:37:01 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 1.0513ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 51.3916ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:01 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 58.6622ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 0.5414ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 1.3920ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:09 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:37:09 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:37:09 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPConfiguration] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:37:09 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[15:37:09 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPConfiguration, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[15:37:09 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 13.193ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:37:09 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:37:09 INF] HTTP GET /Configuration responded 200 in 32.1589 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:37:09 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 33.2246ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:04 INF] Starting Argon Version 0.1.1 <>
+[15:43:05 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[15:43:05 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[15:43:05 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[15:43:05 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[15:43:05 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[15:43:13 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:13 INF] HTTP GET / responded 404 in 0.5186 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:43:13 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 59.4775ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:15 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:15 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 51.5823ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:15 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:15 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 60.0139ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:16 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:16 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 0.6192ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:16 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:16 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 1.4114ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:20 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:43:20 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:43:20 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPConfiguration] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:43:27 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[15:43:27 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPConfiguration, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[15:43:27 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 7204.5147ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:43:27 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:43:27 INF] HTTP GET /Configuration responded 200 in 7224.1026 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:43:27 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 7225.3093ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:55:50 INF] Starting Argon Version 0.1.1 <>
+[15:55:51 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[15:55:51 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[15:55:51 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[15:55:51 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[15:55:51 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[15:56:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:56:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 83.2248ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:56:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:56:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 58.3017ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:56:06 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:56:06 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:56:06 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:56:54 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[15:56:54 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPBinding, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[15:56:54 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 48815.4424ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:56:54 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:56:54 INF] HTTP GET /Configuration responded 200 in 48836.2271 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:56:54 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 48859.1619ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:28 INF] Starting Argon Version 0.1.1 <>
+[15:58:30 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[15:58:30 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[15:58:30 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[15:58:30 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[15:58:30 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[15:58:35 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:35 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 80.2434ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:35 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:35 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 58.2608ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:39 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[15:58:39 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:58:39 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:59:43 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[15:59:43 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPBinding, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[15:59:43 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 64169.7117ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[15:59:43 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[15:59:43 INF] HTTP GET /Configuration responded 200 in 64191.4629 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[15:59:43 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 64216.1780ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:00:56 INF] Starting Argon Version 0.1.1 <>
+[16:00:57 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[16:00:57 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[16:00:57 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[16:00:57 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[16:00:57 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[16:01:02 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:01:02 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 82.5455ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:01:03 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:01:03 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 59.3286ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:01:06 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:01:06 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:01:06 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:01:38 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[16:01:38 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPBinding, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[16:01:38 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 31352.6342ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:01:38 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:01:38 INF] HTTP GET /Configuration responded 200 in 31373.5353 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[16:01:38 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 31396.7286ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:05 INF] Starting Argon Version 0.1.1 <>
+[16:02:06 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[16:02:06 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[16:02:06 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[16:02:06 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[16:02:06 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[16:02:11 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:11 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 80.4222ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:11 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:11 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 57.9635ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:17 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:17 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:02:17 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:02:17 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[16:02:17 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPBinding, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[16:02:17 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 12.9633ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:02:17 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:02:17 INF] HTTP GET /Configuration responded 200 in 34.5504 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[16:02:17 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 57.1248ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:24 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:02:24 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:02:24 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:07:17 INF] Instantiating new instance <JCS.Argon.Controllers.ConfigurationController>
+[16:07:17 INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[JCS.Argon.Model.Configuration.VSPBinding, argon-core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'. <Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor>
+[16:07:17 INF] Executed action JCS.Argon.Controllers.ConfigurationController.Get (argon-core) in 292864.1048ms <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:07:17 INF] Executed endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:07:17 INF] HTTP GET /Configuration responded 200 in 292865.1298 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[16:07:17 INF] Request finished HTTP/1.1 GET https://localhost:8443/Configuration - - - 200 - application/json;+charset=utf-8 292870.7312ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:24 INF] Starting Argon Version 0.1.1 <>
+[16:07:25 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[16:07:25 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[16:07:25 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[16:07:25 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[16:07:25 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[16:07:34 INF] Request starting HTTP/1.1 GET https://localhost:8443/ - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:34 INF] HTTP GET / responded 404 in 0.6020 ms <Serilog.AspNetCore.RequestLoggingMiddleware>
+[16:07:34 INF] Request finished HTTP/1.1 GET https://localhost:8443/ - - - 404 0 - 61.3411ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 55.8530ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 56.9885ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:36 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 0.5759ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:37 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:37 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 1.3772ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:40 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:07:40 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:07:40 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:09:19 INF] Starting Argon Version 0.1.1 <>
+[16:09:20 INF] Now listening on: https://[::]:8443 <Microsoft.Hosting.Lifetime>
+[16:09:20 INF] Now listening on: http://[::]:8080 <Microsoft.Hosting.Lifetime>
+[16:09:20 INF] Application started. Press Ctrl+C to shut down. <Microsoft.Hosting.Lifetime>
+[16:09:20 INF] Hosting environment: Development <Microsoft.Hosting.Lifetime>
+[16:09:20 INF] Content root path: /Users/jcoombes/Documents/Source/argon/argon-core <Microsoft.Hosting.Lifetime>
+[16:09:21 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/index.html - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:09:22 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/index.html - - - 200 - text/html;charset=utf-8 80.4410ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:09:22 INF] Request starting HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:09:22 INF] Request finished HTTP/1.1 GET https://localhost:8443/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 75.7945ms <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:09:26 INF] Request starting HTTP/1.1 GET https://localhost:8443/Configuration - - <Microsoft.AspNetCore.Hosting.Diagnostics>
+[16:09:26 INF] Executing endpoint 'JCS.Argon.Controllers.ConfigurationController.Get (argon-core)' <Microsoft.AspNetCore.Routing.EndpointMiddleware>
+[16:09:26 INF] Route matched with {action = "Get", controller = "Configuration"}. Executing controller action with signature System.Collections.Generic.IEnumerable`1[JCS.Argon.Model.Configuration.VSPBinding] Get() on controller JCS.Argon.Controllers.ConfigurationController (argon-core). <Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker>
+[16:17:12 INF] Starting Argon Version 0.1.1 <>
+[16:17:13 FTL] Argon start-up failed <>
+[16:17:35 INF] Starting Argon Version 0.1.1 <>
+[16:17:35 FTL] Argon start-up failed <>
+[16:18:31 INF] Starting Argon Version 0.1.1 <>
+[16:18:32 FTL] Argon start-up failed <>
+[16:18:50 INF] Starting Argon Version 0.1.1 <>
+[16:18:51 FTL] Argon start-up failed <>
+[16:19:07 INF] Starting Argon Version 0.1.1 <>
+[16:25:06 INF] Starting Argon Version 0.1.1 <>
+[16:27:48 FTL] Argon start-up failed <>
+[16:29:30 INF] Starting Argon Version 0.1.1 <>
+[16:29:38 FTL] Argon start-up failed <>
+[16:29:58 INF] Starting Argon Version 0.1.1 <>
+[16:29:59 FTL] Argon start-up failed <>
+[16:30:24 INF] Starting Argon Version 0.1.1 <>
+[16:30:25 FTL] Argon start-up failed <>
+[16:30:46 INF] Starting Argon Version 0.1.1 <>
+[16:30:47 FTL] Argon start-up failed <>
+[16:34:51 INF] Starting Argon Version 0.1.1 <>
+[16:34:52 FTL] Argon start-up failed <>
+[16:37:00 INF] Starting Argon Version 0.1.1 <>
+[16:37:01 FTL] Argon start-up failed <>
+[16:38:20 INF] Starting Argon Version 0.1.1 <>
+[16:38:21 FTL] Argon start-up failed <>
+[16:38:49 INF] Starting Argon Version 0.1.1 <>
+[16:40:22 INF] Starting Argon Version 0.1.1 <>
+[16:40:28 FTL] Argon start-up failed <>
+[16:41:01 INF] Starting Argon Version 0.1.1 <>
+[16:41:07 FTL] Argon start-up failed <>
+[16:44:21 INF] Starting Argon Version 0.1.1 <>
+[16:44:27 FTL] Argon start-up failed <>
+[16:47:14 INF] Starting Argon Version 0.1.1 <>
+[16:47:20 FTL] Argon start-up failed <>
+[16:47:57 INF] Starting Argon Version 0.1.1 <>
+[17:00:12 INF] Starting Argon Version 0.1.1 <>
+[17:05:17 INF] Starting Argon Version 0.1.1 <>
+[17:06:47 INF] Starting Argon Version 0.1.1 <>
+[17:07:57 INF] Starting Argon Version 0.1.1 <>
