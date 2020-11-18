@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>argon_test</RootNamespace>
+    <RootNamespace>JCS.Argon</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -20,6 +20,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\argon-core\argon-core.csproj" />
   </ItemGroup>
 
 </Project>

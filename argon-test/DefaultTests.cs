@@ -1,9 +1,9 @@
 using System;
 using Xunit;
 
-namespace argon_test
+namespace JCS.Argon
 {
-    public class UnitTest1
+    public class DefaultTests
     {
         [Fact]
         public void Test1()

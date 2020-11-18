@@ -1,6 +1,6 @@
 using System;
 
-namespace argon_core
+namespace JCS.Argon
 {
     public class WeatherForecast
     {

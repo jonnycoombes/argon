@@ -1,4 +1,8 @@
 \contentsline {chapter}{\numberline {1}General Notes}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Notes on Versioning}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Source Control Notes}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Library Dependencies}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.1}Versioning}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Source Control}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Build Dependencies}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Database Notes}{2}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Code Notes}{2}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Namespaces}{2}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}OpenAPI Endpoints}{2}{subsection.1.5.2}%

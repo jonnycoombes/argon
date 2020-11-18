@@ -3,23 +3,15 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage[a4paper]{geometry}
+\usepackage{layout}
 
-\newcommand{\subtitle}[1]{%
-    \posttitle{%
-    \par\end{center}
-    \begin{center}\large#1\end{center}
-    \vskip0.5em}%
-}
-
-
-\title{Glencore}
-\subtitle{Argon Development Notes}
+\title{Glencore Development Notes}
 \author{Jonny Coombes}
 \date{November 2020}
 
 \begin{document}
-
-
 \maketitle
 \pagenumbering{gobble}
 \newpage
@@ -28,7 +20,10 @@
 \pagenumbering{arabic}
 
 \chapter{General Notes}
-\section{Notes on Versioning}
+\hoffset=0in
+% The default is to have differing margins dependent on even or odd pages
+\evensidemargin=0in
+\section{Versioning}
 The general versioning scheme for Argon builds will comprise of three main components:
 \begin{enumerate}
     \item The \textit{major} version number.
@@ -40,7 +35,7 @@ The general versioning scheme for Argon builds will comprise of three main compo
     \end{enumerate}
 \end{enumerate}
 
-\section{Source Control Notes}
+\section{Source Control}
 The Git versioning scheme for Argon is straightforward:
 \begin{enumerate}
     \item The main development branch is \textit{mainline}.
@@ -54,8 +49,8 @@ The Git versioning scheme for Argon is straightforward:
     \item Within the local development environment, changes are mastered and then pushed to multiple remotes.  (There may be multiple remotes based on the number of environments stood up).
 \end{enumerate}
 
-\section{Library Dependencies}
-The key libraries used throughout the build of the Argon project as given in table \ref*{table:1} below:\\
+\section{Build Dependencies}
+The key libraries used throughout the build of the Argon project as given in table \ref{table:1} below:
 \begin{table}[h!]
     \centering
     \begin{tabular}{||l | c | l ||}
@@ -73,5 +68,30 @@ The key libraries used throughout the build of the Argon project as given in tab
     \caption{Key Argon Dependencies}
     \label{table:1}
 \end{table}
+
+\section{Database Notes}
+General DB notes:
+\begin{enumerate}
+    \item \textbf{Development SQL Server Version (Ryleh)}: Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64) (Sep 24 2019 13:48:23)
+\end{enumerate}
+
+\section{Code Notes}
+\subsection{Namespaces}
+The general layout of the Argon core code adheres to the following conventions:
+\begin{enumerate}
+    \item The top level namespace for the core is \textbf{JCS.Argon}
+    \item Key code artifacts are organised so that:
+    \begin{enumerate}
+        \item Controllers are placed in the \textbf{JCS.Argon.Controllers} namespace.
+        \item Services are placed in the \textbf{JCS.Argon.Services} namespace.
+        \item Model elements have a top-level namespace of \textbf{JCS.Argon.Model}.
+    \end{enumerate}
+\end{enumerate}
+\subsection{OpenAPI Endpoints}
+The OpenAPI specification that the API conforms to is published at the following location (relative to the deployment root):
+\begin{center}
+    \url{/swagger/v1/swagger.json}
+\end{center}
+The version path component is expected to remain constant during the initial release, and will only change with \textit{significant} breaking change releases in the future.
 
 \end{document}

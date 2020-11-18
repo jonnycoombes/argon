@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace argon_core
+namespace JCS.Argon
 {
     public class Startup
     {
@@ -30,7 +30,10 @@ namespace argon_core
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "argon_core", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "Argon", 
+                    Version = "v1",
+                    Description = "Glencore General Content Service Layer" });
             });
         }
 
@@ -41,7 +44,7 @@ namespace argon_core
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "argon_core v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
             }
 
             app.UseHttpsRedirection();
