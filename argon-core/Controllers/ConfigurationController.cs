@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Responses;
+using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
@@ -17,15 +19,13 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/[controller]")]
     public class ConfigurationController : BaseApiController
     {
-        protected readonly IVSPFactory _vspFactory;
 
-        protected readonly SqlDbContext _dbContext;
+        protected ICollectionManager _collectionManager;
         
-        public ConfigurationController(ILogger<ConfigurationController> log, IVSPFactory vspFactory, SqlDbContext dbContext) : base(log)
+        public ConfigurationController(ILogger<ConfigurationController> log, ICollectionManager collectionManager ) : base(log)
         {
             Log.LogDebug("Creating new instance");
-            _vspFactory = vspFactory;
-            _dbContext = dbContext;
+            _collectionManager = collectionManager;
         }
 
         /// <summary>
@@ -42,17 +42,18 @@ namespace JCS.Argon.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ConfigurationResponse Get()
+        public async Task<ConfigurationResponse> Get()
         {
             return new ConfigurationResponse
             {
                 HostName =  Dns.GetHostName(),
                 Endpoint = HttpUtilities.BuildEndpointFromContext(HttpContext),
                 Version = new AppVersion().ToString(),
-                Bindings = _vspFactory.GetConfigurations().ToList(),
+                SchemaVersion = new AppVersion().ToStringSchema(),
+                Bindings = new List<VSPBinding>(), 
                 Metrics = new Metrics
                 {
-                    TotalCollections = _dbContext.Collections.Count(),
+                    TotalCollections = await _collectionManager.CollectionCountAsync(),
                     TotalDocuments = 0
                 }
             };

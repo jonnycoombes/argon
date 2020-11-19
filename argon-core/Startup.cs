@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
+using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace JCS.Argon
         /// currently configured environment
         /// </summary>
         /// <param name="services"></param>
+        /// TODO - externalise the retry and delay parameters to the app configuration
         private void RegisterDbContext(IServiceCollection services)
         {
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
@@ -52,8 +54,16 @@ namespace JCS.Argon
                         .Information("In development so using default connection string");
                     services.AddDbContext<SqlDbContext>(options =>
                     {
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
+                            sqlServerOptionsAction: sqlOptions =>
+                        {
+                            sqlOptions.EnableRetryOnFailure(
+                                maxRetryCount: 10,
+                                maxRetryDelay: TimeSpan.FromSeconds(30),
+                                errorNumbersToAdd: null);
+                        });
                         options.EnableDetailedErrors();
+                        
                     });
                 }
                 else
@@ -123,6 +133,9 @@ namespace JCS.Argon
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
                 .Information("Registering a scoped VSP factory");
             services.AddScoped<IVSPFactory, VSPFactory>();
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Registering a scoped collection manager");
+            services.AddScoped<ICollectionManager, CollectionManager>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

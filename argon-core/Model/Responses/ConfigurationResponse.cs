@@ -39,6 +39,12 @@ namespace JCS.Argon.Model.Responses
         public string Version { get; init; }
         
         /// <summary>
+        /// The internal schema version of the API
+        /// </summary>
+        [Required]
+        public string SchemaVersion { get; init; }
+        
+        /// <summary>
         /// A list of the currently configured VSP bindings 
         /// </summary>
         [Required]
