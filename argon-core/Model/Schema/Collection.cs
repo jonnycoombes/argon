@@ -1,17 +1,29 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JCS.Argon.Model.Schema
 {
+    [Table("collection", Schema = "core")]
     public class Collection
     {
         /// <summary>
+        /// The primary concurrency token for this entity
+        /// </summary>
+        [Timestamp]
+        public byte[]? Timestamp { get; set; }
+        
+        /// <summary>
         /// The unique identifier for the collection
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public Guid Id { get; set; }
         
         /// <summary>
         /// The name of the collection
         /// </summary>
+        [Required]
         public string Name { get; set; } = null!;
 
         /// <summary>

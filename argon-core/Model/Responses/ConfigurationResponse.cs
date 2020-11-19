@@ -5,6 +5,18 @@ using JCS.Argon.Model.Configuration;
 
 namespace JCS.Argon.Model.Responses
 {
+    public class Metrics
+    {
+        /// <summary>
+        /// The current total number of managed collections
+        /// </summary>
+        public int TotalCollections { get; set; } = 0;
+
+        /// <summary>
+        /// The current total number of managed documents
+        /// </summary>
+        public int TotalDocuments { get; set; } = 0;
+    }
     public class ConfigurationResponse
     {
 
@@ -31,6 +43,11 @@ namespace JCS.Argon.Model.Responses
         /// </summary>
         [Required]
         public List<VSPBinding> Bindings { get; init; }
+        
+        /// <summary>
+        /// The current metrics for the instance
+        /// </summary>
+        public Metrics Metrics { get; set; }
         
     }
 }

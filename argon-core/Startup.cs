@@ -51,8 +51,10 @@ namespace JCS.Argon
                     Log.ForContext("SourceContext", "JCS.Argon.Startup")
                         .Information("In development so using default connection string");
                     services.AddDbContext<SqlDbContext>(options =>
-                        options
-                            .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    {
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                        options.EnableDetailedErrors();
+                    });
                 }
                 else
                 {
@@ -135,6 +137,11 @@ namespace JCS.Argon
             Log.Information("Service configuration and registration completed");
         }
 
+        protected void EnsureDatabaseIsCreated(IApplicationBuilder app)
+        {
+            Log.Information("Checking and ensuring the that target database exists");
+        }
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
@@ -151,7 +158,7 @@ namespace JCS.Argon
             {
                 logger.LogInformation("Starting within a non-development environment");
             }
-
+            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

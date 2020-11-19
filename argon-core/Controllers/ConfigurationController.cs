@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.VSP;
@@ -17,11 +18,14 @@ namespace JCS.Argon.Controllers
     public class ConfigurationController : BaseApiController
     {
         protected readonly IVSPFactory _vspFactory;
+
+        protected readonly SqlDbContext _dbContext;
         
-        public ConfigurationController(ILogger<ConfigurationController> log, IVSPFactory vspFactory) : base(log)
+        public ConfigurationController(ILogger<ConfigurationController> log, IVSPFactory vspFactory, SqlDbContext dbContext) : base(log)
         {
             Log.LogDebug("Creating new instance");
             _vspFactory = vspFactory;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -45,7 +49,12 @@ namespace JCS.Argon.Controllers
                 HostName =  Dns.GetHostName(),
                 Endpoint = HttpUtilities.BuildEndpointFromContext(HttpContext),
                 Version = new AppVersion().ToString(),
-                Bindings = _vspFactory.GetConfigurations().ToList()
+                Bindings = _vspFactory.GetConfigurations().ToList(),
+                Metrics = new Metrics
+                {
+                    TotalCollections = _dbContext.Collections.Count(),
+                    TotalDocuments = 0
+                }
             };
         }
     }

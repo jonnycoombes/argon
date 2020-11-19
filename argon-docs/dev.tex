@@ -50,7 +50,7 @@ The Git versioning scheme for Argon is straightforward:
 \end{enumerate}
 
 \section{Build Dependencies}
-The key libraries used throughout the build of the Argon project as given in table \ref{table:1} below:
+The key libraries used throughout the build of the Argon project as given in table \ref{table_dependencies} below:
 \begin{table}[h!]
     \centering
     \begin{tabular}{||l | c | l ||}
@@ -66,7 +66,7 @@ The key libraries used throughout the build of the Argon project as given in tab
         \hline 
     \end{tabular}
     \caption{Key Argon Dependencies}
-    \label{table:1}
+    \label{table_dependencies}
 \end{table}
 
 \section{Database Notes}
@@ -76,6 +76,34 @@ General DB notes:
     \item \textbf{Development Argon Login Name} : \textit{argon}
     \item \textbf{Development Argon Db Name}: \textit{argon}
     \item \textbf{Core Schema Name}: \textit{core} 
+\end{enumerate}
+The nominated user used to connect through via the DB context, must be a member of the following SQL Server roles:
+\begin{enumerate}
+    \item dbcreator
+\end{enumerate}
+This allows for just a user login to be allocated on the target SQL instance, and then Argon can take care of creating the necessary database/schema objects.  (\textit{This adheres to the principal that configuration should be a close to zero as possible for new deployments}).
+\subsection{Core Tables}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|| p{0.1\linewidth} | p{0.1\linewidth} | p{0.7\linewidth} ||}
+        \hline
+        \textbf{Schema} & \textbf{Table} & \textbf{Description}\\
+        \hline
+        core & collection & The main collections table, one row per collection.\\
+        \hline
+        core & constraint & The collection constraints table. $1 \rightarrow *$ relationship between entries in the \textit{collection} table and entries within this table. \\
+        \hline
+        core & document & The collection documents table.  $1 \rightarrow +$ relationship between the \textit{collection} table and entries within this table.\\
+        \hline
+    \end{tabular}
+    \caption{Core Tables}
+    \label{table_core_tables}
+\end{table}
+
+\subsection{EF Core Specifics}
+Some general notes on the EF Core implementation within Argon:
+\begin{enumerate}
+    \item All useful model entities will utilise a \textit{Timestamp} as a concurrency token. 
 \end{enumerate}
 
 \section{AWS Deployments}
@@ -116,5 +144,9 @@ The OpenAPI specification that the API conforms to is published at the following
     \url{/swagger/v1/swagger.json}
 \end{center}
 The version path component is expected to remain constant during the initial release, and will only change with \textit{significant} breaking change releases in the future.
+All initial API endpoints will be prefixed as follows:
+\begin{center}
+    \url{http[s]://[host]:[port]/api/v1}
+\end{center}
 
 \end{document}

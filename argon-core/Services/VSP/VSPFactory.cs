@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -15,13 +16,22 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         private readonly ApiConfiguration _apiConfiguration;
 
+        /// <summary>
+        /// Logger for logging
+        /// </summary>
         private readonly ILogger<VSPFactory> _log;
 
-        public VSPFactory(ILogger<VSPFactory> log, ApiConfiguration apiConfiguration)
+        /// <summary>
+        /// The currently active db context
+        /// </summary>
+        private readonly SqlDbContext _dbContext;
+
+        public VSPFactory(ILogger<VSPFactory> log, ApiConfiguration apiConfiguration, SqlDbContext dbContext)
         {
             log.LogDebug("Creating new instance");
             _apiConfiguration = apiConfiguration;
             _log = log;
+            _dbContext = dbContext;
             _apiConfiguration.VspConfiguration.DumpToLog(_log);
         }
         
