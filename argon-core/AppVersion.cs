@@ -6,7 +6,7 @@ namespace JCS.Argon
 
         public static int Minor { get;  } = 1;
 
-        public static int Patch { get; } = 1;
+        public static int Patch { get; } = 2;
 
         public override string ToString()
         {

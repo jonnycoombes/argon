@@ -5,6 +5,7 @@ using System.Net;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.VSP;
+using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace JCS.Argon.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/v1/[controller]")]
     public class ConfigurationController : BaseApiController
     {
         protected readonly IVSPFactory _vspFactory;
@@ -41,6 +42,9 @@ namespace JCS.Argon.Controllers
         {
             return new ConfigurationResponse
             {
+                HostName =  Dns.GetHostName(),
+                Endpoint = HttpUtilities.BuildEndpointFromContext(HttpContext),
+                Version = new AppVersion().ToString(),
                 Bindings = _vspFactory.GetConfigurations().ToList()
             };
         }
