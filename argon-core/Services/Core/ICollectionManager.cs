@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Exceptions;
@@ -33,10 +34,17 @@ namespace JCS.Argon.Services.Core
         public Task<int> CountCollectionsAsync();
 
         /// <summary>
-        /// Return a total count of all currently known documents
+        /// Return a total count of all currently known items
         /// </summary>
         /// <returns></returns>
-        public Task<int> CountDocumentsAsync();
+        public Task<int> CountItemsAsync();
+
+        /// <summary>
+        /// Return a count of items for a specific collection
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        public Task<int> CountItemsAsync(Guid collectionId);
 
         /// <summary>
         /// Retrieves a list of all current collections

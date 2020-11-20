@@ -4,14 +4,16 @@ using JCS.Argon.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JCS.Argon.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    partial class SqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201120140726_0.1.6")]
+    partial class _016
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +37,6 @@ namespace JCS.Argon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PropertyGroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -47,8 +46,6 @@ namespace JCS.Argon.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PropertyGroupId");
 
                     b.ToTable("collection", "core");
                 });
@@ -180,15 +177,6 @@ namespace JCS.Argon.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("version", "core");
-                });
-
-            modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
-                {
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
-                        .WithMany()
-                        .HasForeignKey("PropertyGroupId");
-
-                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>

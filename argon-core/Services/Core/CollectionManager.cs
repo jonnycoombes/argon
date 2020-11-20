@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Commands;
@@ -37,21 +38,39 @@ namespace JCS.Argon.Services.Core
             return await _dbContext.Collections.CountAsync();
         }
 
-        public Task<int> CountDocumentsAsync()
+        public Task<int> CountItemsAsync()
         {
             throw new System.NotImplementedException();
         }
 
+#pragma warning disable 1574
+        /// <inheritdoc cref="ICollectionManager.CountItemsAsync" />
+#pragma warning restore 1574
+        public async Task<int> CountItemsAsync(Guid collectionId)
+        {
+            if (!await CollectionExists(collectionId))
+            {
+                throw new ICollectionManager.CollectionManagerException(500, "The specified collection does not exist");
+            }
+            else
+            {
+                return await _dbContext.Items.CountAsync(c => c.CollectionId == collectionId);
+            }
+        }
+
+        /// <inheritdoc cref="ICollectionManager.ListCollections" />
         public async Task<List<Collection>> ListCollections()
         {
-            return await _dbContext.Collections.ToListAsync();
+            return await _dbContext.Collections
+                .ToListAsync();
         }
 
         protected async Task<bool> CollectionExists(string name)
         {
             if (await _dbContext.Collections.AnyAsync())
             {
-                var existing = await _dbContext.Collections.FirstOrDefaultAsync(c => c.Name.Equals(name));
+                var existing = await _dbContext.Collections
+                    .FirstOrDefaultAsync(c => c.Name.Equals(name));
                 return !(existing is null);
             }
             else

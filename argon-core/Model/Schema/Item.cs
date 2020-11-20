@@ -6,8 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
-    [Table("collection", Schema = "core")]
-    public class Collection
+    [Table("item", Schema = "core")]
+    public class Item
     {
         /// <summary>
         /// The primary concurrency token for this entity
@@ -17,56 +17,52 @@ namespace JCS.Argon.Model.Schema
         public byte[]? Timestamp { get; set; }
         
         /// <summary>
-        /// The unique identifier for the collection
+        /// The unique identifier for the item
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid? Id { get; set; }
         
         /// <summary>
-        /// The name of the collection
+        /// The name of the item
         /// </summary>
         [Required]
         public string Name { get; set; } = null!;
-
-        /// <summary>
-        /// The description for the collection (optional)
-        /// </summary>
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// The length of the collection in terms of number of collection items
-        /// </summary>
-        public long Length { get; set; } = 0;
-
-        /// <summary>
-        /// The aggregate size of the collection in bytes
-        /// </summary>
-        public long Size { get; set; } = 0;
         
         /// <summary>
-        /// The items associated with this collection
+        /// The created date for the item
         /// </summary>
-        [JsonIgnore]
-        public List<Item> Items { get; set; }
+        public DateTime CreatedDate { get; set; }
+        
+        /// <summary>
+        /// The last created time for the item
+        /// </summary>
+        public DateTime LastModified { get; set; }
+        
+        /// <summary>
+        /// The parent collection identifier
+        /// </summary>
+        public Guid CollectionId { get; set;}
+        
+        /// <summary>
+        /// This items parent <see cref="Collection"/>
+        /// </summary>
+        public Collection Collection { get; set; } = null!;
 
         /// <summary>
-        /// The unique id associated with the propeties for the collection
+        /// The <see cref="System.Version"/> versions for this item
+        /// </summary>
+        public List<Version> Versions { get; set; } = null!;
+
+        /// <summary>
+        /// The property group identifier for this item
         /// </summary>
         public Guid? PropertyGroupId { get; set; } = null!;
 
         /// <summary>
-        /// The <see cref="PropertyBag"/> associated with the collection
+        /// The properties for this item
         /// </summary>
         public PropertyGroup Properties { get; set; } = null!;
-
-        /// <summary>
-        /// Default constructor - required for initialiser syntax
-        /// </summary>
-        public Collection()
-        {
-            
-        }
 
     }
 }

@@ -30,7 +30,7 @@ namespace JCS.Argon
         /// <summary>
         /// Schema patch/build number
         /// </summary>
-        public static int SchemaBuild { get; } = 3;
+        public static int SchemaBuild { get; } = 5;
         
         /// <summary>
         /// Returns the current internal version number

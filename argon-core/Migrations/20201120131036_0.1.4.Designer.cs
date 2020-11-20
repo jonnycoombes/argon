@@ -4,14 +4,16 @@ using JCS.Argon.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JCS.Argon.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    partial class SqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201120131036_0.1.4")]
+    partial class _014
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +37,6 @@ namespace JCS.Argon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PropertyGroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -47,8 +46,6 @@ namespace JCS.Argon.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PropertyGroupId");
 
                     b.ToTable("collection", "core");
                 });
@@ -72,9 +69,6 @@ namespace JCS.Argon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PropertyGroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -84,68 +78,7 @@ namespace JCS.Argon.Migrations
 
                     b.HasIndex("CollectionId");
 
-                    b.HasIndex("PropertyGroupId");
-
                     b.ToTable("item", "core");
-                });
-
-            modelBuilder.Entity("JCS.Argon.Model.Schema.Property", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool?>("BooleanValue")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DateTimeValue")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("NumberValue")
-                        .HasColumnType("float");
-
-                    b.Property<Guid?>("PropertyGroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("StringValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyGroupId");
-
-                    b.ToTable("property", "core");
-                });
-
-            modelBuilder.Entity("JCS.Argon.Model.Schema.PropertyGroup", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("propertyGroup", "core");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Version", b =>
@@ -182,15 +115,6 @@ namespace JCS.Argon.Migrations
                     b.ToTable("version", "core");
                 });
 
-            modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
-                {
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
-                        .WithMany()
-                        .HasForeignKey("PropertyGroupId");
-
-                    b.Navigation("Properties");
-                });
-
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>
                 {
                     b.HasOne("JCS.Argon.Model.Schema.Collection", "Collection")
@@ -199,20 +123,7 @@ namespace JCS.Argon.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
-                        .WithMany()
-                        .HasForeignKey("PropertyGroupId");
-
                     b.Navigation("Collection");
-
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("JCS.Argon.Model.Schema.Property", b =>
-                {
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("PropertyGroupId");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Version", b =>
@@ -234,11 +145,6 @@ namespace JCS.Argon.Migrations
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>
                 {
                     b.Navigation("Versions");
-                });
-
-            modelBuilder.Entity("JCS.Argon.Model.Schema.PropertyGroup", b =>
-                {
-                    b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618
         }

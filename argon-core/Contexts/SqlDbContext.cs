@@ -16,7 +16,25 @@ namespace JCS.Argon.Contexts
         /// </summary>
         public DbSet<Collection> Collections { get; set; } = null!;
 
-        public DbSet<Dictionary<string, object>> Properties => Set<Dictionary<string, object>>("Category");
+        /// <summary>
+        /// The set of all <see cref="Item"/> model elements
+        /// </summary>
+        public DbSet<Item> Items { get; set; } = null!;
+
+        /// <summary>
+        /// The set of all <see cref="Version"/> model elements
+        /// </summary>
+        public DbSet<Version> Versions { get; set; } = null!;
+
+        /// <summary>
+        /// The set of all <see cref="PropertyGroup"/> model elements
+        /// </summary>
+        public DbSet<PropertyGroup> PropertyGroups { get; set; } = null!;
+
+        /// <summary>
+        /// The set of all <see cref="Property"/> model elements
+        /// </summary>
+        public DbSet<Property> Properties { get; set; } = null!;
 
         public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
@@ -32,12 +50,14 @@ namespace JCS.Argon.Contexts
             Log.ForContext("SourceContext", "SqlDbContext")
                 .Information("onModelCreating called performing any additional tasks");
             
-            modelBuilder.SharedTypeEntity<Dictionary<string, object>>("Category", b =>
-            {
-                b.IndexerProperty<string>("Description");
-                b.IndexerProperty<int>("Id");
-                b.IndexerProperty<string>("Name").IsRequired();
-            });
+            // setup the linkage between collections and their items
+            modelBuilder.Entity<Item>()
+                .HasOne(i => i.Collection)
+                .WithMany(c => c.Items)
+                .HasForeignKey(i => i.CollectionId);
+
+            modelBuilder.Entity<Item>()
+                .HasMany(i => i.Versions);
             
             base.OnModelCreating(modelBuilder);
         }
