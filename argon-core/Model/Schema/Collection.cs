@@ -18,7 +18,7 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         
         /// <summary>
         /// The name of the collection
@@ -40,8 +40,14 @@ namespace JCS.Argon.Model.Schema
         /// The aggregate size of the collection in bytes
         /// </summary>
         public long Size { get; set; } = 0;
-        
-        
+
+        /// <summary>
+        /// Default constructor - required for initialiser syntax
+        /// </summary>
+        public Collection()
+        {
+            
+        }
 
     }
 }

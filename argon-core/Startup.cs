@@ -10,6 +10,7 @@ using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -124,6 +125,8 @@ namespace JCS.Argon
 
         /// <summary>
         /// Register all application-specific services such as the VSP registry etc...
+        /// Note the differences between whether services are scoped (basically per-session) or
+        /// singleton
         /// </summary>
         /// <param name="services">The current services collection</param>
         protected void ConfigureCoreServices(IServiceCollection services)
@@ -136,6 +139,9 @@ namespace JCS.Argon
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
                 .Information("Registering a scoped collection manager");
             services.AddScoped<ICollectionManager, CollectionManager>();
+            Log.ForContext("SourceContext", "JCS.Argon.Startup")
+                .Information("Registering global response exception handler");
+            services.AddSingleton<IResponseExceptionHandler, ResponseExceptionHandler>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -154,24 +160,49 @@ namespace JCS.Argon
         {
             Log.Information("Checking and ensuring the that target database exists");
         }
+
+        protected void ConfigureGlobalExceptionHandling(IApplicationBuilder app, ILogger<Startup> log)
+        {
+            log.LogInformation("Registering global exception handling logic");
+            app.UseExceptionHandler(errorApp =>
+            {
+                var handler = errorApp.ApplicationServices.GetService<IResponseExceptionHandler>();
+                errorApp.Run(async context =>
+                {
+                    var payload= handler?.GenerateExceptionResponseFromContext(context);
+                    if (payload != null)
+                    {
+                        context.Response.StatusCode = payload.HttpResponseCode;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsJsonAsync(payload);
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        await context.Response.WriteAsync("Failed to determine underlying cause - please contact a system administrator");
+                    }
+                });
+            });
+        }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> log)
         {
             if (env.IsDevelopment())
             {
-                logger.LogInformation("Starting within a development environment");
+                log.LogInformation("Starting within a development environment");
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
-                logger.LogInformation("Enabling request logging...for development purposes");
+                log.LogInformation("Enabling request logging...for development purposes");
                 app.UseSerilogRequestLogging();
             }
             else
             {
-                logger.LogInformation("Starting within a non-development environment");
+                log.LogInformation("Starting within a non-development environment");
             }
             
+            ConfigureGlobalExceptionHandling(app, log);
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,14 +47,14 @@ namespace JCS.Argon.Controllers
         {
             return new ConfigurationResponse
             {
-                HostName =  Dns.GetHostName(),
+                HostName = Dns.GetHostName(),
                 Endpoint = HttpUtilities.BuildEndpointFromContext(HttpContext),
                 Version = new AppVersion().ToString(),
                 SchemaVersion = new AppVersion().ToStringSchema(),
-                Bindings = new List<VSPBinding>(), 
+                Bindings = new List<VSPBinding>(),
                 Metrics = new Metrics
                 {
-                    TotalCollections = await _collectionManager.CollectionCountAsync(),
+                    TotalCollections = await _collectionManager.CountCollectionsAsync(),
                     TotalDocuments = 0
                 }
             };
