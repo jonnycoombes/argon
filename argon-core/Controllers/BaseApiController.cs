@@ -8,11 +8,11 @@ namespace JCS.Argon.Controllers
     /// </summary>
     public class BaseApiController : ControllerBase
     {
-        protected ILogger Log { get; }
+        protected ILogger _log;
 
         protected BaseApiController(ILogger log)
         {
-            Log = log;
+            _log = log;
         }
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Core;
@@ -114,7 +115,7 @@ namespace JCS.Argon
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Argon - Content Service Layer", 
-                    Version = "v1",
+                    Version = $"v1 ({new AppVersion().ToString()})",
                     Description = $"Glencore Content Service Layer. (Build Version: {new AppVersion().ToString()})" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -172,7 +173,7 @@ namespace JCS.Argon
                     var payload= handler?.GenerateExceptionResponseFromContext(context);
                     if (payload != null)
                     {
-                        context.Response.StatusCode = payload.HttpResponseCode;
+                        context.Response.StatusCode = ((int) payload.HttpResponseCode)!;
                         context.Response.ContentType = "application/json";
                         await context.Response.WriteAsJsonAsync(payload);
                     }

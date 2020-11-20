@@ -15,7 +15,7 @@ namespace JCS.Argon
         /// <summary>
         /// Application patch/build level
         /// </summary>
-        public static int Patch { get; } = 3;
+        public static int Build { get; } = 11;
 
         /// <summary>
         /// Schema major version
@@ -30,7 +30,7 @@ namespace JCS.Argon
         /// <summary>
         /// Schema patch/build number
         /// </summary>
-        public static int SchemaPatch { get; } = 3;
+        public static int SchemaBuild { get; } = 3;
         
         /// <summary>
         /// Returns the current internal version number
@@ -38,7 +38,7 @@ namespace JCS.Argon
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Major}.{Minor}.{Patch}";
+            return $"{Major}.{Minor}.{Build}";
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace JCS.Argon
         /// <returns></returns>
         public string ToStringSchema()
         {
-            return $"{SchemaMajor}.{SchemaMinor}.{SchemaPatch}";
+            return $"{SchemaMajor}.{SchemaMinor}.{SchemaBuild}";
         }
     }
 }

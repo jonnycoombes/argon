@@ -6,7 +6,7 @@ namespace JCS.Argon.Utility
     /// <summary>
     /// Simple Http related helpers and utilities
     /// </summary>
-    public class HttpUtilities
+    public static class HttpUtilities
     {
         public static string BuildEndpointFromContext(HttpContext context)
         {

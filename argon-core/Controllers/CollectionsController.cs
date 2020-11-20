@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Commands;
@@ -28,7 +29,7 @@ namespace JCS.Argon.Controllers
         /// <param name="collectionManager">An instance of <see cref="ICollectionManager"/></param>
         public CollectionsController(ILogger<CollectionsController> log, ICollectionManager collectionManager) : base(log)
         {
-            Log.LogInformation("Creating new instance");
+            _log.LogInformation("Creating new instance");
             _collectionManager = collectionManager;
         }
 
@@ -46,16 +47,78 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Collection>> ReadCollections()
         {
+            _log.LogDebug("ReadCollections called");
             return await _collectionManager.ListCollections();
         }
 
+        /// <summary>
+        /// Call this method in order to create a new collection
+        /// </summary>
+        /// <remarks>
+        /// A collection is a top-level container for a series of items (documents).  Each collection may have a
+        /// series of constraints configured against it, which loosely define how meta-data properties associated
+        /// with items are handled.
+        /// </remarks>
+        /// <param name="cmd">Contains the information relating to the new collection</param>
+        /// <returns></returns>
+        /// <response code="201">Successful creation.</response>
+        /// <response code="400">Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
+        /// in response payload.</response>
+        /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Collection> CreateCollection([FromBody]CreateCollectionCommand cmd)
         {
-            return await _collectionManager.CreateCollection(cmd);
+            _log.LogDebug("CreateCollection called");
+            var collection = await _collectionManager.CreateCollection(cmd);
+            HttpContext.Response.StatusCode = StatusCodes.Status201Created;
+            _log.LogDebug($"New collection successfully created {@collection}", collection);
+            return collection;
+            
+        }
+
+        /// <summary>
+        /// Call this method in order to retrieve the details for an individual collection
+        /// </summary>
+        /// <remarks>
+        /// If the specified collection exists, then this method will retrieve the details for it,
+        /// including some top-level metrics including its length and overall size.
+        /// </remarks>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        [HttpGet("{collectionId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Collection> ReadCollection(Guid collectionId)
+        {
+            _log.LogDebug("ReadCollection called");
+            var collection = await _collectionManager.ReadCollection(collectionId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return collection;
+        }
+
+        /// <summary>
+        /// Allows for the update of an individual collection
+        /// </summary>
+        /// <param name="collectionId">The unique identifier associated with the collection to update</param>
+        /// <param name="cmd">A <see cref="PatchCollectionCommand"/> instance containing the updates to be made</param>
+        /// <returns></returns>
+        [HttpPatch("{collectionId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand cmd)
+        {
+            _log.LogDebug("UpdateCollection called");
+            var collection = await _collectionManager.UpdateCollection(collectionId, cmd);
+            HttpContext.Response.StatusCode = StatusCodes.Status201Created;
+            return collection;
         }
     }
 }

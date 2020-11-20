@@ -25,7 +25,7 @@ namespace JCS.Argon.Controllers
         
         public ConfigurationController(ILogger<ConfigurationController> log, ICollectionManager collectionManager ) : base(log)
         {
-            Log.LogDebug("Creating new instance");
+            _log.LogDebug("Creating new instance");
             _collectionManager = collectionManager;
         }
 
