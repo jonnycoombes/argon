@@ -1,12 +1,12 @@
 using System.Net;
 using Microsoft.AspNetCore.Http;
 
-namespace JCS.Argon.Utility
+namespace JCS.Argon.Helpers
 {
     /// <summary>
     /// Simple Http related helpers and utilities
     /// </summary>
-    public static class HttpUtilities
+    public static class HttpHelper
     {
         public static string BuildEndpointFromContext(HttpContext context)
         {

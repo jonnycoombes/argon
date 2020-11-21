@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 
-namespace JCS.Argon.Utility
+namespace JCS.Argon.Helpers
 {
-    public static class StringUtilities
+    public static class StringHelper
     {
         public static string CollapseStringList(List<string> source)
         {

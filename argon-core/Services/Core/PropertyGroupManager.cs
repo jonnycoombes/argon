@@ -6,7 +6,7 @@ namespace JCS.Argon.Services.Core
     /// <summary>
     /// Default implementation of a property manager
     /// </summary>
-    public class PropertyManager : BaseCoreService, IPropertyManager
+    public class PropertyGroupManager : BaseCoreService, IPropertyGroupManager
     {
 
         /// <summary>
@@ -14,7 +14,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
-        public PropertyManager(ILogger<IPropertyManager> log, SqlDbContext dbContext)
+        public PropertyGroupManager(ILogger<IPropertyGroupManager> log, SqlDbContext dbContext)
         :base(log, dbContext)
         {
             _log.LogDebug("Creating new instance");

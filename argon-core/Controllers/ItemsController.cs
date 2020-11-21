@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +31,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/Collections/{collectionId}/items")]
+        [Route("/api/v1/Collections/{collectionId}/items")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,7 +49,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/Collections/{collectionId}/item/{itemId}/meta")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/meta")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,7 +70,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/Collections/{collectionId}/item/{itemId}/content")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/content")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -98,7 +97,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/Collections/{collectionId}/items")]
+        [Route("/api/v1/Collections/{collectionId}/items")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -128,7 +127,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/Collections/{collectionId}/item/{itemId}/content")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/content")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]

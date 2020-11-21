@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
+using JCS.Argon.Helpers;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
-using JCS.Argon.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -172,7 +172,7 @@ namespace JCS.Argon.Services.Core
                     else
                     {
                         throw new ICollectionManager.CollectionManagerException(400,
-                            $"Validation errors occurred: {StringUtilities.CollapseStringList(validationErrors)}");
+                            $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
                     }
                 }
                 throw new ICollectionManager.CollectionManagerException(500,

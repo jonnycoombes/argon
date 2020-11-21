@@ -8,7 +8,7 @@ namespace JCS.Argon.Services.Core
     /// would make a pretty good alternative so that properties can be persisted as natively-supported
     /// JSON column values.
     /// </summary>
-    public interface IPropertyManager
+    public interface IPropertyGroupManager
     {
         
     }

@@ -5,11 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
+using JCS.Argon.Helpers;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
-using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -48,7 +48,7 @@ namespace JCS.Argon.Controllers
             return new ConfigurationResponse
             {
                 HostName = Dns.GetHostName(),
-                Endpoint = HttpUtilities.BuildEndpointFromContext(HttpContext),
+                Endpoint = HttpHelper.BuildEndpointFromContext(HttpContext),
                 Version = new AppVersion().ToString(),
                 SchemaVersion = new AppVersion().ToStringSchema(),
                 Bindings = new List<VSPBinding>(),
