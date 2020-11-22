@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Helpers;
 using JCS.Argon.Model.Commands;
+using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
 using Microsoft.EntityFrameworkCore;
@@ -178,6 +179,15 @@ namespace JCS.Argon.Services.Core
                 throw new ICollectionManager.CollectionManagerException(500,
                     "Collection has moved or cannot be found - shouldn't happen");
             }
+        }
+
+        /// <summary>
+        /// Returns the list of current <see cref="VSPBinding"/> instances
+        /// </summary>
+        /// <returns></returns>
+        public List<VSPBinding> GetVSPBindings()
+        {
+            return _vspFactory.GetBindings();
         }
     }
 }

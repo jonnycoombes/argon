@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Commands;
+using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
 
@@ -80,5 +81,11 @@ namespace JCS.Argon.Services.Core
         /// <param name="cmd">The things to change</param>
         /// <returns></returns>
         public Task<Collection> UpdateCollection(Guid collectionId, PatchCollectionCommand cmd);
+
+        /// <summary>
+        /// Retrieves a list of currently configured <see cref="VSPBinding"/> instances
+        /// </summary>
+        /// <returns></returns>
+        public List<VSPBinding> GetVSPBindings();
     }
 }

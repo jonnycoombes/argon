@@ -74,78 +74,18 @@ namespace JCS.Argon
             }
         }
 
-        private void RegisterCoreConfiguration(IServiceCollection services)
-        {
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Binding to main API configuration");
-            try
-            {
-                var apiConfiguration = new ApiConfiguration
-                {
-                    VspConfiguration = new VSPConfiguration(Configuration)
-                };
-                services.AddSingleton(apiConfiguration);
-            }
-            catch (Exception ex)
-            {
-                Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                    .Fatal("Caught exception whilst attempting to bind to API configuration", ex);
-            }
-        }
         
-        /// <summary>
-        /// Do anything specific to controller bindings, Swagger configuratino etc...
-        /// in here
-        /// </summary>
-        /// <param name="services">Current services collection</param>
-        protected void ConfigureApiServices(IServiceCollection services)
-        {
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Configuring controllers and Swagger components");
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Argon - Content Service Layer", 
-                    Version = $"v1 ({new AppVersion().ToString()})",
-                    Description = $"Glencore Content Service Layer. (Build Version: {new AppVersion().ToString()})" });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            }); 
-            
-        }
 
-        /// <summary>
-        /// Register all application-specific services such as the VSP registry etc...
-        /// Note the differences between whether services are scoped (basically per-session) or
-        /// singleton
-        /// </summary>
-        /// <param name="services">The current services collection</param>
-        protected void ConfigureCoreServices(IServiceCollection services)
-        {
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Configuring core API services");
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Registering a scoped VSP factory");
-            services.AddScoped<IVSPFactory, VSPFactory>();
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Registering a scoped collection manager");
-            services.AddScoped<ICollectionManager, CollectionManager>();
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Registering global response exception handler");
-            services.AddSingleton<IResponseExceptionHandler, ResponseExceptionHandler>();
-        }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
                 .Information("Configuring services");
-            RegisterCoreConfiguration(services);
             RegisterDbContext(services);
-            ConfigureApiServices(services);
-            ConfigureCoreServices(services);
+            services.RegisterArgonConfig(Configuration);
+            services.RegisterArgonServices();
             Log.Information("Service configuration and registration completed");
         }
 

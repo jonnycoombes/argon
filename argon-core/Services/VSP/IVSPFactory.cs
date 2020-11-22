@@ -14,14 +14,14 @@ namespace JCS.Argon.Services.VSP
         /// Returns a list of currently reigstered VSP providers
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<VSPBinding> GetConfigurations();
+        public List<VSPBinding> GetBindings();
 
         /// <summary>
         /// Get the provider interface for a given tag
         /// </summary>
         /// <param name="tag">The unique tag for the VSP provider</param>
         /// <returns>An in-scope implementation of the <see cref="IVSPProvider"/> interface</returns>
-        /// <exception cref="InvalidVSPException"></exception>
+        /// <exception></exception>
         public IVSPProvider GetProvider(string tag);
     }
 }

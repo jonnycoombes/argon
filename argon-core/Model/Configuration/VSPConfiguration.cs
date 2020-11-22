@@ -6,21 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace JCS.Argon.Model.Configuration
 {
-    public class VSPConfiguration : ConfigurationSection
+    public class VSPConfiguration 
     {
-        public List<VSPBinding> Bindings { get; init; }
+        public List<VSPBinding> Bindings { get; set;}
 
-        public VSPConfiguration(IConfiguration configuration) : base(configuration)
+        public VSPConfiguration() 
         {
-            Bind("vsp");
-        }
-
-        public override void DumpToLog(ILogger log)
-        {
-            foreach (var binding in Bindings)
-            {
-                log.LogDebug($"Found a VSP provider: {binding}");
-            }
         }
     }
 }

@@ -5,8 +5,8 @@ namespace JCS.Argon.Model.Commands
 {
     public class CreateItemContentCommand
     {
-        public Dictionary<string, object> Properties { get; set; } 
-        
+        public Dictionary<string, object> Properties { get; set; } = null!;
+
         public IFormFile File { get; set; } = null!;
     }
 }

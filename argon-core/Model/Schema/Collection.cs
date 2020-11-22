@@ -48,7 +48,7 @@ namespace JCS.Argon.Model.Schema
         /// The items associated with this collection
         /// </summary>
         [JsonIgnore]
-        public List<Item> Items { get; set; }
+        public List<Item> Items { get; set; } = null!;
 
         /// <summary>
         /// The unique id associated with the propeties for the collection
@@ -56,7 +56,7 @@ namespace JCS.Argon.Model.Schema
         public Guid? PropertyGroupId { get; set; } = null!;
 
         /// <summary>
-        /// The <see cref="PropertyBag"/> associated with the collection
+        /// The <see cref="PropertyGroup"/> associated with the collection
         /// </summary>
         public PropertyGroup Properties { get; set; } = null!;
 

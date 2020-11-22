@@ -127,7 +127,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/content")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/versions")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]

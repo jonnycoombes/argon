@@ -24,6 +24,16 @@ namespace JCS.Argon.Model.Schema
         public Guid? Id { get; set; }
         
         /// <summary>
+        /// The major version number 
+        /// </summary>
+        public int Major { get; set; }
+        
+        /// <summary>
+        /// The minor version number
+        /// </summary>
+        public int Minor { get; set; }
+        
+        /// <summary>
         /// The name of the version
         /// </summary>
         [Required]
@@ -48,6 +58,6 @@ namespace JCS.Argon.Model.Schema
         /// The parent <see cref="Item"/>
         /// </summary>
         [Required]
-        public Item Item { get; set; }
+        public Item Item { get; set; } = null!;
     }
 }

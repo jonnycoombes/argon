@@ -40,12 +40,7 @@ namespace JCS.Argon.Model.Configuration
 
         public VSPBinding()
         {
-            
         }
 
-        public override string ToString()
-        {
-            return JsonSerializer.Serialize(this);
-        }
     }
 }

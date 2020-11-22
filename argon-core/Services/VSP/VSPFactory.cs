@@ -3,6 +3,7 @@ using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace JCS.Argon.Services.VSP
 {
@@ -14,7 +15,7 @@ namespace JCS.Argon.Services.VSP
         /// <summary>
         /// The overall application configuration, used to extract VSP bindings
         /// </summary>
-        private readonly ApiConfiguration _apiConfiguration;
+        private readonly VSPConfiguration _vspConfiguration;
 
         /// <summary>
         /// Logger for logging
@@ -26,18 +27,17 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         private readonly SqlDbContext _dbContext;
 
-        public VSPFactory(ILogger<VSPFactory> log, ApiConfiguration apiConfiguration, SqlDbContext dbContext)
+        public VSPFactory(ILogger<VSPFactory> log, IOptions<VSPConfiguration> vspConfiguration, SqlDbContext dbContext)
         {
             log.LogDebug("Creating new instance");
-            _apiConfiguration = apiConfiguration;
+            _vspConfiguration= vspConfiguration.Value;
             _log = log;
             _dbContext = dbContext;
-            _apiConfiguration.VspConfiguration.DumpToLog(_log);
         }
         
-        public IEnumerable<VSPBinding> GetConfigurations()
+        public List<VSPBinding> GetBindings()
         {
-            return _apiConfiguration.VspConfiguration.Bindings;
+            return _vspConfiguration.Bindings;
         }
 
         public IVSPProvider GetProvider(string tag)

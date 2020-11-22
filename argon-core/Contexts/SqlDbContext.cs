@@ -55,7 +55,8 @@ namespace JCS.Argon.Contexts
                 .HasOne(i => i.Collection)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CollectionId);
-
+            
+            // linkage between items and their versions - probably doesn't need to be done explicitly
             modelBuilder.Entity<Item>()
                 .HasMany(i => i.Versions);
             
