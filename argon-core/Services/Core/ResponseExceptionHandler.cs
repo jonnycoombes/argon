@@ -27,7 +27,7 @@ namespace JCS.Argon.Services.Core
                 _log.LogWarning($"Found an exception of type {(ex.GetType())}");
                 switch (ex)
                 {
-                    case ICollectionManager.CollectionManagerException e:
+                    case ICollectionManager.CollectionManagerAwareException e:
                     {
                         return new ExceptionResponse
                         {

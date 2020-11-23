@@ -6,7 +6,7 @@ namespace JCS.Argon.Model.Exceptions
     /// <summary>
     /// Base class for response exceptions.
     /// </summary>
-    public abstract class BaseResponseException : Exception
+    public abstract class ResponseAwareException : Exception
     {
         /// <summary>
         /// "Suggested" response code if bubbled up via the HTTP layer
@@ -18,7 +18,7 @@ namespace JCS.Argon.Model.Exceptions
         /// </summary>
         /// <param name="statusHint"></param>
         /// <param name="message"></param>
-        protected BaseResponseException(int? statusHint, string? message)
+        protected ResponseAwareException(int? statusHint, string? message)
         :base(message)
         {
             ResponseCodeHint = statusHint;
@@ -30,7 +30,7 @@ namespace JCS.Argon.Model.Exceptions
         /// <param name="statusHint"></param>
         /// <param name="message"></param>
         /// <param name="inner"></param>
-        protected BaseResponseException(int? statusHint, string? message, Exception? inner)
+        protected ResponseAwareException(int? statusHint, string? message, Exception? inner)
         :base(message, inner)
         {
            ResponseCodeHint = statusHint;

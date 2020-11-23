@@ -77,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Information("Configuring core API services");
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering a scoped VSP factory");
-            services.AddScoped<IVSPFactory, VSPFactory>();
+            services.AddSingleton<IVSPManager, VSPManager>();
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering a scoped collection manager");
             services.AddScoped<ICollectionManager, CollectionManager>();

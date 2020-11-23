@@ -3,9 +3,15 @@
 \contentsline {section}{\numberline {1.2}Source Control}{1}{section.1.2}%
 \contentsline {section}{\numberline {1.3}Build Dependencies}{2}{section.1.3}%
 \contentsline {section}{\numberline {1.4}Database Notes}{2}{section.1.4}%
-\contentsline {subsection}{\numberline {1.4.1}Core Tables}{2}{subsection.1.4.1}%
-\contentsline {subsection}{\numberline {1.4.2}EF Core Specifics}{2}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.4.1}Core Tables}{3}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}EF Core Specifics}{3}{subsection.1.4.2}%
 \contentsline {section}{\numberline {1.5}AWS Deployments}{3}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Code Notes}{3}{section.1.6}%
 \contentsline {subsection}{\numberline {1.6.1}Namespaces}{3}{subsection.1.6.1}%
-\contentsline {subsection}{\numberline {1.6.2}OpenAPI Endpoints}{3}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.2}OpenAPI Endpoints}{4}{subsection.1.6.2}%
+\contentsline {subsubsection}{Cloud Hosted Endpoints}{4}{section*.2}%
+\contentsline {chapter}{\numberline {2}Release Notes}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Build 0.1.15}{5}{section.2.1}%
+\contentsline {paragraph}{}{5}{section*.3}%
+\contentsline {section}{\numberline {2.2}Build 0.2.1}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Build 0.2.2}{5}{section.2.3}%

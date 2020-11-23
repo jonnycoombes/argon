@@ -15,7 +15,7 @@ namespace JCS.Argon
         /// <summary>
         /// Application patch/build level
         /// </summary>
-        public static int Build { get; } = 14;
+        public static int Build { get; } = 15;
 
         /// <summary>
         /// Schema major version

@@ -55,6 +55,14 @@ namespace JCS.Argon.Model.Schema
         public byte[]? Thumbprint { get; set; }
         
         /// <summary>
+        /// The provider specific path for the version.  The contents of this path
+        /// are defined by, and interpreted by the underlying VSP provider for the
+        /// version, however it is recommended that such paths are specified in a
+        /// URI-based format
+        /// </summary>
+        public string ProviderPath { get; set; }
+        
+        /// <summary>
         /// The parent <see cref="Item"/>
         /// </summary>
         [Required]

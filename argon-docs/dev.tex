@@ -6,6 +6,7 @@
 \usepackage{fancyhdr}
 \usepackage[a4paper]{geometry}
 \usepackage{layout}
+\usepackage{float}
 
 \title{Glencore Development Notes}
 \author{Jonny Coombes}
@@ -16,6 +17,7 @@
 \pagenumbering{gobble}
 \newpage
 \tableofcontents
+\let\cleardoublepage=\clearpage
 \newpage
 \pagenumbering{arabic}
 
@@ -83,9 +85,9 @@ The nominated user used to connect through via the DB context, must be a member 
 \end{enumerate}
 This allows for just a user login to be allocated on the target SQL instance, and then Argon can take care of creating the necessary database/schema objects.  (\textit{This adheres to the principal that configuration should be a close to zero as possible for new deployments}).
 \subsection{Core Tables}
-\begin{table}[h!]
+\begin{table}[H]
     \centering
-    \begin{tabular}{|| p{0.1\linewidth} | p{0.1\linewidth} | p{0.7\linewidth} ||}
+    \begin{tabular}{|| p{0.1\linewidth} | p{0.2\linewidth} | p{0.7\linewidth} ||}
         \hline
         \textbf{Schema} & \textbf{Table} & \textbf{Description}\\
         \hline
@@ -93,8 +95,14 @@ This allows for just a user login to be allocated on the target SQL instance, an
         \hline
         core & constraint & The collection constraints table. $1 \rightarrow *$ relationship between entries in the \textit{collection} table and entries within this table. \\
         \hline
-        core & document & The collection documents table.  $1 \rightarrow +$ relationship between the \textit{collection} table and entries within this table.\\
+        core & item & The collection items table.  $1 \rightarrow +$ relationship between the \textit{collection} table and entries within this table.\\
         \hline
+        core & version & The collection item versions table. $1 \leftarrow +$ relationship between entries in this table and the items table.  (Each item will have a minimum of one version).\\
+        \hline
+        core & propertyGroup & The main property group table there is a $1 \rightarrow *$ relationship between this table and the property table.\\
+        \hline
+        core & property & The property table. Each item (and potentially) collection will have multiple associated rows within this table, through a given property group link. \\
+        \hline 
     \end{tabular}
     \caption{Core Tables}
     \label{table_core_tables}
@@ -148,5 +156,26 @@ All initial API endpoints will be prefixed as follows:
 \begin{center}
     \url{http[s]://[host]:[port]/api/v1}
 \end{center}
-
+\subsubsection{Cloud Hosted Endpoints}
+During development instances of the current build/deployed artifacts are available at the following locations:
+\begin{center}
+    \url{http[s]://argon-dev-1.jcs.software.co.uk/api/v1}
+    \url{http[s]://argon-dev-1.jcs-software.co.uk/swagger/v1/swagger.json}
+\end{center}
+\chapter{Release Notes}
+\section{Build 0.1.15}
+\textbf{Deploy Date 23\textsuperscript{rd} November, 2020}
+\paragraph{}
+This release represents the first stable build of the Argon core with a limited feature set.  Within this release:
+\begin{enumerate}
+    \item The core database schema is largely complete, however still in a state of flux, given that complete implementation of the constraint and property group abstractions is not yet complete.
+    \item The core interfaces around the \textit{VSP} subsystem are defined and 95\% implemented for the \textit{Native File} VSP provider.  (Still subject to change throughout sprints 2 and 3).
+    \item The general API surface area and associated Swagger definitions is approximately 95\% complete.
+    \item Asynchronous background processing for item checksums is not yet implemented.
+    \item Not authentication is present within this build. 
+\end{enumerate}
+\section{Build 0.2.1}
+\textbf{Deploy Date 24\textsuperscript{th} November, 2020}
+\section{Build 0.2.2}
+\textbf{Deploy Date 25\textsuperscript{th} November, 2020}
 \end{document}

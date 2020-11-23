@@ -15,16 +15,16 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// Thrown in the event of a failure within the collection manager
         /// </summary>
-        public sealed class CollectionManagerException : BaseResponseException
+        public sealed class CollectionManagerAwareException : ResponseAwareException
         {
-            public CollectionManagerException(int? statusHint, string? message) : base(statusHint, message)
+            public CollectionManagerAwareException(int? statusHint, string? message) : base(statusHint, message)
             {
-                Source = nameof(CollectionManager);
+                Source = nameof(ICollectionManager);
             }
 
-            public CollectionManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            public CollectionManagerAwareException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(CollectionManager); 
+                Source = nameof(ICollectionManager); 
             }
         }
 
@@ -51,7 +51,7 @@ namespace JCS.Argon.Services.Core
         /// Retrieves a list of all current collections
         /// </summary>
         /// <returns></returns>
-        public Task<List<Collection>> ListCollections();
+        public Task<List<Collection>> ListCollectionsAsync();
 
         /// <summary>
         /// Attempts the creation of a new <see cref="Collection"/> object, along with
@@ -61,14 +61,14 @@ namespace JCS.Argon.Services.Core
         /// </remarks>
         /// <param name="cmd"></param>
         /// <returns></returns>
-        public Task<Collection> CreateCollection(CreateCollectionCommand cmd);
+        public Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd);
 
         /// <summary>
         /// Reads a specific collection from the underlying store, based on a supplied collection identifier
         /// </summary>
         /// <param name="collectionId">The unique GUID associated with the collection</param>
         /// <returns></returns>
-        public Task<Collection> ReadCollection(Guid collectionId);
+        public Task<Collection> ReadCollectionAsync(Guid collectionId);
 
         /// <summary>
         /// Attempts to update the meta-data associated with a given <see cref="Collection"/> instance,
@@ -80,7 +80,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="cmd">The things to change</param>
         /// <returns></returns>
-        public Task<Collection> UpdateCollection(Guid collectionId, PatchCollectionCommand cmd);
+        public Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd);
 
         /// <summary>
         /// Retrieves a list of currently configured <see cref="VSPBinding"/> instances

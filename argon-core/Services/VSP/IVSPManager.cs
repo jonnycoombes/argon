@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JCS.Argon.Model.Exceptions;
@@ -8,8 +9,22 @@ namespace JCS.Argon.Services.VSP
     /// <summary>
     /// Interface to be implemented by a VSP provider registry/factory
     /// </summary>
-    public interface IVSPFactory
+    public interface IVSPManager
     {
+        
+        public sealed class VspFactoryAwareException : ResponseAwareException
+        {
+            public VspFactoryAwareException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(IVSPManager);
+            }
+
+            public VspFactoryAwareException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(IVSPManager);
+            }
+        }
+        
         /// <summary>
         /// Returns a list of currently reigstered VSP providers
         /// </summary>

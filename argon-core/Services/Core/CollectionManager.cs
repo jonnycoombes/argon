@@ -17,20 +17,20 @@ namespace JCS.Argon.Services.Core
     {
 
         /// <summary>
-        /// The currently configured <see cref="IVSPFactory"/> instance
+        /// The currently configured <see cref="IVSPManager"/> instance
         /// </summary>
-        protected IVSPFactory _vspFactory;
+        protected IVSPManager _vspManager;
 
         /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
-        /// <param name="vspFactory"></param>
-        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, IVSPFactory vspFactory)
+        /// <param name="vspManager"></param>
+        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, IVSPManager vspManager)
         :base(log, dbContext)
         {
-            _vspFactory = vspFactory;
+            _vspManager = vspManager;
             _log.LogDebug("Creating new instance");
         }
         
@@ -49,9 +49,9 @@ namespace JCS.Argon.Services.Core
 #pragma warning restore 1574
         public async Task<int> CountItemsAsync(Guid collectionId)
         {
-            if (!await CollectionExists(collectionId))
+            if (!await CollectionExistsAsync(collectionId))
             {
-                throw new ICollectionManager.CollectionManagerException(500, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerAwareException(500, "The specified collection does not exist");
             }
             else
             {
@@ -59,14 +59,19 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="ICollectionManager.ListCollections" />
-        public async Task<List<Collection>> ListCollections()
+        /// <inheritdoc cref="ICollectionManager.ListCollectionsAsync" />
+        public async Task<List<Collection>> ListCollectionsAsync()
         {
             return await _dbContext.Collections
                 .ToListAsync();
         }
 
-        protected async Task<bool> CollectionExists(string name)
+        /// <summary>
+        /// Checks whether a given collection already exists within the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
+        protected async Task<bool> CollectionExistsAsync(string name)
         {
             if (await _dbContext.Collections.AnyAsync())
             {
@@ -80,7 +85,12 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        protected async Task<bool> CollectionExists(Guid collectionId)
+        /// <summary>
+        /// Checks whether a given collection already exists within the database
+        /// </summary>
+        /// <param name="collectionId">The unique GUID for the collection</param>
+        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
+        protected async Task<bool> CollectionExistsAsync(Guid collectionId)
         {
             if (await _dbContext.Collections.AnyAsync())
             {
@@ -93,10 +103,10 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="ICollectionManager.CreateCollection"/>
-        public async Task<Collection> CreateCollection(CreateCollectionCommand cmd)
+        /// <inheritdoc cref="ICollectionManager.CreateCollectionAsync"/>
+        public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd)
         {
-                var exists = await CollectionExists(cmd.Name);
+                var exists = await CollectionExistsAsync(cmd.Name);
                 if (!exists)
                 {
                     var collection = await _dbContext.Collections.AddAsync(new Collection()
@@ -109,37 +119,37 @@ namespace JCS.Argon.Services.Core
                 }
                 else
                 {
-                    throw new ICollectionManager.CollectionManagerException(400, "A collection with that name already exists");
+                    throw new ICollectionManager.CollectionManagerAwareException(400, "A collection with that name already exists");
                 }
         }
 
-        /// <inheritdoc cref="ICollectionManager.ReadCollection"/> 
-        public async Task<Collection> ReadCollection(Guid collectionId)
+        /// <inheritdoc cref="ICollectionManager.ReadCollectionAsync"/> 
+        public async Task<Collection> ReadCollectionAsync(Guid collectionId)
         {
-            if (await CollectionExists(collectionId))
+            if (await CollectionExistsAsync(collectionId))
             {
                 return await _dbContext.Collections.FirstAsync(c => c.Id == collectionId);
             }
             else
             {
-                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerAwareException(404, "The specified collection does not exist");
             }
         }
 
         /// <summary>
         /// Performs a number of checks to ensure that a collection update is valid
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="cmd"></param>
-        /// <returns></returns>
-        protected async Task<List<string>> ValidateCollectionUpdate(Collection target, PatchCollectionCommand cmd)
+        /// <param name="target">The collection against which the validation is performed</param>
+        /// <param name="cmd">A <see cref="PatchCollectionCommand"/> instance</param>
+        /// <returns>A list of validation errors if any occur, otherwise an empty list</returns>
+        protected async Task<List<string>> ValidateCollectionUpdateAsync(Collection target, PatchCollectionCommand cmd)
         {
             List<string> validationErrors = new List<string>();
             if (cmd.Name != null)
             {
                 if (target.Name != cmd.Name)
                 {
-                    var exists = await CollectionExists(cmd.Name);
+                    var exists = await CollectionExistsAsync(cmd.Name);
                     if (exists)
                     {
                         validationErrors.Add("A collection with the supplied name already exists");
@@ -149,19 +159,19 @@ namespace JCS.Argon.Services.Core
             return validationErrors;
         }
         
-        /// <inheritdoc cref="ICollectionManager.UpdateCollection"/>
-        public async Task<Collection> UpdateCollection(Guid collectionId, PatchCollectionCommand cmd)
+        /// <inheritdoc cref="ICollectionManager.UpdateCollectionAsync"/>
+        public async Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd)
         {
-            if (!await CollectionExists(collectionId))
+            if (!await CollectionExistsAsync(collectionId))
             {
-                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerAwareException(404, "The specified collection does not exist");
             }
             else
             {
                 var collection = await _dbContext.Collections.FirstAsync(c => c.Id == collectionId);
                 if (collection != null)
                 {
-                    var validationErrors = await ValidateCollectionUpdate(collection, cmd);
+                    var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
                     if (validationErrors.Count == 0)
                     {
                         collection.Name = cmd.Name ?? collection.Name;
@@ -172,11 +182,11 @@ namespace JCS.Argon.Services.Core
                     }
                     else
                     {
-                        throw new ICollectionManager.CollectionManagerException(400,
+                        throw new ICollectionManager.CollectionManagerAwareException(400,
                             $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
                     }
                 }
-                throw new ICollectionManager.CollectionManagerException(500,
+                throw new ICollectionManager.CollectionManagerAwareException(500,
                     "Collection has moved or cannot be found - shouldn't happen");
             }
         }
@@ -187,7 +197,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         public List<VSPBinding> GetVSPBindings()
         {
-            return _vspFactory.GetBindings();
+            return _vspManager.GetBindings();
         }
     }
 }

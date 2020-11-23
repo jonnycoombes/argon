@@ -48,7 +48,7 @@ namespace JCS.Argon.Controllers
         public async Task<List<Collection>> ReadCollections()
         {
             _log.LogDebug("ReadCollections called");
-            return await _collectionManager.ListCollections();
+            return await _collectionManager.ListCollectionsAsync();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace JCS.Argon.Controllers
         public async Task<Collection> CreateCollection([FromBody]CreateCollectionCommand cmd)
         {
             _log.LogDebug("CreateCollection called");
-            var collection = await _collectionManager.CreateCollection(cmd);
+            var collection = await _collectionManager.CreateCollectionAsync(cmd);
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
             _log.LogDebug($"New collection successfully created {@collection}", collection);
             return collection;
@@ -97,7 +97,7 @@ namespace JCS.Argon.Controllers
         public async Task<Collection> ReadCollection(Guid collectionId)
         {
             _log.LogDebug("ReadCollection called");
-            var collection = await _collectionManager.ReadCollection(collectionId);
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;
         }
@@ -116,7 +116,7 @@ namespace JCS.Argon.Controllers
         public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand cmd)
         {
             _log.LogDebug("UpdateCollection called");
-            var collection = await _collectionManager.UpdateCollection(collectionId, cmd);
+            var collection = await _collectionManager.UpdateCollectionAsync(collectionId, cmd);
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
             return collection;
         }

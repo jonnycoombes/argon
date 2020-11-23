@@ -27,12 +27,6 @@ namespace JCS.Argon.Model.Configuration
         public string Description { get; set; }
         
         /// <summary>
-        /// The class that implements this particular provider
-        /// </summary>
-        [Required]
-        public string ProviderClass { get; set; }
-
-        /// <summary>
         /// Generic set of properties for the provider, which will vary based on the underlying
         /// implementation
         /// </summary>
@@ -42,5 +36,9 @@ namespace JCS.Argon.Model.Configuration
         {
         }
 
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }

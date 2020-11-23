@@ -63,6 +63,6 @@ namespace JCS.Argon.Model.Schema
         /// The properties for this item
         /// </summary>
         public PropertyGroup Properties { get; set; } = null!;
-
+        
     }
 }
