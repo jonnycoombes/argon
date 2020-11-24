@@ -59,6 +59,12 @@ namespace JCS.Argon.Contexts
             // linkage between items and their versions - probably doesn't need to be done explicitly
             modelBuilder.Entity<Item>()
                 .HasMany(i => i.Versions);
+
+            // ensure that the linkage between properties and their parent groups work bi-directionally
+            modelBuilder.Entity<Property>()
+                .HasOne(p => p.PropertyGroup)
+                .WithMany(g => g.Properties)
+                .HasForeignKey(p => p.PropertyGroupId);
             
             base.OnModelCreating(modelBuilder);
         }

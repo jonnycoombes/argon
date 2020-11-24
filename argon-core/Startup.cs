@@ -1,10 +1,6 @@
 using System;
-using System.IO;
-using System.Reflection;
 using JCS.Argon.Contexts;
-using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
-using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace JCS.Argon

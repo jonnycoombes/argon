@@ -22,15 +22,21 @@ namespace JCS.Argon.Services.Core
         protected IVSPManager _vspManager;
 
         /// <summary>
+        /// The currently scoped <see cref="IPropertyGroupManager"/> instance
+        /// </summary>
+        protected IPropertyGroupManager _propertyGroupManager;
+
+        /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
         /// <param name="vspManager"></param>
-        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, IVSPManager vspManager)
+        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, IVSPManager vspManager, IPropertyGroupManager propertyGroupManager)
         :base(log, dbContext)
         {
             _vspManager = vspManager;
+            _propertyGroupManager = propertyGroupManager;
             _log.LogDebug("Creating new instance");
         }
         

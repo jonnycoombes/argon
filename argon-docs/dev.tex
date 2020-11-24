@@ -128,12 +128,17 @@ Current AWS deployment details in table \ref{table:2} below:
         Internet Gateway & (E/I) Gateway & Argon-Dev-IG & Ingress and outgress \\
         EIP & Elastic IP & No public DNS yet & 34.249.105.124 \\
         Host & t3a.small & argon-dev-1 & Ubuntu 18.04 LTS \\
+        Host & t3a.small & argon-dev-2 & Ubuntu 18.04 LTS \\
+        Host & t3a.small & argon-dev-3 & ubuntu 18.04.LTS \\
         \hline
     \end{tabular}
     \caption{AWS Deployment Artifacts}
     \label{table:2}
 \end{table}   
-
+Route53 FQDN Entries:
+\begin{enumerate}
+    \item \url{argon-dev-1.jcs-software.co.uk}
+\end{enumerate}
 \section{Code Notes}
 \subsection{Namespaces}
 The general layout of the Argon core code adheres to the following conventions:
@@ -155,7 +160,7 @@ The version path component is expected to remain constant during the initial rel
 All initial API endpoints will be prefixed as follows:
 \begin{center}
     \url{http[s]://[host]:[port]/api/v1}
-\end{center}
+\end{center}§
 \subsubsection{Cloud Hosted Endpoints}
 During development instances of the current build/deployed artifacts are available at the following locations:
 \begin{center}

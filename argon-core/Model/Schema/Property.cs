@@ -62,5 +62,15 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         public bool? BooleanValue { get; set; }
         
+        /// <summary>
+        /// The identifier for the parent property group
+        /// </summary>
+        public Guid PropertyGroupId { get; set; }
+        
+        /// <summary>
+        /// The parent <see cref="PropertyGroup"/>
+        /// </summary>
+        public PropertyGroup PropertyGroup { get; set; }
+        
     }
 }

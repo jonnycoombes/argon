@@ -3,7 +3,7 @@ namespace JCS.Argon
     public class AppVersion
     {
         /// <summary>
-        /// Application majro version number
+        /// Application major version number
         /// </summary>
         public static int Major { get; }= 0;
 
@@ -30,7 +30,7 @@ namespace JCS.Argon
         /// <summary>
         /// Schema patch/build number
         /// </summary>
-        public static int SchemaBuild { get; } = 5;
+        public static int SchemaBuild { get; } = 6;
         
         /// <summary>
         /// Returns the current internal version number
