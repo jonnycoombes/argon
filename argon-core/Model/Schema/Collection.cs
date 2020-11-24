@@ -51,14 +51,9 @@ namespace JCS.Argon.Model.Schema
         public List<Item> Items { get; set; } = null!;
 
         /// <summary>
-        /// The unique id associated with the propeties for the collection
+        /// The optional unique id associated with the propeties for the collection
         /// </summary>
         public Guid? PropertyGroupId { get; set; } = null!;
-
-        /// <summary>
-        /// The <see cref="PropertyGroup"/> associated with the collection
-        /// </summary>
-        public PropertyGroup Properties { get; set; } = null!;
 
         /// <summary>
         /// Default constructor - required for initialiser syntax

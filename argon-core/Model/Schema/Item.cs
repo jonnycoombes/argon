@@ -55,14 +55,9 @@ namespace JCS.Argon.Model.Schema
         public List<Version> Versions { get; set; } = null!;
 
         /// <summary>
-        /// The property group identifier for this item
+        /// The optional property group identifier for this item
         /// </summary>
         public Guid? PropertyGroupId { get; set; } = null!;
 
-        /// <summary>
-        /// The properties for this item
-        /// </summary>
-        public PropertyGroup Properties { get; set; } = null!;
-        
     }
 }
