@@ -10,12 +10,12 @@ namespace JCS.Argon
         /// <summary>
         /// Application minor version
         /// </summary>
-        public static int Minor { get;  } = 1;
+        public static int Minor { get;  } = 2;
 
         /// <summary>
         /// Application patch/build level
         /// </summary>
-        public static int Build { get; } = 15;
+        public static int Build { get; } = 2;
 
         /// <summary>
         /// Schema major version
