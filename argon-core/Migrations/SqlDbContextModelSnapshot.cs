@@ -25,6 +25,9 @@ namespace JCS.Argon.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ConstraintGroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -48,7 +51,52 @@ namespace JCS.Argon.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ConstraintGroupId");
+
+                    b.HasIndex("PropertyGroupId");
+
                     b.ToTable("collection", "core");
+                });
+
+            modelBuilder.Entity("JCS.Argon.Model.Schema.Constraint", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ConstraintGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConstraintGroupId");
+
+                    b.ToTable("constraint", "core");
+                });
+
+            modelBuilder.Entity("JCS.Argon.Model.Schema.ConstraintGroup", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("constraintGroup", "core");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>
@@ -81,6 +129,8 @@ namespace JCS.Argon.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CollectionId");
+
+                    b.HasIndex("PropertyGroupId");
 
                     b.ToTable("item", "core");
                 });
@@ -129,9 +179,6 @@ namespace JCS.Argon.Migrations
                 {
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("Timestamp")
@@ -188,6 +235,28 @@ namespace JCS.Argon.Migrations
                     b.ToTable("version", "core");
                 });
 
+            modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
+                {
+                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", "Constraints")
+                        .WithMany()
+                        .HasForeignKey("ConstraintGroupId");
+
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                        .WithMany()
+                        .HasForeignKey("PropertyGroupId");
+
+                    b.Navigation("Constraints");
+
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("JCS.Argon.Model.Schema.Constraint", b =>
+                {
+                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", null)
+                        .WithMany("Constraints")
+                        .HasForeignKey("ConstraintGroupId");
+                });
+
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>
                 {
                     b.HasOne("JCS.Argon.Model.Schema.Collection", "Collection")
@@ -196,7 +265,13 @@ namespace JCS.Argon.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                        .WithMany()
+                        .HasForeignKey("PropertyGroupId");
+
                     b.Navigation("Collection");
+
+                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Property", b =>
@@ -224,6 +299,11 @@ namespace JCS.Argon.Migrations
             modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("JCS.Argon.Model.Schema.ConstraintGroup", b =>
+                {
+                    b.Navigation("Constraints");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b =>

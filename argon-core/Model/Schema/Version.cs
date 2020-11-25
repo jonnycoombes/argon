@@ -60,8 +60,8 @@ namespace JCS.Argon.Model.Schema
         /// version, however it is recommended that such paths are specified in a
         /// URI-based format
         /// </summary>
-        public string ProviderPath { get; set; }
-        
+        public string ProviderPath { get; set; } = null!;
+
         /// <summary>
         /// The parent <see cref="Item"/>
         /// </summary>

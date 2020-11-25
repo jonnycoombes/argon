@@ -58,6 +58,11 @@ namespace JCS.Argon.Model.Schema
         /// The optional property group identifier for this item
         /// </summary>
         public Guid? PropertyGroupId { get; set; } = null!;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public PropertyGroup? Properties { get; set; } = null!; 
 
     }
 }

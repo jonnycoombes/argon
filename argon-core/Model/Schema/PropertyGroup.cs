@@ -24,11 +24,6 @@ namespace JCS.Argon.Model.Schema
         public Guid? Id { get; set; }
         
         /// <summary>
-        /// The identifier of the object to which this property bag is associated
-        /// </summary>
-        public Guid? OwnerId { get; set; }
-        
-        /// <summary>
         /// The properties in the bag
         /// </summary>
         public List<Property> Properties { get; set; } = null!;

@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    [Table("constraintGroup", Schema = "core")]
     public class ConstraintGroup
     {
         /// <summary>

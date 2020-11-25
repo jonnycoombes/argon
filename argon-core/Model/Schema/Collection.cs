@@ -56,9 +56,19 @@ namespace JCS.Argon.Model.Schema
         public Guid? PropertyGroupId { get; set; } = null!;
 
         /// <summary>
+        /// 
+        /// </summary>
+        public PropertyGroup? Properties { get; set; } = null!;
+
+        /// <summary>
         /// The unique id associated the constraint group for this collection
         /// </summary>
         public Guid? ConstraintGroupId { get; set; } = null!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConstraintGroup? Constraints { get; set; } = null;
         
         /// <summary>
         /// Default constructor - required for initialiser syntax
