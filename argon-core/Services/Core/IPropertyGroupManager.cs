@@ -1,3 +1,6 @@
+using System;
+using JCS.Argon.Model.Exceptions;
+
 namespace JCS.Argon.Services.Core
 {
     /// <summary>
@@ -10,6 +13,20 @@ namespace JCS.Argon.Services.Core
     /// </summary>
     public interface IPropertyGroupManager
     {
-        
+        /// <summary>
+        /// Thrown in the event of a failure within the constraint group manager
+        /// </summary>
+        public sealed class PropertyGroupManagerException: ResponseAwareException
+        {
+            public PropertyGroupManagerException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(IPropertyGroupManager);
+            }
+
+            public PropertyGroupManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(IPropertyGroupManager); 
+            }
+        }        
     }
 }

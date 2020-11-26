@@ -14,14 +14,14 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// Thrown in the event of a failure within the collection manager
         /// </summary>
-        public sealed class CollectionManagerAwareException : ResponseAwareException
+        public sealed class CollectionManagerException : ResponseAwareException
         {
-            public CollectionManagerAwareException(int? statusHint, string? message) : base(statusHint, message)
+            public CollectionManagerException(int? statusHint, string? message) : base(statusHint, message)
             {
                 Source = nameof(ICollectionManager);
             }
 
-            public CollectionManagerAwareException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            public CollectionManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
                 Source = nameof(ICollectionManager); 
             }

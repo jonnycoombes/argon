@@ -31,7 +31,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/items")]
+        [Route("/api/v1/Collections/{collectionId}/Items")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -42,14 +42,14 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Reads the meta-data for a specific collection item
+        /// Reads the meta-data (including <see cref="PropertyGroup"/>) for a given item
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/meta")]
+        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Metadata")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -70,7 +70,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/content")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/Content")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,7 +97,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/api/v1/Collections/{collectionId}/items")]
+        [Route("/api/v1/Collections/{collectionId}/Items")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -127,7 +127,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/versions")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/Versions")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]

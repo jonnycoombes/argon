@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JCS.Argon.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    [Migration("20201125135652_initial")]
+    [Migration("20201126163223_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,17 +66,33 @@ namespace JCS.Argon.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AllowableValues")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("ConstraintGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("ConstraintType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SourceProperty")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TargetProperty")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<int?>("ValueType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -239,17 +255,17 @@ namespace JCS.Argon.Migrations
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
                 {
-                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", "Constraints")
+                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", "ConstraintGroup")
                         .WithMany()
                         .HasForeignKey("ConstraintGroupId");
 
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "PropertyGroup")
                         .WithMany()
                         .HasForeignKey("PropertyGroupId");
 
-                    b.Navigation("Constraints");
+                    b.Navigation("ConstraintGroup");
 
-                    b.Navigation("Properties");
+                    b.Navigation("PropertyGroup");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Constraint", b =>
@@ -267,13 +283,13 @@ namespace JCS.Argon.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "PropertyGroup")
                         .WithMany()
                         .HasForeignKey("PropertyGroupId");
 
                     b.Navigation("Collection");
 
-                    b.Navigation("Properties");
+                    b.Navigation("PropertyGroup");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Property", b =>

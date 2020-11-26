@@ -253,17 +253,17 @@ namespace JCS.Argon.Migrations
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Collection", b =>
                 {
-                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", "Constraints")
+                    b.HasOne("JCS.Argon.Model.Schema.ConstraintGroup", "ConstraintGroup")
                         .WithMany()
                         .HasForeignKey("ConstraintGroupId");
 
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "PropertyGroup")
                         .WithMany()
                         .HasForeignKey("PropertyGroupId");
 
-                    b.Navigation("Constraints");
+                    b.Navigation("ConstraintGroup");
 
-                    b.Navigation("Properties");
+                    b.Navigation("PropertyGroup");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Constraint", b =>
@@ -281,13 +281,13 @@ namespace JCS.Argon.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "Properties")
+                    b.HasOne("JCS.Argon.Model.Schema.PropertyGroup", "PropertyGroup")
                         .WithMany()
                         .HasForeignKey("PropertyGroupId");
 
                     b.Navigation("Collection");
 
-                    b.Navigation("Properties");
+                    b.Navigation("PropertyGroup");
                 });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Property", b =>

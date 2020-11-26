@@ -44,6 +44,11 @@ namespace JCS.Argon.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConstraintType = table.Column<int>(type: "int", nullable: false),
+                    SourceProperty = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TargetProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValueType = table.Column<int>(type: "int", nullable: true),
+                    AllowableValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConstraintGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>

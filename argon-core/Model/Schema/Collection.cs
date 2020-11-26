@@ -49,36 +49,18 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         [JsonIgnore]
         public List<Item> Items { get; set; } = null!;
-
-        /// <summary>
-        /// The optional unique id associated with the property group for the collection
-        /// </summary>
-        [JsonIgnore]
-        public Guid? PropertyGroupId { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public PropertyGroup? Properties { get; set; } = null!;
-
-        /// <summary>
-        /// The unique id associated the constraint group for this collection
-        /// </summary>
-        [JsonIgnore]
-        public Guid? ConstraintGroupId { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ConstraintGroup? Constraints { get; set; } = null;
         
         /// <summary>
-        /// Default constructor - required for initialiser syntax
+        /// 
         /// </summary>
-        public Collection()
-        {
-            
-        }
+        public PropertyGroup PropertyGroup { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConstraintGroup ConstraintGroup { get; set; }
+        
+        public Collection(){}
 
     }
 }

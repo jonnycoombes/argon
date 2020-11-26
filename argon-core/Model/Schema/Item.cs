@@ -32,21 +32,19 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The created date for the item
         /// </summary>
+        [Required]
         public DateTime CreatedDate { get; set; }
         
         /// <summary>
         /// The last created time for the item
         /// </summary>
+        [Required]
         public DateTime LastModified { get; set; }
-        
-        /// <summary>
-        /// The parent collection identifier
-        /// </summary>
-        public Guid CollectionId { get; set;}
         
         /// <summary>
         /// This items parent <see cref="Collection"/>
         /// </summary>
+        [Required]
         public Collection Collection { get; set; } = null!;
 
         /// <summary>
@@ -55,15 +53,8 @@ namespace JCS.Argon.Model.Schema
         public List<Version> Versions { get; set; } = null!;
 
         /// <summary>
-        /// The optional property group identifier for this item
-        /// </summary>
-        [JsonIgnore]
-        public Guid? PropertyGroupId { get; set; } = null!;
-        
-        /// <summary>
         /// 
         /// </summary>
-        public PropertyGroup? Properties { get; set; } = null!; 
-
+        public PropertyGroup PropertyGroup { get; set; } = null!;
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace JCS.Argon.Model.Commands
@@ -7,10 +8,10 @@ namespace JCS.Argon.Model.Commands
     /// </summary>
     public class CreateCollectionCommand
     {
-        public CreateCollectionCommand(string name, string providerType, string? description)
+        public CreateCollectionCommand(string name, string providerTag, string? description)
         {
             Name = name;
-            ProviderType = providerType;
+            ProviderTag = providerTag;
             Description = description;
         }
 
@@ -24,16 +25,22 @@ namespace JCS.Argon.Model.Commands
         public string Name { get; set; }
         
         /// <summary>
-        /// The provider to be used to create the collection.  Must equate to a provider type
+        /// The provider to be used to create the collection.  Must equate to a provider tag
         /// listed within the current set of registered VSP bindings.
         /// </summary>
         [Required]
-        public string ProviderType { get; set; }
+        public string ProviderTag { get; set; }
         
         /// <summary>
         /// Optional description for the collection.
         /// </summary>
         public string? Description { get; set; }
+        
+        /// <summary>
+        /// An optional list of <see cref="JCS.Argon.Model.Schema.Constraint"/> elements
+        /// for the collection
+        /// </summary>
+        public List<CreateConstraintCommand>? Constraints { get; set; }
 
     }
 }

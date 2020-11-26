@@ -27,7 +27,7 @@ namespace JCS.Argon.Services.Core
                 _log.LogWarning($"Found an exception of type {(ex.GetType())}");
                 switch (ex)
                 {
-                    case ICollectionManager.CollectionManagerAwareException e:
+                    case ICollectionManager.CollectionManagerException e:
                     {
                         return new ExceptionResponse
                         {
@@ -35,6 +35,24 @@ namespace JCS.Argon.Services.Core
                             Message = e.Message,
                             Source = e.Source
                         };
+                    }
+                    case IConstraintGroupManager.ConstraintGroupManagerException e:
+                    {
+                        return new ExceptionResponse
+                        {
+                            HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                            Message = e.Message,
+                            Source = e.Source
+                        }; 
+                    }
+                    case IPropertyGroupManager.PropertyGroupManagerException e:
+                    {
+                        return new ExceptionResponse
+                        {
+                            HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                            Message = e.Message,
+                            Source = e.Source
+                        }; 
                     }
                     default:
                     {

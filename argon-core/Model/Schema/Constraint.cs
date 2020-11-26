@@ -48,7 +48,7 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// The required name for the constraint.  The name of a given constraint

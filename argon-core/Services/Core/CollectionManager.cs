@@ -27,16 +27,27 @@ namespace JCS.Argon.Services.Core
         protected IPropertyGroupManager _propertyGroupManager;
 
         /// <summary>
+        /// The current scoped <see cref="IConstraintGroupManager"/> instance
+        /// </summary>
+        protected IConstraintGroupManager _constraintGroupManager;
+
+        /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
         /// <param name="vspManager"></param>
-        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, IVSPManager vspManager, IPropertyGroupManager propertyGroupManager)
+        /// <param name="propertyGroupManager">A scoped implementation of a <see cref="IPropertyGroupManager"/></param>
+        /// <param name="constraintGroupManager">A scope implementation of a <see cref="IConstraintGroupManager"/></param>
+        public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, 
+            IVSPManager vspManager, 
+            IPropertyGroupManager propertyGroupManager,
+            IConstraintGroupManager constraintGroupManager)
         :base(log, dbContext)
         {
             _vspManager = vspManager;
             _propertyGroupManager = propertyGroupManager;
+            _constraintGroupManager = constraintGroupManager;
             _log.LogDebug("Creating new instance");
         }
         
@@ -57,18 +68,22 @@ namespace JCS.Argon.Services.Core
         {
             if (!await CollectionExistsAsync(collectionId))
             {
-                throw new ICollectionManager.CollectionManagerAwareException(500, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerException(500, "The specified collection does not exist");
             }
             else
             {
-                return await _dbContext.Items.CountAsync(c => c.CollectionId == collectionId);
+                return await _dbContext.Items.CountAsync(c => c.Collection.Id == collectionId);
             }
         }
 
         /// <inheritdoc cref="ICollectionManager.ListCollectionsAsync" />
         public async Task<List<Collection>> ListCollectionsAsync()
         {
-            return await _dbContext.Collections
+            return  await _dbContext.Collections
+                .Include(c => c.ConstraintGroup)
+                .Include(c =>c.ConstraintGroup.Constraints)
+                .Include(c => c.PropertyGroup)
+                .Include(c => c.PropertyGroup.Properties)
                 .ToListAsync();
         }
 
@@ -113,19 +128,25 @@ namespace JCS.Argon.Services.Core
         public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd)
         {
                 var exists = await CollectionExistsAsync(cmd.Name);
+                ConstraintGroup? constraintGroup= null;
                 if (!exists)
                 {
+                    if (cmd.Constraints != null)
+                    {
+                        constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
+                    }
                     var collection = await _dbContext.Collections.AddAsync(new Collection()
                     {
                         Name = cmd.Name,
-                        Description = cmd.Description
+                        Description = cmd.Description,
+                        ConstraintGroup = constraintGroup 
                     });
                     await _dbContext.SaveChangesAsync();
                     return collection.Entity;
                 }
                 else
                 {
-                    throw new ICollectionManager.CollectionManagerAwareException(400, "A collection with that name already exists");
+                    throw new ICollectionManager.CollectionManagerException(400, "A collection with that name already exists");
                 }
         }
 
@@ -138,7 +159,7 @@ namespace JCS.Argon.Services.Core
             }
             else
             {
-                throw new ICollectionManager.CollectionManagerAwareException(404, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
             }
         }
 
@@ -170,7 +191,7 @@ namespace JCS.Argon.Services.Core
         {
             if (!await CollectionExistsAsync(collectionId))
             {
-                throw new ICollectionManager.CollectionManagerAwareException(404, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
             }
             else
             {
@@ -188,11 +209,11 @@ namespace JCS.Argon.Services.Core
                     }
                     else
                     {
-                        throw new ICollectionManager.CollectionManagerAwareException(400,
+                        throw new ICollectionManager.CollectionManagerException(400,
                             $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
                     }
                 }
-                throw new ICollectionManager.CollectionManagerAwareException(500,
+                throw new ICollectionManager.CollectionManagerException(500,
                     "Collection has moved or cannot be found - shouldn't happen");
             }
         }

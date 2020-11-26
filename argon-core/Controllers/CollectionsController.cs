@@ -48,7 +48,8 @@ namespace JCS.Argon.Controllers
         public async Task<List<Collection>> ReadCollections()
         {
             _log.LogDebug("ReadCollections called");
-            return await _collectionManager.ListCollectionsAsync();
+            var t = await _collectionManager.ListCollectionsAsync();
+            return t;
         }
 
         /// <summary>
@@ -100,6 +101,24 @@ namespace JCS.Argon.Controllers
             var collection = await _collectionManager.ReadCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;
+        }
+
+        /// <summary>
+        /// Gets the constraint group for a given collection, if it exists
+        /// </summary>
+        /// <param name="collectionId">The unique identifier for the collection</param>
+        /// <returns></returns>
+        [HttpGet("/api/v1/Collections/{collectionId}/Constraints")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ConstraintGroup?> ReadCollectionConstraints(Guid collectionId)
+        {
+            _log.LogDebug("ReadCollectionConstraints called");
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return collection.ConstraintGroup;
         }
 
         /// <summary>
