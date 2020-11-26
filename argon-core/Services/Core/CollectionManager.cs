@@ -155,7 +155,12 @@ namespace JCS.Argon.Services.Core
         {
             if (await CollectionExistsAsync(collectionId))
             {
-                return await _dbContext.Collections.FirstAsync(c => c.Id == collectionId);
+                return await _dbContext.Collections
+                    .Include(c => c.ConstraintGroup)
+                    .Include(c => c.ConstraintGroup.Constraints)
+                    .Include(c => c.PropertyGroup)
+                    .Include(c => c.PropertyGroup.Properties)
+                    .FirstAsync(c => c.Id == collectionId);
             }
             else
             {
