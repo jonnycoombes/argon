@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace JCS.Argon.Model.Commands
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class CreateCollectionCommand
     {
         public CreateCollectionCommand(string name, string providerType, string? description)

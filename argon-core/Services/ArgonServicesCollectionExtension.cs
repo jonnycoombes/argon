@@ -1,10 +1,15 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using JCS.Argon;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -28,6 +33,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        private static void ConfigureResponseCompression(IServiceCollection services)
+        {
+            services.AddResponseCompression(options => {
+                options.EnableForHttps= true;
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/json" });
+            });
+        }
+
         /// <summary>
         /// All Argon-specific services should be added to the IoC container here
         /// </summary>
@@ -39,11 +54,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Information("Registering Argon services");
             RegisterApiServices(services);
             RegisterCoreServices(services);
+            ConfigureResponseCompression(services);
             return services;
         }
         
         /// <summary>
-        /// Do anything specific to controller bindings, Swagger configuratino etc...
+        /// Do anything specific to controller bindings, Swagger configuration etc...
+        /// Specific alterations here to ignore null values in Json serialisation to
+        /// minimise payload size, and also to de-clutter responses.
         /// in here
         /// </summary>
         /// <param name="services">Current services collection</param>
@@ -51,13 +69,23 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Configuring controllers and Swagger components");
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Argon - Content Service Layer", 
                     Version = $"v1 ({new AppVersion().ToString()})",
-                    Description = $"Argon. (Build Version: {new AppVersion().ToString()})" });
+                    Description = $"Argon. (Build Version: {new AppVersion().ToString()})",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Jonny Coombes",
+                        Email = "jcoombes@jcs-software.co.uk"
+                    }
+                });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

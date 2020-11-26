@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using JCS.Argon.Model.Schema;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Contexts
 {
@@ -22,7 +25,7 @@ namespace JCS.Argon.Contexts
         public DbSet<Item> Items { get; set; } = null!;
 
         /// <summary>
-        /// The set of all <see cref="Version"/> model elements
+        /// The set of all <see cref="Model.Schema.Version"/> model elements
         /// </summary>
         public DbSet<Version> Versions { get; set; } = null!;
 
@@ -49,6 +52,12 @@ namespace JCS.Argon.Contexts
         {
             Log.ForContext("SourceContext", "SqlDbContext")
                 .Information("onModelCreating called performing any additional tasks");
+
+            // add a custom conversion for string arrays 
+            modelBuilder.Entity<Constraint>()
+                .Property(c => c.AllowableValues)
+                .HasConversion(v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
             
             base.OnModelCreating(modelBuilder);
         }

@@ -53,6 +53,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The optional unique id associated with the property group for the collection
         /// </summary>
+        [JsonIgnore]
         public Guid? PropertyGroupId { get; set; } = null!;
 
         /// <summary>
@@ -63,6 +64,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The unique id associated the constraint group for this collection
         /// </summary>
+        [JsonIgnore]
         public Guid? ConstraintGroupId { get; set; } = null!;
 
         /// <summary>
