@@ -64,12 +64,12 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// 
         /// </summary>
-        public PropertyGroup PropertyGroup { get; set; }
+        public PropertyGroup? PropertyGroup { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public ConstraintGroup ConstraintGroup { get; set; }
+        public ConstraintGroup? ConstraintGroup { get; set; }
         
         public Collection(){}
 

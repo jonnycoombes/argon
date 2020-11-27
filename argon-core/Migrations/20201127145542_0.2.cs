@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JCS.Argon.Migrations
 {
-    public partial class initial : Migration
+    public partial class _02 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,6 +75,7 @@ namespace JCS.Argon.Migrations
                     Length = table.Column<long>(type: "bigint", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     ProviderTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PropertyGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ConstraintGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -134,6 +135,7 @@ namespace JCS.Argon.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CollectionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PropertyGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -169,7 +171,7 @@ namespace JCS.Argon.Migrations
                     Size = table.Column<int>(type: "int", nullable: false),
                     MIMEType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Thumbprint = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    ProviderPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

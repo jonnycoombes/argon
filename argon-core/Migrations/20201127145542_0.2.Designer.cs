@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JCS.Argon.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    [Migration("20201127122152_initial")]
-    partial class initial
+    [Migration("20201127145542_0.2")]
+    partial class _02
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,9 @@ namespace JCS.Argon.Migrations
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -143,6 +146,9 @@ namespace JCS.Argon.Migrations
                     b.Property<Guid?>("PropertyGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -235,12 +241,11 @@ namespace JCS.Argon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProviderPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Size")
                         .HasColumnType("int");
+
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Thumbprint")
                         .HasColumnType("varbinary(max)");

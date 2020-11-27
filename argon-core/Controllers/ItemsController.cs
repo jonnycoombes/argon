@@ -7,6 +7,7 @@ using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Controllers
 {
@@ -49,7 +50,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Metadata")]
+        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Properties")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -70,7 +71,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/Content")]
+        [Route("/api/v1/Collections/{collectionId}/item/{itemId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -133,9 +134,28 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "version")] IFormFile file)
+        public async Task<List<Version>> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "version")] IFormFile file)
         {
             Dictionary<string, object>? prop = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Retrieves the content of a specific item version
+        /// </summary>
+        /// <param name="collectionId">The unique identifier for the collection</param>
+        /// <param name="itemId">The unique identifier for the item</param>
+        /// <param name="versionId">The unique identifier for the item version</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet]
+        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId, Guid versionId)
+        {
             throw new NotImplementedException();
         }
     }

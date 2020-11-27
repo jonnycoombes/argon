@@ -48,6 +48,9 @@ namespace JCS.Argon.Migrations
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -141,6 +144,9 @@ namespace JCS.Argon.Migrations
                     b.Property<Guid?>("PropertyGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -233,12 +239,11 @@ namespace JCS.Argon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProviderPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Size")
                         .HasColumnType("int");
+
+                    b.Property<string>("StorageLocation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Thumbprint")
                         .HasColumnType("varbinary(max)");

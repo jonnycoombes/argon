@@ -91,15 +91,17 @@ This allows for just a user login to be allocated on the target SQL instance, an
         \hline
         \textbf{Schema} & \textbf{Table} & \textbf{Description}\\
         \hline
-        core & collection & The main collections table, one row per collection.\\
+        core & collection & The main collections table, one row per collection. A \textit{collection} may have an associated \textit{constraintGroup}, however there is no stipulation that a given constraint group can't be shared across multiple collections.  \\
         \hline
-        core & constraint & The collection constraints table. $1 \rightarrow *$ relationship between entries in the \textit{collection} table and entries within this table. \\
+        core & constraintGroup & The main aggregate table for constraints \\
+        \hline
+        core & constraint & The collection constraints table. $1 \rightarrow *$ relationship between entries in the \textit{constraintGroup} table and entries within this table. \\
         \hline
         core & item & The collection items table.  $1 \rightarrow +$ relationship between the \textit{collection} table and entries within this table.\\
         \hline
         core & version & The collection item versions table. $1 \leftarrow +$ relationship between entries in this table and the items table.  (Each item will have a minimum of one version).\\
         \hline
-        core & propertyGroup & The main property group table there is a $1 \rightarrow *$ relationship between this table and the property table.\\
+        core & propertyGroup & The main property group table there is a $1 \rightarrow *$ relationship between this table and the property table. A given item or collection may have a property group associated with it, however the underlying schema also allows for property groups to be \textit{shared} between multiple items and even collections.\\
         \hline
         core & property & The property table. Each item (and potentially) collection will have multiple associated rows within this table, through a given property group link. \\
         \hline 
@@ -112,6 +114,14 @@ This allows for just a user login to be allocated on the target SQL instance, an
 Some general notes on the EF Core implementation within Argon:
 \begin{enumerate}
     \item All useful model entities will utilise a \textit{Timestamp} as a concurrency token. 
+    \item All internal \textbf{Guid} entries that aren't relevant to the responses have been squelched through configuration of the Json serialisation layer.
+    \item Null values (for nullable types that is) have also been stripped out of response generation through configuration of the Json serialisation layer.
+\end{enumerate}
+\subsection{OTCS Specifics}
+General notes on the dev/test versions of OTCS (Opentext Content Server):
+\begin{enumerate}
+    \item Currently baselined version is 16.0.18 (no patches).
+    \item Need to check that latest patch set doesn't raise any regression issues with the opentextRestful virtual storage provider.
 \end{enumerate}
 
 \section{AWS Deployments}
@@ -179,8 +189,17 @@ This release represents the first stable build of the Argon core with a limited 
     \item Asynchronous background processing for item checksums is not yet implemented.
     \item Not authentication is present within this build. 
 \end{enumerate}
-\section{Build 0.2.1}
-\textbf{Deploy Date 24\textsuperscript{th} November, 2020}
-\section{Build 0.2.2}
+\section{Build 0.2.17}
 \textbf{Deploy Date 25\textsuperscript{th} November, 2020}
+\paragraph{}
+This release is the build at the end of Argon Sprint 2.  A number of issues to mention:
+\begin{enumerate}
+    \item The currently baseline version of OTCS needs upgrading to 16.0.18 and a patch list should be issued for CS16.
+    \item Attribute and category ID caching still needs to be implemented (huge optimisation).
+    \item A cache of cats/atts can be built up through a \textit{query?} across subtype 130 nodes.
+    \item Need to validate the build against Windows and Ubuntu variants of OTCS.
+    \item Virtual storage provider implementations are now dynamically loaded and scanned during startup/first request.
+\end{enumerate}
+\section{Build 0.3.X}
+
 \end{document}

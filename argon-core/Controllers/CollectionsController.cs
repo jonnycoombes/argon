@@ -122,6 +122,68 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
+        /// Gets a specific constraint for a given collection
+        /// </summary>
+        /// <param name="collectionId">The unique identifier for the collection</param>
+        /// <param name="constraintId">The unique identifier for the constraint</param>
+        /// <returns></returns>
+        [HttpGet("/api/v1/Collections/{collectionId}/Constraints/{constraintId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Constraint?> ReadCollectionConstraints(Guid collectionId, Guid constraintId)
+        {
+            _log.LogDebug("ReadCollectionConstraints called");
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var constraintGroup = collection.ConstraintGroup;
+            if (constraintGroup == null)
+            {
+                HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                return null;
+            }
+            else
+            {
+                var constraint = constraintGroup.Constraints.Find(c => c.Id.Equals(constraintId));
+                if (constraint == null)
+                {
+                    HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+                    return null;
+                }
+                else
+                {
+                    HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+                    return constraint;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the constraints associated with a given collection.  
+        /// </summary>
+        /// <remarks>
+        /// The same format of command is used to create
+        /// and update constraints.  If a constraint referenced by name already exists, then it is overwritten with the
+        /// new details.  If no such constraint exists, then a new constraint is created and added to the collection.
+        /// Constraints take effect on the next operation against the collection.
+        /// </remarks>
+        /// <param name="collectionId">The unique identifier for the collection</param>
+        /// <param name="cmds">A list of create/update commands</param>
+        /// <returns></returns>
+        [HttpPost("/api/v1/Collections/{collectionId}/Constraints")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId, [FromBody]List<CreateOrUpdateConstraintCommand> cmds)
+        {
+            _log.LogDebug("ReadCollectionConstraints called");
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return collection.ConstraintGroup;
+        }
+
+        /// <summary>
         /// Allows for the update of an individual collection
         /// </summary>
         /// <param name="collectionId">The unique identifier associated with the collection to update</param>

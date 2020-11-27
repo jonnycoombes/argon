@@ -42,7 +42,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync"/> 
-        public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateConstraintCommand> cmds)
+        public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> cmds)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintAsync"/>
-        public async Task<Constraint> CreateConstraintAsync(CreateConstraintCommand cmd)
+        public async Task<Constraint> CreateConstraintAsync(CreateOrUpdateConstraintCommand cmd)
         {
             var constraint = new Constraint()
             {

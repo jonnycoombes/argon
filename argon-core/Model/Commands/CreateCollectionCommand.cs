@@ -40,7 +40,7 @@ namespace JCS.Argon.Model.Commands
         /// An optional list of <see cref="JCS.Argon.Model.Schema.Constraint"/> elements
         /// for the collection
         /// </summary>
-        public List<CreateConstraintCommand>? Constraints { get; set; }
+        public List<CreateOrUpdateConstraintCommand>? Constraints { get; set; }
 
     }
 }

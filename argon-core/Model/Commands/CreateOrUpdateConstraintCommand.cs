@@ -6,7 +6,7 @@ namespace JCS.Argon.Model.Commands
     /// <summary>
     /// 
     /// </summary>
-    public class CreateConstraintCommand
+    public class CreateOrUpdateConstraintCommand
     {
         /// <summary>
         /// The name of the constraint
