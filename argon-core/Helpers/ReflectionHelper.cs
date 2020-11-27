@@ -29,10 +29,10 @@ namespace JCS.Argon.Helpers
         /// Convenience method for the direct instantiation of a given type, with a supplied list of constructor
         /// arguments
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="constructorParams">A variable list of constructor arguments</param>
-        /// <typeparam name="T">The type to instantiate and instance of</typeparam>
         /// <returns></returns>
-        public static object InstantiateType(Type type, params object[] constructorParams)
+        public static object? InstantiateType(Type type, params object[] constructorParams)
         {
             return  Activator.CreateInstance(type, args:constructorParams); 
         }

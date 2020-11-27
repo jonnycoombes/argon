@@ -15,12 +15,15 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Copy of the current binding
         /// </summary>
-        protected VirtualStorageBinding _binding;
+        protected VirtualStorageBinding? _binding;
 
+        /// <summary>
+        /// The logger
+        /// </summary>
         protected ILogger _log;
         
         /// <inheritdoc cref="IVirtualStorageProvider.Binding"/>
-        public VirtualStorageBinding Binding => _binding;
+        public VirtualStorageBinding? Binding => _binding;
         
         /// <inheritdoc cref="IVirtualStorageProvider.ProviderType"/>
         public abstract string ProviderType { get; }
@@ -39,6 +42,7 @@ namespace JCS.Argon.Services.VSP.Providers
         protected BaseVirtualStorageProvider(ILogger log)
         {
             _log = log;
+            _binding = null;
         }
 
         /// <summary>

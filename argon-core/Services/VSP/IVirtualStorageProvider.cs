@@ -10,7 +10,7 @@ namespace JCS.Argon.Services.VSP
         /// <summary>
         /// Read-only property that contains the current <see cref="VirtualStorageBinding"/>
         /// </summary>
-        VirtualStorageBinding Binding { get; }
+        VirtualStorageBinding? Binding { get; }
         
         /// <summary>
         /// Should return a unique identifying string for the provider.  This is used within

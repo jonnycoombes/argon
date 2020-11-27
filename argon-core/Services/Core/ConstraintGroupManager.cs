@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Commands;
-using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+#pragma warning disable 1574
 
 namespace JCS.Argon.Services.Core
 {

@@ -10,6 +10,7 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+#pragma warning disable 1574
 
 namespace JCS.Argon.Services.Core
 {
@@ -61,9 +62,7 @@ namespace JCS.Argon.Services.Core
             throw new System.NotImplementedException();
         }
 
-#pragma warning disable 1574
         /// <inheritdoc cref="ICollectionManager.CountItemsAsync" />
-#pragma warning restore 1574
         public async Task<int> CountItemsAsync(Guid collectionId)
         {
             if (!await CollectionExistsAsync(collectionId))

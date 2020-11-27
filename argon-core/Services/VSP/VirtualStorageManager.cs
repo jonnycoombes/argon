@@ -21,6 +21,11 @@ namespace JCS.Argon.Services.VSP
         private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
 
         /// <summary>
+        /// Internal cache of the types associated with different <see cref="IVirtualStorageProvider"/> implementations
+        /// </summary>
+        private readonly Dictionary<string, Type> _providerTypesMap = new Dictionary<string, Type>();
+
+        /// <summary>
         /// Logger for logging
         /// </summary>
         private readonly ILogger<VirtualStorageManager> _log;
@@ -55,6 +60,7 @@ namespace JCS.Argon.Services.VSP
                 {
                     var instance = (IVirtualStorageProvider)ReflectionHelper.InstantiateType(providerType, _log);
                     _log.LogInformation($"Found VSP provider implementation: ({providerType.FullName},{instance.ProviderType})");
+                    _providerTypesMap[instance.ProviderType]= providerType;
                 }
             }
             catch (Exception ex)
