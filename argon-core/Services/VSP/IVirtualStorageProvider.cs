@@ -5,16 +5,16 @@ namespace JCS.Argon.Services.VSP
     /// <summary>
     /// The core interface that must be implemented by each distinct VSP provider
     /// </summary>
-    public interface IVSPProvider
+    public interface IVirtualStorageProvider
     {
         /// <summary>
-        /// Read-only property that contains the current <see cref="VSPBinding"/>
+        /// Read-only property that contains the current <see cref="VirtualStorageBinding"/>
         /// </summary>
-        VSPBinding Binding { get; }
+        VirtualStorageBinding Binding { get; }
         
         /// <summary>
         /// Should return a unique identifying string for the provider.  This is used within
-        /// <see cref="VSPBinding"/> configuration elements in order to tell instances of <see cref="IVSPManager"/>
+        /// <see cref="VirtualStorageBinding"/> configuration elements in order to tell instances of <see cref="IVirtualStorageManager"/>
         /// what class to load, and then to validate the configuration
         /// </summary>
         string ProviderType { get; }
@@ -23,7 +23,7 @@ namespace JCS.Argon.Services.VSP
         /// Binds a given provider to its configuration
         /// </summary>
         /// <param name="binding"></param>
-        public void Bind(VSPBinding binding);
+        public void Bind(VirtualStorageBinding binding);
 
     }
 }

@@ -9,19 +9,19 @@ namespace JCS.Argon.Services.VSP
     /// <summary>
     /// Interface to be implemented by a VSP provider registry/factory
     /// </summary>
-    public interface IVSPManager
+    public interface IVirtualStorageManager
     {
         
         public sealed class VspFactoryAwareException : ResponseAwareException
         {
             public VspFactoryAwareException(int? statusHint, string? message) : base(statusHint, message)
             {
-                Source = nameof(IVSPManager);
+                Source = nameof(IVirtualStorageManager);
             }
 
             public VspFactoryAwareException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(IVSPManager);
+                Source = nameof(IVirtualStorageManager);
             }
         }
         
@@ -29,14 +29,14 @@ namespace JCS.Argon.Services.VSP
         /// Returns a list of currently reigstered VSP providers
         /// </summary>
         /// <returns></returns>
-        public List<VSPBinding> GetBindings();
+        public List<VirtualStorageBinding> GetBindings();
 
         /// <summary>
         /// Get the provider interface for a given tag
         /// </summary>
         /// <param name="tag">The unique tag for the VSP provider</param>
-        /// <returns>An in-scope implementation of the <see cref="IVSPProvider"/> interface</returns>
+        /// <returns>An in-scope implementation of the <see cref="IVirtualStorageProvider"/> interface</returns>
         /// <exception></exception>
-        public IVSPProvider GetProvider(string tag);
+        public IVirtualStorageProvider GetProvider(string tag);
     }
 }

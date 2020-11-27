@@ -13,22 +13,22 @@ namespace JCS.Argon.Services.VSP
     /// <summary>
     /// Default implementation of the VSP registry
     /// </summary>
-    public class VSPManager  : IVSPManager
+    public class VirtualStorageManager  : IVirtualStorageManager
     {
         /// <summary>
         /// The overall application configuration, used to extract VSP bindings
         /// </summary>
-        private readonly VSPConfiguration _vspConfiguration;
+        private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
 
         /// <summary>
         /// Logger for logging
         /// </summary>
-        private readonly ILogger<VSPManager> _log;
+        private readonly ILogger<VirtualStorageManager> _log;
 
-        public VSPManager(ILogger<VSPManager> log, IOptionsMonitor<VSPConfiguration> vspConfiguration)
+        public VirtualStorageManager(ILogger<VirtualStorageManager> log, IOptionsMonitor<VirtualStorageConfiguration> vspConfiguration)
         {
             log.LogDebug("Creating new instance");
-            _vspConfiguration= vspConfiguration.CurrentValue;
+            _virtualStorageConfiguration= vspConfiguration.CurrentValue;
             _log = log;
             ResolveProviders();
             BindProviders();
@@ -40,35 +40,35 @@ namespace JCS.Argon.Services.VSP
         }
         
         /// <summary>
-        /// Scans the current runtime environment and looks for types that implement the <see cref="IVSPProvider"/>
+        /// Scans the current runtime environment and looks for types that implement the <see cref="IVirtualStorageProvider"/>
         /// interface
         /// </summary>
-        /// <exception cref="IVSPManager.VspFactoryAwareException"></exception>
+        /// <exception cref="IVirtualStorageManager.VspFactoryAwareException"></exception>
         protected void ResolveProviders()
         {
             _log.LogInformation("Resolving providers within the current runtime environment");
             try
             {
-                var providerTypes = ReflectionHelper.LocateAllImplementors<IVSPProvider>()
+                var providerTypes = ReflectionHelper.LocateAllImplementors<IVirtualStorageProvider>()
                     .Where(t => !t.IsAbstract && !t.IsInterface);
                 foreach (var providerType in providerTypes)
                 {
-                    var instance = (IVSPProvider)ReflectionHelper.InstantiateType(providerType, _log);
+                    var instance = (IVirtualStorageProvider)ReflectionHelper.InstantiateType(providerType, _log);
                     _log.LogInformation($"Found VSP provider implementation: ({providerType.FullName},{instance.ProviderType})");
                 }
             }
             catch (Exception ex)
             {
-                throw new IVSPManager.VspFactoryAwareException(500, "Failed to load VSP providers", ex);
+                throw new IVirtualStorageManager.VspFactoryAwareException(500, "Failed to load VSP providers", ex);
             }
         }
         
-        public List<VSPBinding> GetBindings()
+        public List<VirtualStorageBinding> GetBindings()
         {
-            return _vspConfiguration.Bindings;
+            return _virtualStorageConfiguration.Bindings;
         }
 
-        public IVSPProvider GetProvider(string tag)
+        public IVirtualStorageProvider GetProvider(string tag)
         {
             _log.LogDebug($"Attempting instantiation of VSP provider with tag [{tag}]");
             throw new System.NotImplementedException();

@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging;
 
 namespace JCS.Argon.Model.Configuration
 {
-    public class VSPConfiguration 
+    public class VirtualStorageConfiguration 
     {
-        public List<VSPBinding> Bindings { get; set;}
+        public List<VirtualStorageBinding> Bindings { get; set;}
 
-        public VSPConfiguration() 
+        public VirtualStorageConfiguration() 
         {
         }
     }

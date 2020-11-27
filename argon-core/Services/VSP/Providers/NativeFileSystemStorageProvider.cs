@@ -6,7 +6,7 @@ namespace JCS.Argon.Services.VSP.Providers
     /// <summary>
     /// VSP provider that maps to an underlying file system structure
     /// </summary>
-    public class NativeFileSystemProvider : BaseVSPProvider 
+    public class NativeFileSystemStorageProvider : BaseVirtualStorageProvider 
     {
         public override string ProviderType => "nativeFileSystem";
         
@@ -14,12 +14,12 @@ namespace JCS.Argon.Services.VSP.Providers
         /// Default constructor, just calls base
         /// </summary>
         /// <param name="log"></param>
-        public NativeFileSystemProvider(ILogger log) : base(log) 
+        public NativeFileSystemStorageProvider(ILogger log) : base(log) 
         {
             
         }
         
-        /// <inheritdoc cref="BaseVSPProvider.AfterBind"/> 
+        /// <inheritdoc cref="BaseVirtualStorageProvider.AfterBind"/> 
         public override void AfterBind()
         {
             _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation ");

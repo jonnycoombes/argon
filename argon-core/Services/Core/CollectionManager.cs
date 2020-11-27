@@ -17,9 +17,9 @@ namespace JCS.Argon.Services.Core
     {
 
         /// <summary>
-        /// The currently configured <see cref="IVSPManager"/> instance
+        /// The currently configured <see cref="IVirtualStorageManager"/> instance
         /// </summary>
-        protected IVSPManager _vspManager;
+        protected IVirtualStorageManager VirtualStorageManager;
 
         /// <summary>
         /// The currently scoped <see cref="IPropertyGroupManager"/> instance
@@ -36,16 +36,16 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
-        /// <param name="vspManager"></param>
+        /// <param name="virtualStorageManager"></param>
         /// <param name="propertyGroupManager">A scoped implementation of a <see cref="IPropertyGroupManager"/></param>
         /// <param name="constraintGroupManager">A scope implementation of a <see cref="IConstraintGroupManager"/></param>
         public CollectionManager(ILogger<CollectionManager> log, SqlDbContext dbContext, 
-            IVSPManager vspManager, 
+            IVirtualStorageManager virtualStorageManager, 
             IPropertyGroupManager propertyGroupManager,
             IConstraintGroupManager constraintGroupManager)
         :base(log, dbContext)
         {
-            _vspManager = vspManager;
+            VirtualStorageManager = virtualStorageManager;
             _propertyGroupManager = propertyGroupManager;
             _constraintGroupManager = constraintGroupManager;
             _log.LogDebug("Creating new instance");
@@ -237,12 +237,12 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        /// Returns the list of current <see cref="VSPBinding"/> instances
+        /// Returns the list of current <see cref="VirtualStorageBinding"/> instances
         /// </summary>
         /// <returns></returns>
-        public List<VSPBinding> GetVSPBindings()
+        public List<VirtualStorageBinding> GetVSPBindings()
         {
-            return _vspManager.GetBindings();
+            return VirtualStorageManager.GetBindings();
         }
     }
 }

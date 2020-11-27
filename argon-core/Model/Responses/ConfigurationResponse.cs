@@ -48,7 +48,7 @@ namespace JCS.Argon.Model.Responses
         /// A list of the currently configured VSP bindings 
         /// </summary>
         [Required]
-        public List<VSPBinding> Bindings { get; init; }
+        public List<VirtualStorageBinding> Bindings { get; init; }
         
         /// <summary>
         /// The current metrics for the instance

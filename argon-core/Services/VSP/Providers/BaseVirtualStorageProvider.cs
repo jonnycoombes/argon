@@ -10,23 +10,23 @@ namespace JCS.Argon.Services.VSP.Providers
     /// <summary>
     /// Base class that can be used to implement new VSP provider classes
     /// </summary>
-    public abstract class BaseVSPProvider : IVSPProvider, IDisposable
+    public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
         /// <summary>
         /// Copy of the current binding
         /// </summary>
-        protected VSPBinding _binding;
+        protected VirtualStorageBinding _binding;
 
         protected ILogger _log;
         
-        /// <inheritdoc cref="IVSPProvider.Binding"/>
-        public VSPBinding Binding => _binding;
+        /// <inheritdoc cref="IVirtualStorageProvider.Binding"/>
+        public VirtualStorageBinding Binding => _binding;
         
-        /// <inheritdoc cref="IVSPProvider.ProviderType"/>
+        /// <inheritdoc cref="IVirtualStorageProvider.ProviderType"/>
         public abstract string ProviderType { get; }
 
-        /// <inheritdoc cref="IVSPProvider.Bind"/> 
-        public void Bind(VSPBinding binding)
+        /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
+        public void Bind(VirtualStorageBinding binding)
         {
             _log.LogDebug($"Performing VSP bind: {_binding}");
             _binding = binding;
@@ -36,7 +36,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Default constructor required for dynamic instantiation
         /// </summary>
-        protected BaseVSPProvider(ILogger log)
+        protected BaseVirtualStorageProvider(ILogger log)
         {
             _log = log;
         }

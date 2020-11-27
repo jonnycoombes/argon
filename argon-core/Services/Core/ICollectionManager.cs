@@ -82,9 +82,9 @@ namespace JCS.Argon.Services.Core
         public Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd);
 
         /// <summary>
-        /// Retrieves a list of currently configured <see cref="VSPBinding"/> instances
+        /// Retrieves a list of currently configured <see cref="VirtualStorageBinding"/> instances
         /// </summary>
         /// <returns></returns>
-        public List<VSPBinding> GetVSPBindings();
+        public List<VirtualStorageBinding> GetVSPBindings();
     }
 }

@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Injecting Argon configuration options");
             services.AddOptions();
-            services.Configure<VSPConfiguration>(config.GetSection("vsp"));
+            services.Configure<VirtualStorageConfiguration>(config.GetSection("vsp"));
             return services;
         }
 
@@ -105,7 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Information("Configuring core API services");
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering a scoped VSP factory");
-            services.AddSingleton<IVSPManager, VSPManager>();
+            services.AddSingleton<IVirtualStorageManager, VirtualStorageManager>();
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering a scoped property group manager");
             services.AddScoped<IPropertyGroupManager, PropertyGroupManager>();
