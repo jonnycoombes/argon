@@ -1,3 +1,4 @@
+using System;
 using JCS.Argon.Model.Configuration;
 
 namespace JCS.Argon.Services.VSP
@@ -7,6 +8,43 @@ namespace JCS.Argon.Services.VSP
     /// </summary>
     public interface IVirtualStorageProvider
     {
+
+        public enum StorageOperationStatus
+        {
+            Ok,
+            Failed
+        }
+        
+        /// <summary>
+        /// Class used to standardise responses back from the virtual storage provider layer
+        /// </summary>
+        public class StorageOperationResult
+        {
+            /// <summary>
+            /// A required operation status code
+            /// </summary>
+            public StorageOperationStatus Status { get; set; } = StorageOperationStatus.Ok;
+            
+            /// <summary>
+            /// A uri relating to the operation
+            /// </summary>
+            public Uri? Uri { get; set; }
+            
+            /// <summary>
+            /// An optional size property
+            /// </summary>
+            public long? Size { get; set; }
+
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            public StorageOperationResult()
+            {
+                
+            }
+            
+        }
+
         /// <summary>
         /// Read-only property that contains the current <see cref="VirtualStorageBinding"/>
         /// </summary>

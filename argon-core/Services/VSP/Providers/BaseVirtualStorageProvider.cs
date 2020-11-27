@@ -31,8 +31,8 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
         public void Bind(VirtualStorageBinding binding)
         {
-            _log.LogDebug($"Performing VSP bind: {_binding}");
             _binding = binding;
+            _log.LogDebug($"Performing VSP bind: {_binding}");
             AfterBind();
         }
 

@@ -11,15 +11,15 @@ namespace JCS.Argon.Services.VSP
     /// </summary>
     public interface IVirtualStorageManager
     {
-        
-        public sealed class VspFactoryAwareException : ResponseAwareException
+
+        public sealed class VirtualStorageManagerException : ResponseAwareException
         {
-            public VspFactoryAwareException(int? statusHint, string? message) : base(statusHint, message)
+            public VirtualStorageManagerException(int? statusHint, string? message) : base(statusHint, message)
             {
                 Source = nameof(IVirtualStorageManager);
             }
 
-            public VspFactoryAwareException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            public VirtualStorageManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
                 Source = nameof(IVirtualStorageManager);
             }
