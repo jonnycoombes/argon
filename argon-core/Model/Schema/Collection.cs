@@ -45,6 +45,11 @@ namespace JCS.Argon.Model.Schema
         public long Size { get; set; } = 0;
         
         /// <summary>
+        /// The tag associated with the VSP provider for this collection
+        /// </summary>
+        public string ProviderTag { get; set; }
+        
+        /// <summary>
         /// The items associated with this collection
         /// </summary>
         [JsonIgnore]

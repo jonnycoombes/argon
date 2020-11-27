@@ -41,6 +41,10 @@ namespace JCS.Argon.Migrations
                     b.Property<Guid?>("PropertyGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ProviderTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -60,7 +64,7 @@ namespace JCS.Argon.Migrations
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.Constraint", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 

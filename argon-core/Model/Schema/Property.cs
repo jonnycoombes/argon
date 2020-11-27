@@ -40,6 +40,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The type of the property
         /// </summary>
+        [Required]
         public PropertyType Type { get; set; }
         
         /// <summary>
@@ -65,6 +66,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The identifier for the parent property group
         /// </summary>
+        [Required]
         public Guid PropertyGroupId { get; set; }
         
         /// <summary>

@@ -1,4 +1,8 @@
+using System;
+using System.Threading.Tasks;
 using JCS.Argon.Contexts;
+using JCS.Argon.Model.Schema;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace JCS.Argon.Services.Core
@@ -18,6 +22,22 @@ namespace JCS.Argon.Services.Core
         :base(log, dbContext)
         {
             _log.LogDebug("Creating new instance");
+        }
+
+        /// <inheritdoc cref="IPropertyGroupManager.CreatePropertyGroupAsync"/>
+        public async Task<PropertyGroup> CreatePropertyGroupAsync()
+        {
+            try
+            {
+                var propertyGroup = await _dbContext.AddAsync(new PropertyGroup());
+                await _dbContext.SaveChangesAsync();
+                return propertyGroup.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw new IPropertyGroupManager.PropertyGroupManagerException(StatusCodes.Status500InternalServerError,
+                    "Failed to create new property group", ex);
+            }
         }
     }
 }

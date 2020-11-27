@@ -8,7 +8,7 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public class NativeFileSystemProvider : BaseVSPProvider 
     {
-        public override string ProviderType => "nativeFs";
+        public override string ProviderType => "nativeFileSystem";
         
         /// <summary>
         /// Default constructor, just calls base

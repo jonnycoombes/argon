@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
+using JCS.Argon.Model.Schema;
 
 namespace JCS.Argon.Services.Core
 {
@@ -27,6 +29,13 @@ namespace JCS.Argon.Services.Core
             {
                 Source = nameof(IPropertyGroupManager); 
             }
-        }        
+        }
+
+        /// <summary>
+        /// Creates a new (empty) property group
+        /// </summary>
+        /// <returns></returns>
+        public Task<PropertyGroup> CreatePropertyGroupAsync();
+
     }
 }

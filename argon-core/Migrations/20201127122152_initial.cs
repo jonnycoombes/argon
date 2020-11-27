@@ -74,6 +74,7 @@ namespace JCS.Argon.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Length = table.Column<long>(type: "bigint", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
+                    ProviderTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropertyGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ConstraintGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },

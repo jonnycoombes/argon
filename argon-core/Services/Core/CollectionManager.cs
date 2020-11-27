@@ -128,19 +128,32 @@ namespace JCS.Argon.Services.Core
         public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd)
         {
                 var exists = await CollectionExistsAsync(cmd.Name);
-                ConstraintGroup? constraintGroup= null;
+                
                 if (!exists)
                 {
+                    ConstraintGroup? constraintGroup;
+                    PropertyGroup? propertyGroup;
+                    
                     if (cmd.Constraints != null)
                     {
                         constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
                     }
+                    else
+                    {
+                        constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync();
+                    }
+
+                    propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
+                    
                     var collection = await _dbContext.Collections.AddAsync(new Collection()
                     {
                         Name = cmd.Name,
                         Description = cmd.Description,
-                        ConstraintGroup = constraintGroup 
+                        ProviderTag = cmd.ProviderTag,
+                        ConstraintGroup = constraintGroup,
+                        PropertyGroup = propertyGroup
                     });
+                    
                     await _dbContext.SaveChangesAsync();
                     return collection.Entity;
                 }

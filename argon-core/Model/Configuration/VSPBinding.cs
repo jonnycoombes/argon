@@ -27,6 +27,12 @@ namespace JCS.Argon.Model.Configuration
         public string Description { get; set; }
         
         /// <summary>
+        /// The f.q assembly name for the class which implements the provider 
+        /// </summary>
+        [Required]
+        public string ProviderClass { get; set; }
+        
+        /// <summary>
         /// Generic set of properties for the provider, which will vary based on the underlying
         /// implementation
         /// </summary>
