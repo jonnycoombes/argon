@@ -25,12 +25,12 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// The currently scoped <see cref="IPropertyGroupManager"/> instance
         /// </summary>
-        protected IPropertyGroupManager _propertyGroupManager;
+        protected readonly IPropertyGroupManager _propertyGroupManager;
 
         /// <summary>
         /// The current scoped <see cref="IConstraintGroupManager"/> instance
         /// </summary>
-        protected IConstraintGroupManager _constraintGroupManager;
+        protected readonly IConstraintGroupManager _constraintGroupManager;
 
         /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
@@ -80,9 +80,9 @@ namespace JCS.Argon.Services.Core
         {
             return  await _dbContext.Collections
                 .Include(c => c.ConstraintGroup)
-                .Include(c =>c.ConstraintGroup.Constraints)
+                .Include(c =>c.ConstraintGroup!.Constraints)
                 .Include(c => c.PropertyGroup)
-                .Include(c => c.PropertyGroup.Properties)
+                .Include(c => c.PropertyGroup!.Properties)
                 .ToListAsync();
         }
 
@@ -131,8 +131,7 @@ namespace JCS.Argon.Services.Core
                 if (!exists)
                 {
                     ConstraintGroup? constraintGroup;
-                    PropertyGroup? propertyGroup;
-                    
+
                     if (cmd.Constraints != null)
                     {
                         constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
@@ -142,7 +141,7 @@ namespace JCS.Argon.Services.Core
                         constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync();
                     }
 
-                    propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
+                    var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
                     
                     var collection = await _dbContext.Collections.AddAsync(new Collection()
                     {
@@ -169,9 +168,9 @@ namespace JCS.Argon.Services.Core
             {
                 return await _dbContext.Collections
                     .Include(c => c.ConstraintGroup)
-                    .Include(c => c.ConstraintGroup.Constraints)
+                    .Include(c => c.ConstraintGroup!.Constraints)
                     .Include(c => c.PropertyGroup)
-                    .Include(c => c.PropertyGroup.Properties)
+                    .Include(c => c.PropertyGroup!.Properties)
                     .FirstAsync(c => c.Id == collectionId);
             }
             else
