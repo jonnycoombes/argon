@@ -30,14 +30,13 @@ namespace JCS.Argon
         /// currently configured environment
         /// </summary>
         /// <param name="services"></param>
-        /// TODO - externalise the retry and delay parameters to the app configuration
         private void RegisterDbContext(IServiceCollection services)
         {
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
                 .Information("Registering Db context");
             try
             {
-                if (Environment.IsDevelopment())
+                if (Environment.IsDevelopment() || Environment.IsEnvironment("WinDevelopment"))
                 {
                     Log.ForContext("SourceContext", "JCS.Argon.Startup")
                         .Information("In development so using default connection string");
@@ -46,10 +45,6 @@ namespace JCS.Argon
                         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
                             sqlServerOptionsAction: sqlOptions =>
                         {
-                            sqlOptions.EnableRetryOnFailure(
-                                maxRetryCount: 10,
-                                maxRetryDelay: TimeSpan.FromSeconds(30),
-                                errorNumbersToAdd: null);
                         });
                         options.EnableDetailedErrors();
                         
@@ -116,9 +111,10 @@ namespace JCS.Argon
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> log)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || Environment.IsEnvironment("WinDevelopment"))
             {
                 log.LogInformation("Starting within a development environment");
+                if (Environment.IsEnvironment("WinDevelopment")) log.LogDebug("Currently running on a Windows development platform");
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));

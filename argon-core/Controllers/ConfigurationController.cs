@@ -48,7 +48,7 @@ namespace JCS.Argon.Controllers
             return new ConfigurationResponse
             {
                 HostName = Dns.GetHostName(),
-                Endpoint = HttpHelper.BuildEndpointFromContext(HttpContext),
+                Endpoint = HttpHelper.BuildEndpointFromContext(HttpContext).Replace("/Configuration", ""),
                 Version = new AppVersion().ToString(),
                 SchemaVersion = new AppVersion().ToStringSchema(),
                 Bindings = _collectionManager.GetVSPBindings(),

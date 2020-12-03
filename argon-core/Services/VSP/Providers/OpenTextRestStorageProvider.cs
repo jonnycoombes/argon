@@ -1,3 +1,6 @@
+using System.IO;
+using System.Threading.Tasks;
+using JCS.Argon.Model.Schema;
 using Microsoft.Extensions.Logging;
 
 namespace JCS.Argon.Services.VSP.Providers
@@ -14,6 +17,21 @@ namespace JCS.Argon.Services.VSP.Providers
         public override void AfterBind()
         {
             _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation ");
+        }
+
+        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, FileStream source)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

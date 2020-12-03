@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using JCS.Argon.Contexts;
 using JCS.Argon.Helpers;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 #pragma warning disable 1574
@@ -20,7 +22,7 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// The currently configured <see cref="IVirtualStorageManager"/> instance
         /// </summary>
-        protected IVirtualStorageManager VirtualStorageManager;
+        protected IVirtualStorageManager _virtualStorageManager;
 
         /// <summary>
         /// The currently scoped <see cref="IPropertyGroupManager"/> instance
@@ -46,7 +48,7 @@ namespace JCS.Argon.Services.Core
             IConstraintGroupManager constraintGroupManager)
         :base(log, dbContext)
         {
-            VirtualStorageManager = virtualStorageManager;
+            _virtualStorageManager = virtualStorageManager;
             _propertyGroupManager = propertyGroupManager;
             _constraintGroupManager = constraintGroupManager;
             _log.LogDebug("Creating new instance");
@@ -67,7 +69,8 @@ namespace JCS.Argon.Services.Core
         {
             if (!await CollectionExistsAsync(collectionId))
             {
-                throw new ICollectionManager.CollectionManagerException(500, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError, 
+                    "The specified collection does not exist");
             }
             else
             {
@@ -127,11 +130,10 @@ namespace JCS.Argon.Services.Core
         public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd)
         {
                 var exists = await CollectionExistsAsync(cmd.Name);
-                
                 if (!exists)
                 {
+                    // create the necessary entities first
                     ConstraintGroup? constraintGroup;
-
                     if (cmd.Constraints != null)
                     {
                         constraintGroup = await _constraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
@@ -142,8 +144,7 @@ namespace JCS.Argon.Services.Core
                     }
 
                     var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
-                    
-                    var collection = await _dbContext.Collections.AddAsync(new Collection()
+                    var collectionEntity = await _dbContext.Collections.AddAsync(new Collection()
                     {
                         Name = cmd.Name,
                         Description = cmd.Description,
@@ -151,13 +152,66 @@ namespace JCS.Argon.Services.Core
                         ConstraintGroup = constraintGroup,
                         PropertyGroup = propertyGroup
                     });
-                    
+
                     await _dbContext.SaveChangesAsync();
-                    return collection.Entity;
+                    var collection = collectionEntity.Entity;
+                   
+                    // grab the provider and then ask for the physical operations to be performed
+                    try
+                    {
+                        _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
+                        var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
+                        var creationResult= await provider.CreateCollectionAsync(collection);
+                        if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
+                        {
+                            if (creationResult.Properties != null)
+                            {
+                                collection.PropertyGroup!.Properties = new List<Property>();
+                                foreach (var key in creationResult.Properties.Keys)
+                                {
+                                    collection.PropertyGroup.Properties.Add(new Property()
+                                    {
+                                        Name = key,
+                                       Type = PropertyType.String,
+                                       StringValue = creationResult.Properties[key].ToString()
+                                    });
+                                }
+
+                                _dbContext.Update(collection);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                                $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
+                        }
+                    }
+                    catch (IVirtualStorageManager.VirtualStorageManagerException ex)
+                    {
+                        // roll back the entity changes
+                        _log.LogWarning($"Caught storage exception whilst attempting collection physical operation - rolling back db changes");
+                        _dbContext.Collections.Remove(collection);
+                        await _dbContext.SaveChangesAsync();
+                        throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                            ex.Message, ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        // roll back the entity changes
+                        _log.LogWarning($"Caught general exception whilst attempting collection physical operation - rolling back db changes");
+                        _dbContext.Collections.Remove(collection);
+                        await _dbContext.SaveChangesAsync();
+                        throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                            ex.Message, ex);
+                    }
+
+                    return collection;
                 }
                 else
                 {
-                    throw new ICollectionManager.CollectionManagerException(400, "A collection with that name already exists");
+                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest, 
+                        "A collection with that name already exists");
                 }
         }
 
@@ -175,7 +229,8 @@ namespace JCS.Argon.Services.Core
             }
             else
             {
-                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound, 
+                    "The specified collection does not exist");
             }
         }
 
@@ -225,11 +280,11 @@ namespace JCS.Argon.Services.Core
                     }
                     else
                     {
-                        throw new ICollectionManager.CollectionManagerException(400,
+                        throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
                             $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
                     }
                 }
-                throw new ICollectionManager.CollectionManagerException(500,
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                     "Collection has moved or cannot be found - shouldn't happen");
             }
         }
@@ -240,7 +295,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         public List<VirtualStorageBinding> GetVSPBindings()
         {
-            return VirtualStorageManager.GetBindings();
+            return _virtualStorageManager.GetBindings();
         }
     }
 }

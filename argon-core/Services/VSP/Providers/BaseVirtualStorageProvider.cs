@@ -1,9 +1,13 @@
 using System;
 using System.Dynamic;
+using System.IO;
+using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
+using JCS.Argon.Model.Schema;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
@@ -36,6 +40,7 @@ namespace JCS.Argon.Services.VSP.Providers
             AfterBind();
         }
 
+
         /// <summary>
         /// Default constructor required for dynamic instantiation
         /// </summary>
@@ -50,6 +55,16 @@ namespace JCS.Argon.Services.VSP.Providers
         /// here
         /// </summary>
         public abstract void AfterBind();
+        
+        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
+        
+        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemAsync"/>
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, FileStream source);
+        
+        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source);
+        
         
         /// <summary>
         /// Equiv of a virtual destructor

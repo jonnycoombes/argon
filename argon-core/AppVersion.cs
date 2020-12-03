@@ -25,7 +25,7 @@ namespace JCS.Argon
         /// <summary>
         /// Schema minor version
         /// </summary>
-        public static int SchemaMinor { get; } = 1;
+        public static int SchemaMinor { get; } = 3;
 
         /// <summary>
         /// Schema patch/build number

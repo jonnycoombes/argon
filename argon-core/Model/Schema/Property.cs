@@ -72,6 +72,12 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The parent <see cref="PropertyGroup"/>
         /// </summary>
+        [JsonIgnore]
         public PropertyGroup PropertyGroup { get; set; } = null!;
+
+        public Property()
+        {
+            
+        }
     }
 }

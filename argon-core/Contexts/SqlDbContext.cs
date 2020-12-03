@@ -39,6 +39,16 @@ namespace JCS.Argon.Contexts
         /// </summary>
         public DbSet<Property> Properties { get; set; } = null!;
 
+        /// <summary>
+        /// The set of all <see cref="ConstraintGroup"/> model elements
+        /// </summary>
+        public DbSet<ConstraintGroup> ConstraintGroups { get; set; } = null!;
+
+        /// <summary>
+        /// The set of all <see cref="Constraint"/> model elements
+        /// </summary>
+        public DbSet<Constraint> Constraints { get; set; } = null!;
+
         public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
             
