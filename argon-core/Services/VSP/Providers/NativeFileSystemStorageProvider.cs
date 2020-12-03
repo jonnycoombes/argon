@@ -28,12 +28,22 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Used to denote the path of the collection
         /// </summary>
-        protected static string COLLECTION_PATH_PROPERTY = "path";
+        protected static string PATH_PROPERTY = "path";
+
+        /// <summary>
+        /// The creation date/time for the collection
+        /// </summary>
+        protected static string CREATE_DATETIME_PROPERTY = "createDateTime";
+       
+        /// <summary>
+        /// Last accessed time
+        /// </summary>
+        protected static string LASTACCESS_DATETIME_PROPERTY = "lastAccessDateTime";
 
         /// <summary>
         /// The current configured root path info
         /// </summary>
-        protected DirectoryInfo _rootPathInfo;
+        protected DirectoryInfo? _rootPathInfo;
         
         /// <summary>
         /// Default constructor, just calls base
@@ -70,7 +80,7 @@ namespace JCS.Argon.Services.VSP.Providers
         public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
             var result = new IVirtualStorageProvider.StorageOperationResult();
-            var collectionPath = Path.Combine(_rootPathInfo.FullName, collection.Id.ToString()!);
+            var collectionPath = Path.Combine(_rootPathInfo!.FullName, collection.Id.ToString()!);
             if (Directory.Exists(collectionPath))
             {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
@@ -85,7 +95,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                     result.Properties = new Dictionary<string, object>()
                     {
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{COLLECTION_PATH_PROPERTY}", collectionPath}
+                        {$"{COLLECTION_PROPERTY_PREFIX}.{PATH_PROPERTY}", collectionPath},
+                        {$"{COLLECTION_PROPERTY_PREFIX}.{CREATE_DATETIME_PROPERTY}", info.CreationTimeUtc},
+                        {$"{COLLECTION_PROPERTY_PREFIX}.{LASTACCESS_DATETIME_PROPERTY}", info.LastAccessTimeUtc},
                     };
                     return result;
                 });
