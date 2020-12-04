@@ -39,7 +39,10 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Item>> ReadItems(Guid collectionId)
         {
-            throw new NotImplementedException();
+            _log.LogDebug($"Reading collection items for collection with id: {collectionId}");
+            var items = await _collectionManager.GetItemsForCollectionAsync(collectionId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return items;
         }
 
         /// <summary>
@@ -57,7 +60,10 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId)
         {
-            throw new NotImplementedException();
+            _log.LogDebug($"Reading collection item for collection with id: {collectionId}, item id: {itemId}");
+            var items = await _collectionManager.GetItemForCollection(collectionId, itemId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return items;
         }
 
         /// <summary>
@@ -99,15 +105,17 @@ namespace JCS.Argon.Controllers
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
         [Route("/api/v1/Collections/{collectionId}/Items")]
-        [Consumes("multipart/form")]
+        [Consumes("multipart/form-data")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "version")] IFormFile file)
+        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
-            Dictionary<string, object>? prop = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
-            throw new NotImplementedException();
+            var properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
+            var item = await _collectionManager.AddItemToCollectionAsync(collectionId, properties, file); 
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return item;
         }
         
         /// <summary>
@@ -154,7 +162,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId, Guid versionId)
+        public async Task<Item> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
         {
             throw new NotImplementedException();
         }

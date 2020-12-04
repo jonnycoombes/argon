@@ -67,6 +67,7 @@ namespace JCS.Argon.Model.Schema
         /// The identifier for the parent property group
         /// </summary>
         [Required]
+        [JsonIgnore]
         public Guid PropertyGroupId { get; set; }
         
         /// <summary>
@@ -74,6 +75,30 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         [JsonIgnore]
         public PropertyGroup PropertyGroup { get; set; } = null!;
+
+        /// <summary>
+        /// Convenience method for clearing the current value
+        /// </summary>
+        public void ClearValue()
+        {
+            switch (Type)
+            {
+                case PropertyType.Boolean:
+                    BooleanValue = null;
+                    break;
+                case PropertyType.Number:
+                    NumberValue = null;
+                    break;
+                case PropertyType.String:
+                    StringValue = null;
+                    break;
+                case PropertyType.DateTime:
+                    DateTimeValue = null;
+                    break;
+            }
+        }
+        
+        
 
         public Property()
         {

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
-using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -193,6 +192,7 @@ namespace JCS.Argon.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand cmd)
         {

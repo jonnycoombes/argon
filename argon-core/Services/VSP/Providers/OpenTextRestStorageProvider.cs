@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace JCS.Argon.Services.VSP.Providers
@@ -24,7 +26,8 @@ namespace JCS.Argon.Services.VSP.Providers
             throw new System.NotImplementedException();
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, FileStream source)
+        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item,
+            Dictionary<string, object>? properties, IFormFile source)
         {
             throw new System.NotImplementedException();
         }

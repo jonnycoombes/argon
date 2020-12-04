@@ -1,5 +1,7 @@
 using System;
+using System.Text.Json;
 using JCS.Argon.Contexts;
+using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -95,14 +97,18 @@ namespace JCS.Argon
                     var payload= handler?.GenerateExceptionResponseFromContext(context);
                     if (payload != null)
                     {
+                        context.Response.Headers.Clear();
                         context.Response.StatusCode = ((int) payload.HttpResponseCode)!;
-                        context.Response.ContentType = "application/json";
+                        context.Response.ContentType = "application/json; utf-8";
                         await context.Response.WriteAsJsonAsync(payload);
+                        await context.Response.CompleteAsync();
                     }
                     else
                     {
+                        //context.Response.Headers.Clear();
                         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                         await context.Response.WriteAsync("Failed to determine underlying cause - please contact a system administrator");
+                        await context.Response.CompleteAsync();
                     }
                 });
             });
@@ -115,7 +121,7 @@ namespace JCS.Argon
             {
                 log.LogInformation("Starting within a development environment");
                 if (Environment.IsEnvironment("WinDevelopment")) log.LogDebug("Currently running on a Windows development platform");
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
                 log.LogInformation("Enabling request logging...for development purposes");

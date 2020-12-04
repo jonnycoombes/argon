@@ -5,6 +5,7 @@ using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace JCS.Argon.Services.Core
 {
@@ -86,5 +87,30 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <returns></returns>
         public List<VirtualStorageBinding> GetVSPBindings();
+
+        /// <summary>
+        /// Returns a list of items for a given collection
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        public Task<List<Item>> GetItemsForCollectionAsync(Guid collectionId);
+
+        /// <summary>
+        /// Returns the meta-data for a given collection item
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public Task<Item> GetItemForCollection(Guid collectionId, Guid itemId);
+
+        /// <summary>
+        /// Adds an item to a collection with a specific collection id
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <param name="properties"></param>
+        /// <param name="inboundFile"></param>
+        /// <returns></returns>
+        public Task<Item> AddItemToCollectionAsync(Guid collectionId, Dictionary<string, object>? properties, IFormFile inboundFile);
+
     }
 }

@@ -159,33 +159,7 @@ namespace JCS.Argon.Services.Core
                     // grab the provider and then ask for the physical operations to be performed
                     try
                     {
-                        _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
-                        var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
-                        var creationResult= await provider.CreateCollectionAsync(collection);
-                        if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
-                        {
-                            if (creationResult.Properties != null)
-                            {
-                                collection.PropertyGroup!.Properties = new List<Property>();
-                                foreach (var key in creationResult.Properties.Keys)
-                                {
-                                    collection.PropertyGroup.Properties.Add(new Property()
-                                    {
-                                        Name = key,
-                                       Type = PropertyType.String,
-                                       StringValue = creationResult.Properties[key].ToString()
-                                    });
-                                }
-
-                                _dbContext.Update(collection);
-                                await _dbContext.SaveChangesAsync();
-                            }
-                        }
-                        else
-                        {
-                            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
-                                $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
-                        }
+                        await PerformProviderCollectionCreationActions(cmd, collection);
                     }
                     catch (IVirtualStorageManager.VirtualStorageManagerException ex)
                     {
@@ -213,6 +187,47 @@ namespace JCS.Argon.Services.Core
                     throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest, 
                         "A collection with that name already exists");
                 }
+        }
+
+        /// <summary>
+        /// Performs the provider actions required for the creation of a new collection
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        /// <exception cref="CollectionManagerException"></exception>
+        private async Task PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
+        {
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
+            var creationResult = await provider.CreateCollectionAsync(collection);
+            if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
+            {
+                if (creationResult.Properties != null)
+                {
+                    collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
+                    _dbContext.Update(collection);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
+            }
+        }
+
+        private async Task PerformProviderItemCreationActions(Collection collection, Item item, Dictionary<string,object>? properties,IFormFile source)
+        {
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
+            var creationResult= await provider.CreateCollectionItemAsync(collection, item, properties, source);
+            if (creationResult.Properties != null)
+            {
+                item.PropertyGroup.MergeDictionary(creationResult.Properties);
+                _dbContext.Update(item);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         /// <inheritdoc cref="ICollectionManager.ReadCollectionAsync"/> 
@@ -296,6 +311,100 @@ namespace JCS.Argon.Services.Core
         public List<VirtualStorageBinding> GetVSPBindings()
         {
             return _virtualStorageManager.GetBindings();
+        }
+
+        /// <inheritdoc cref="ICollectionManager.GetItemsForCollectionAsync"/> 
+        public async Task<List<Item>> GetItemsForCollectionAsync(Guid collectionId)
+        {
+            if (await CollectionExistsAsync(collectionId))
+            {
+                var items = await _dbContext.Items.
+                    Where(i => i.Collection.Id == collectionId)
+                    .ToListAsync();
+                return items;
+            }
+            else
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified collection does not exist");
+            }
+        }
+        
+        /// <inheritdoc cref="ICollectionManager.GetItemForCollection"/>
+        public async Task<Item> GetItemForCollection(Guid collectionId, Guid itemId)
+        {
+            if (await CollectionExistsAsync(collectionId))
+            {
+                if (await _dbContext.Items.AnyAsync(i => i.Id == itemId))
+                {
+                    var item = await _dbContext.Items.FirstAsync(i => i.Id == itemId);
+                    return item;
+                }
+                else
+                {
+                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                        "The specified item does not exist"); 
+                }
+            }
+            else
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified collection does not exist");
+            }
+        }
+        
+        /// <inheritdoc cref="ICollectionManager.AddItemToCollectionAsync"/> 
+        public async Task<Item> AddItemToCollectionAsync(Guid collectionId, Dictionary<string, object>? properties, IFormFile inboundFile)
+        {
+            if (await CollectionExistsAsync(collectionId))
+            {
+                var collection = await ReadCollectionAsync(collectionId);
+                var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
+                var item = new Item()
+                {
+                    Collection = collection,
+                    Name = inboundFile.FileName,
+                    CreatedDate = DateTime.Now,
+                    LastModified = DateTime.Now,
+                    PropertyGroup = propertyGroup
+                };
+                var itemEntity= await _dbContext.Items.AddAsync(item);
+                await _dbContext.SaveChangesAsync();
+                item = itemEntity.Entity;
+                
+                try
+                {
+                    await PerformProviderItemCreationActions(collection, item, properties, inboundFile);
+                }
+                catch (IVirtualStorageManager.VirtualStorageManagerException ex)
+                {
+                    // roll back the entity changes
+                    _log.LogWarning($"Caught storage exception whilst attempting item physical operation - rolling back db changes");
+                    _dbContext.Items.Remove(item);
+                    await _dbContext.SaveChangesAsync();
+                    throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                        ex.Message, ex);
+                }
+                catch (Exception ex)
+                {
+                    // roll back the entity changes
+                    _log.LogWarning($"Caught general exception whilst attempting item physical operation - rolling back db changes");
+                    _dbContext.Items.Remove(item);
+                    await _dbContext.SaveChangesAsync();
+                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                        ex.Message, ex);
+                }
+                
+                collection.Length = collection.Length + 1;
+                _dbContext.Collections.Update(collection);
+                await _dbContext.SaveChangesAsync();
+                return item;
+            }
+            else
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified collection does not exist");
+            }
         }
     }
 }

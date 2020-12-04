@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
+using Microsoft.AspNetCore.Http;
 using Version = JCS.Argon.Model.Schema.Version;
 
 
@@ -102,9 +103,10 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         /// <param name="collection">The parent collection</param>
         /// <param name="item">The model element associated with the item</param>
-        /// <param name="source">A <see cref="FileStream"/> which contains the contents of the item</param>
+        /// <param name="properties"></param>
+        /// <param name="source">A <see cref="IFormFile"/> which contains the contents of the item</param>
         /// <returns></returns>
-        public Task<StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, FileStream source);
+        public Task<StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, Dictionary<string, object>? properties, IFormFile source);
 
         /// <summary>
         /// Given an <see cref="Item"/> and <see cref="Version"/> instance, create a physical representation of a

@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -60,7 +62,8 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
         
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, FileStream source);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, 
+            Item item, Dictionary<string, object>? properties, IFormFile source);
         
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source);
