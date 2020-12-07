@@ -5,17 +5,17 @@ namespace JCS.Argon
         /// <summary>
         /// Application major version number
         /// </summary>
-        public static int Major { get; }= 0;
+        public static int Major { get; }= 1;
 
         /// <summary>
         /// Application minor version
         /// </summary>
-        public static int Minor { get;  } = 3;
+        public static int Minor { get;  } = 0;
 
         /// <summary>
         /// Application patch/build level
         /// </summary>
-        public static int Build { get; } = 6;
+        public static int Build { get; } = 1;
 
         /// <summary>
         /// Schema major version
