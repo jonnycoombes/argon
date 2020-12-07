@@ -54,5 +54,14 @@ namespace JCS.Argon.Services.Core
         /// <param name="cmd">A valid <see cref="CreateOrUpdateConstraintCommand"/></param>
         /// <returns>A new <see cref="Constraint"/></returns>
         public Task<Constraint> CreateConstraintAsync(CreateOrUpdateConstraintCommand cmd);
+
+        /// <summary>
+        /// Validate a given set of properties against a given contraint group, and then produce a (potentially empty) list
+        /// of validation errors which may be fed back further up the pipeline
+        /// </summary>
+        /// <param name="constraints">A valid set of constraints to perform validation against</param>
+        /// <param name="properties">A valid (possibly empty) set of properties</param>
+        /// <returns></returns>
+        public Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties);
     }
 }

@@ -90,8 +90,16 @@ namespace JCS.Argon.Services.VSP.Providers
                 _rootPathInfo = new DirectoryInfo(@$"{(string)_binding!.Properties[ROOTPATH_PROPERTY]}");
                 if (!Directory.Exists(_rootPathInfo.FullName))
                 {
-                    throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                        $"Specified root path doesn't exist or is not accessible: {_rootPathInfo.FullName}");
+                    try
+                    {
+                        _log.LogInformation($"Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
+                        _rootPathInfo = Directory.CreateDirectory(_rootPathInfo.FullName);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                            $"Specified root path doesn't exist or is not accessible: {_rootPathInfo.FullName}");
+                    }
                 }
             }
         }
@@ -124,8 +132,9 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        public async override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item,
-            Dictionary<string, object>? properties, IFormFile source)
+        public async override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection,
+            Item item,
+            IFormFile source)
         {
             var collectionRootPath = CollectionRootPath(collection);
             if (!Directory.Exists(collectionRootPath))

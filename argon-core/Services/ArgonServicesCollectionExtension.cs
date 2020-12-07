@@ -113,6 +113,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Information("Registering a scoped constraint group manager");
             services.AddScoped<IConstraintGroupManager, ConstraintGroupManager>();
             Log.ForContext("SourceContext", "JCS.Argon")
+                .Information("Registering a scoped item manager");
+            services.AddScoped<IItemManager, ItemManager>();
+            Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering a scoped collection manager");
             services.AddScoped<ICollectionManager, CollectionManager>();
             Log.ForContext("SourceContext", "JCS.Argon")

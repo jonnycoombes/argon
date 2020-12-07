@@ -27,31 +27,18 @@ namespace JCS.Argon.Services.Core
                 Source = nameof(ICollectionManager); 
             }
         }
+        
+        /// <summary>
+        /// Retrieves a list of all current collections
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<Collection>> ListCollectionsAsync();
 
         /// <summary>
         /// Return a count of all currently known collections 
         /// </summary>
         /// <returns></returns>
         public Task<int> CountCollectionsAsync();
-
-        /// <summary>
-        /// Return a total count of all currently known items
-        /// </summary>
-        /// <returns></returns>
-        public Task<int> CountItemsAsync();
-
-        /// <summary>
-        /// Return a count of items for a specific collection
-        /// </summary>
-        /// <param name="collectionId"></param>
-        /// <returns></returns>
-        public Task<int> CountItemsAsync(Guid collectionId);
-
-        /// <summary>
-        /// Retrieves a list of all current collections
-        /// </summary>
-        /// <returns></returns>
-        public Task<List<Collection>> ListCollectionsAsync();
 
         /// <summary>
         /// Attempts the creation of a new <see cref="Collection"/> object, along with
@@ -86,31 +73,8 @@ namespace JCS.Argon.Services.Core
         /// Retrieves a list of currently configured <see cref="VirtualStorageBinding"/> instances
         /// </summary>
         /// <returns></returns>
-        public List<VirtualStorageBinding> GetVSPBindings();
+        public List<VirtualStorageBinding> GetStorageBindings();
 
-        /// <summary>
-        /// Returns a list of items for a given collection
-        /// </summary>
-        /// <param name="collectionId"></param>
-        /// <returns></returns>
-        public Task<List<Item>> GetItemsForCollectionAsync(Guid collectionId);
-
-        /// <summary>
-        /// Returns the meta-data for a given collection item
-        /// </summary>
-        /// <param name="collectionId"></param>
-        /// <param name="itemId"></param>
-        /// <returns></returns>
-        public Task<Item> GetItemForCollection(Guid collectionId, Guid itemId);
-
-        /// <summary>
-        /// Adds an item to a collection with a specific collection id
-        /// </summary>
-        /// <param name="collectionId"></param>
-        /// <param name="properties"></param>
-        /// <param name="inboundFile"></param>
-        /// <returns></returns>
-        public Task<Item> AddItemToCollectionAsync(Guid collectionId, Dictionary<string, object>? properties, IFormFile inboundFile);
 
     }
 }

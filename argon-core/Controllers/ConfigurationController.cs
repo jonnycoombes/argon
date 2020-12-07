@@ -51,7 +51,7 @@ namespace JCS.Argon.Controllers
                 Endpoint = HttpHelper.BuildEndpointFromContext(HttpContext).Replace("/Configuration", ""),
                 Version = new AppVersion().ToString(),
                 SchemaVersion = new AppVersion().ToStringSchema(),
-                Bindings = _collectionManager.GetVSPBindings(),
+                Bindings = _collectionManager.GetStorageBindings(),
                 Metrics = new Metrics
                 {
                     TotalCollections = await _collectionManager.CountCollectionsAsync(),

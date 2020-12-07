@@ -114,5 +114,11 @@ namespace JCS.Argon.Services.Core
                     "Failed to create a new constraint", ex);
             }
         }
+        
+        /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints"/>
+        public async Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

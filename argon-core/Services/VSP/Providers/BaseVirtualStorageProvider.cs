@@ -62,8 +62,8 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
         
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, 
-            Item item, Dictionary<string, object>? properties, IFormFile source);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection,
+            Item item, IFormFile source);
         
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source);

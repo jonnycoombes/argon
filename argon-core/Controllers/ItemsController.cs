@@ -18,11 +18,17 @@ namespace JCS.Argon.Controllers
         /// The <see cref="CollectionManager"/> instance - DI'd 
         /// </summary>
         protected readonly ICollectionManager _collectionManager;
+
+        /// <summary>
+        /// The <see cref="ItemManager"/> instance - DI'd
+        /// </summary>
+        protected readonly IItemManager _itemManager;
         
-        public ItemsController(ILogger<ItemsController> log, ICollectionManager collectionManager) : base(log)
+        public ItemsController(ILogger<ItemsController> log, ICollectionManager collectionManager, IItemManager itemManager) : base(log)
         {
             _log.LogInformation("Creating new instance");
             _collectionManager = collectionManager;
+            _itemManager = itemManager;
         }
 
         /// <summary>
@@ -40,7 +46,8 @@ namespace JCS.Argon.Controllers
         public async Task<List<Item>> ReadItems(Guid collectionId)
         {
             _log.LogDebug($"Reading collection items for collection with id: {collectionId}");
-            var items = await _collectionManager.GetItemsForCollectionAsync(collectionId);
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var items = await _itemManager.GetItemsForCollectionAsync(collection);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return items;
         }
@@ -61,7 +68,8 @@ namespace JCS.Argon.Controllers
         public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId)
         {
             _log.LogDebug($"Reading collection item for collection with id: {collectionId}, item id: {itemId}");
-            var items = await _collectionManager.GetItemForCollection(collectionId, itemId);
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var items = await _itemManager.GetItemForCollection(collection, itemId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return items;
         }
@@ -113,7 +121,8 @@ namespace JCS.Argon.Controllers
         public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
             var properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
-            var item = await _collectionManager.AddItemToCollectionAsync(collectionId, properties, file); 
+            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return item;
         }

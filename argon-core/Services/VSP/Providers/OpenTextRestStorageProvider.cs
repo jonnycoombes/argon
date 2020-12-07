@@ -27,7 +27,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item,
-            Dictionary<string, object>? properties, IFormFile source)
+            IFormFile source)
         {
             throw new System.NotImplementedException();
         }

@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "argon_core": {
+    "argon_core_wintel": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
@@ -25,6 +25,16 @@
       "applicationUrl": "https://*:8443;http://*:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "WinDevelopment"
+      }
+    },
+    "argon_core_osx": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://*:8443;http://*:8080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
