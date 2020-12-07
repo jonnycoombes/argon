@@ -24,34 +24,7 @@ namespace JCS.Argon.Services.VSP.Providers
         protected static string ROOTPATH_PROPERTY = "rootPath";
 
         /// <summary>
-        /// Used for stashing properties
-        /// </summary>
-        protected static string COLLECTION_PROPERTY_PREFIX = "nativeFS";
-
-        /// <summary>
-        /// Used to denote the path of the collection
-        /// </summary>
-        protected static string PATH_PROPERTY = "path";
-
-        /// <summary>
-        /// The creation date/time for the collection
-        /// </summary>
-        protected static string CREATE_DATETIME_PROPERTY = "createDateTime";
-       
-        /// <summary>
-        /// Last accessed time
-        /// </summary>
-        protected static string LASTACCESS_DATETIME_PROPERTY = "lastAccessDateTime";
-
-        /// <summary>
-        /// The total filesize
-        /// </summary>
-        protected static string FILESIZE_PROPERTY = "sizeInBytes";
-
-        protected static string CONTENTTYPE_PROPERTY = "contentType";
-
-        /// <summary>
-        /// The current configured root path info
+        /// 
         /// </summary>
         protected DirectoryInfo? _rootPathInfo;
 
@@ -98,7 +71,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     catch (Exception ex)
                     {
                         throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                            $"Specified root path doesn't exist or is not accessible: {_rootPathInfo.FullName}");
+                            $"Unable to create new root location for collections at {_rootPathInfo.FullName}: {ex.Message}", ex);
                     }
                 }
             }
@@ -123,9 +96,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                     result.Properties = new Dictionary<string, object>()
                     {
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{PATH_PROPERTY}", collectionRootPath},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{CREATE_DATETIME_PROPERTY}", info.CreationTimeUtc},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{LASTACCESS_DATETIME_PROPERTY}", info.LastAccessTimeUtc},
+                        {$"{ProviderProperties.Path}", collectionRootPath},
+                        {$"{ProviderProperties.CreateDate}", info.CreationTimeUtc},
+                        {$"{ProviderProperties.LastAccessed}", info.LastAccessTimeUtc},
                     };
                     return result;
                 });
@@ -154,11 +127,11 @@ namespace JCS.Argon.Services.VSP.Providers
                     result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                     result.Properties = new Dictionary<string, object>()
                     {
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{PATH_PROPERTY}", itemPath},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{CREATE_DATETIME_PROPERTY}", DateTime.Now},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{LASTACCESS_DATETIME_PROPERTY}", DateTime.Now},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{FILESIZE_PROPERTY}", source.Length},
-                        {$"{COLLECTION_PROPERTY_PREFIX}.{CONTENTTYPE_PROPERTY}", source.ContentType},
+                        {$"{ProviderProperties.Path}", itemPath},
+                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
+                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                        {$"{ProviderProperties.Length}", source.Length},
+                        {$"{ProviderProperties.ContentType}", source.ContentType},
                     };
                     return result;
                 }

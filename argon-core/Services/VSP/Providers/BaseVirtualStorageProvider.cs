@@ -18,6 +18,19 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
+
+        /// <summary>
+        /// An enumeration of "stock" provider properties - returned in the property bag for certain operations
+        /// </summary>
+        public enum ProviderProperties 
+        {
+            Path,
+            CreateDate,
+            LastAccessed,
+            Length,
+            ContentType
+        }
+        
         /// <summary>
         /// Copy of the current binding
         /// </summary>
