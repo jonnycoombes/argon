@@ -53,6 +53,11 @@ namespace JCS.Argon.Services.VSP
             public Dictionary<string, object>? Properties { get; set; }
             
             /// <summary>
+            /// An optional stream object which may be returned by certain operations
+            /// </summary>
+            public Stream? Stream { get; set; }
+            
+            /// <summary>
             /// An optional error message that can be passed back up through the stack
             /// In general, only used if some kind of 'retryable' error occurs
             /// </summary>
@@ -99,15 +104,6 @@ namespace JCS.Argon.Services.VSP
         public Task<StorageOperationResult> CreateCollectionAsync(Collection collection);
 
         /// <summary>
-        /// Given an <see cref="Item"/> and associated file stream, create a physical representation of an item 
-        /// </summary>
-        /// <param name="collection">The parent collection</param>
-        /// <param name="item">The model element associated with the item</param>
-        /// <param name="source">A <see cref="IFormFile"/> which contains the contents of the item</param>
-        /// <returns></returns>
-        public Task<StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item, IFormFile source);
-
-        /// <summary>
         /// Given an <see cref="Item"/> and <see cref="Version"/> instance, create a physical representation of a
         /// specific version
         /// </summary>
@@ -116,7 +112,16 @@ namespace JCS.Argon.Services.VSP
         /// <param name="version">The version model element</param>
         /// <param name="source">A filestream containing the source for the version</param>
         /// <returns></returns>
-        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source);
+        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source);
+
+        /// <summary>
+        /// Reads a specific item version from a collection 
+        /// </summary>
+        /// <param name="collection">The collection object</param>
+        /// <param name="item">The item object</param>
+        /// <param name="version">The version object</param>
+        /// <returns></returns>
+        public Task<StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
 
     }
 }

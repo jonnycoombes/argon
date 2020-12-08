@@ -42,7 +42,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The size of this version in bytes
         /// </summary>
-        public int Size { get; set; }
+        public long Size { get; set; }
         
         /// <summary>
         /// The MIME type for the version
@@ -55,14 +55,10 @@ namespace JCS.Argon.Model.Schema
         public byte[]? Thumbprint { get; set; }
         
         /// <summary>
-        /// An (optional) <see cref="Uri"/> that may be passed back by the underlying storage provider
-        /// </summary>
-        public Uri? StorageLocation { get; set; }
-
-        /// <summary>
         /// The parent <see cref="Item"/>
         /// </summary>
         [Required]
+        [JsonIgnore]
         public Item Item { get; set; } = null!;
     }
 }

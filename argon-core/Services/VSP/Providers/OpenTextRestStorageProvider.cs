@@ -26,13 +26,12 @@ namespace JCS.Argon.Services.VSP.Providers
             throw new System.NotImplementedException();
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection, Item item,
-            IFormFile source)
+        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)
         {
             throw new System.NotImplementedException();
         }

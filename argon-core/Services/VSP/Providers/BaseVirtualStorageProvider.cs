@@ -74,14 +74,12 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
         
-        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection,
-            Item item, IFormFile source);
-        
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source);
-        
-        
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source);
+
+        /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync"/>
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
+
         /// <summary>
         /// Equiv of a virtual destructor
         /// </summary>

@@ -60,7 +60,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Properties")]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Properties")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,7 +75,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Reads the content for a specific collection item. 
+        /// Reads the content for a specific collection item. By default, this will return the content of the latest version
         /// </summary>
         /// <remarks>
         /// This method will return the latest version of the item by default.  
@@ -85,7 +85,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}")]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -120,7 +120,11 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
-            var properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
+            Dictionary<string, object>? properties= null;
+            if (Request.Form.ContainsKey("Properties"))
+            {
+                properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
+            }
             var collection = await _collectionManager.ReadCollectionAsync(collectionId);
             var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
@@ -145,7 +149,7 @@ namespace JCS.Argon.Controllers
         /// in response payload.</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
-        [Route("/api/v1/Collections/{collectionId}/item/{itemId}/Versions")]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Versions")]
         [Consumes("multipart/form")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]

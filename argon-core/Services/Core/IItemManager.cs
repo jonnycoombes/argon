@@ -51,16 +51,6 @@ namespace JCS.Argon.Services.Core
         public Task<int> CountItemsAsync(Collection collection);
 
         /// <summary>
-        /// Creates and saves a new <see cref="Item"/> based on a parent collection and also underlying
-        /// source <see cref="IFormFile"/>
-        /// </summary>
-        /// <param name="collection">The parent collection</param>
-        /// <param name="properties">The properties for the item</param>
-        /// <param name="source">The source form file</param>
-        /// <returns></returns>
-        public Task<Item> CreateItemFromFormFileAsync(Collection collection, Dictionary<string, object> properties, IFormFile source);
-        
-        /// <summary>
         /// Return a total count of all currently known items
         /// </summary>
         /// <returns></returns>

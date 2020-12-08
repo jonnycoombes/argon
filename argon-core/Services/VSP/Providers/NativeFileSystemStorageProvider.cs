@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
@@ -77,6 +78,38 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
+        /// <summary>
+        /// Tries to determine the path of a given <see cref="Item"/> object
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        protected string? GetItemPathFromProperties(Item item)
+        {
+            if (item.PropertyGroup.HasProperty(ProviderProperties.Path.ToString()))
+            {
+                var prop = item.PropertyGroup.GetPropertyByName(ProviderProperties.Path.ToString());
+                return prop?.StringValue;
+            }
+            else
+            {
+                _log.LogWarning($"The expected path property wasn't found against item with id {item.Id}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Tries to determine the path of a given <see cref="Version"/> object
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="version"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        protected string GenerateVersionPath(Collection collection, Item item, Version version)
+        {
+            var itemPath = GenerateItemStoragePath(collection, item); 
+            return Path.Combine(itemPath, $"{version.Major}_{version.Minor}");
+        }
+
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
@@ -105,48 +138,53 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        public async override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemAsync(Collection collection,
-            Item item,
-            IFormFile source)
+        /// <summary>
+        /// Generates the storage path for a given item
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="item"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        protected string GenerateItemStoragePath(Collection collection, Item item)
         {
             var collectionRootPath = CollectionRootPath(collection);
-            if (!Directory.Exists(collectionRootPath))
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"Specified collection root doesn't exist or isn't accessible");
-            }
-            else
-            {
-                try
-                {
-                    var extension = Path.GetExtension(source.FileName);
-                    var itemPath = Path.Combine(collectionRootPath, $"{item.Id.ToString()!}{extension}");
-                    var outStream = File.Create(itemPath);
-                    await source.CopyToAsync(outStream);
-                    var result = new IVirtualStorageProvider.StorageOperationResult();
-                    result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
-                    result.Properties = new Dictionary<string, object>()
-                    {
-                        {$"{ProviderProperties.Path}", itemPath},
-                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
-                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
-                        {$"{ProviderProperties.Length}", source.Length},
-                        {$"{ProviderProperties.ContentType}", source.ContentType},
-                    };
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    _log.LogWarning($"Caught exception whilst attempting to write down a collection item: {ex.Message}");
-                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                        $"Caught an exception whilst attempting to write down a collection item", ex);
-                }
-            }
+            return Path.Combine(collectionRootPath, item.Id.ToString()!);
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, FileStream source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
         {
+            try
+            {
+                var itemStoragePath = GenerateItemStoragePath(collection, item);
+                var versionPath = GenerateVersionPath(collection, item, version);
+                Directory.CreateDirectory(itemStoragePath);
+                var target = File.Create(versionPath);
+                await source.CopyToAsync(target);
+                var result = new IVirtualStorageProvider.StorageOperationResult();
+                result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
+                result.Properties = new Dictionary<string, object>()
+                {
+                    {$"{ProviderProperties.Path}", itemStoragePath},
+                    {$"{ProviderProperties.CreateDate}", DateTime.Now},
+                    {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                    {$"{ProviderProperties.Length}", source.Length},
+                    {$"{ProviderProperties.ContentType}", source.ContentType},
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _log.LogWarning($"Caught exception whilst attempting to add a new version");
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"Unable to add new version: {ex.Message}", ex);
+            }
+
             throw new System.NotImplementedException();
+        }
+
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -42,11 +42,6 @@ namespace JCS.Argon.Model.Schema
         public DateTime LastModified { get; set; }
         
         /// <summary>
-        /// An (optional) <see cref="Uri"/> that may be passed back by the underlying storage provider
-        /// </summary>
-        public Uri? StorageLocation { get; set; }
-        
-        /// <summary>
         /// This items parent <see cref="Collection"/>
         /// </summary>
         [Required]
