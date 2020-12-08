@@ -157,7 +157,12 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Version>> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "version")] IFormFile file)
         {
-            Dictionary<string, object>? prop = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Headers"]);
+            Dictionary<string, object>? properties = null;
+            if (Request.Form.ContainsKey("Properties"))
+            {
+                properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
+            }
+
             throw new NotImplementedException();
         }
 
