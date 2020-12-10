@@ -133,6 +133,7 @@ namespace JCS.Argon
             }
             
             ConfigureGlobalExceptionHandling(app, log);
+            app.UseResponseCompression();
             app.UseArgonTimings();
             app.UseHttpsRedirection();
             app.UseRouting();
