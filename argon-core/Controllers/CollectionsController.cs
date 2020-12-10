@@ -97,7 +97,7 @@ namespace JCS.Argon.Controllers
         public async Task<Collection> ReadCollection(Guid collectionId)
         {
             _log.LogDebug("ReadCollection called");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;
         }
@@ -115,7 +115,7 @@ namespace JCS.Argon.Controllers
         public async Task<ConstraintGroup?> ReadCollectionConstraints(Guid collectionId)
         {
             _log.LogDebug("ReadCollectionConstraints called");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection.ConstraintGroup;
         }
@@ -134,7 +134,7 @@ namespace JCS.Argon.Controllers
         public async Task<Constraint?> ReadCollectionConstraints(Guid collectionId, Guid constraintId)
         {
             _log.LogDebug("ReadCollectionConstraints called");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var constraintGroup = collection.ConstraintGroup;
             if (constraintGroup == null)
             {
@@ -177,7 +177,7 @@ namespace JCS.Argon.Controllers
         public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId, [FromBody]List<CreateOrUpdateConstraintCommand> cmds)
         {
             _log.LogDebug("UpdateCollectionContraints called");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection.ConstraintGroup;
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="379354bd-89c6-481d-a3ab-a93074e7fb0f" created="3.5.0" activeEnvironment="Default environment" name="Argon" resourceRoot="" updated="3.5.0 2020-11-11T18:12:01Z" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-project id="379354bd-89c6-481d-a3ab-a93074e7fb0f" created="3.5.0" activeEnvironment="Local" name="Argon" resourceRoot="" updated="3.5.0 2020-11-11T18:12:01Z" xmlns:con="http://eviware.com/soapui/config">
   <con:settings>
     <con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.ProTestRunnerAction@values-local"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
   <con:entry key="Settings File Password" value=""/>
@@ -43,6 +43,7 @@
     <con:setting id="FlowLayout">false</con:setting>
     <con:setting id="ErrorDetails">true</con:setting>
     <con:setting id="IncludeCoverage">true</con:setting>
+    <con:setting id="GeneratableJUnitReport@Folder"/>
   </con:settings>
   <con:interface xsi:type="con:RestService" id="24137362-0ecf-4f26-93df-32d6290c0bb1" name="Argon - Content Service Layer" type="rest_ex" wadlVersion="https://swagger.io/openapiv3/specification" definitionUrl="https://localhost:8443/swagger/v1/swagger.json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:description>Argon. (Build Version: 1.0.2)</con:description>
@@ -1577,7 +1578,7 @@ with items are handled.</con:description>
           <con:params/>
           <con:sampleContent/>
         </con:representation>
-        <con:request name="Request 1" id="93deba57-9b94-4536-8f07-91cb2aca4cce" mediaType="application/json">
+        <con:request name="Request 1" id="93deba57-9b94-4536-8f07-91cb2aca4cce" mediaType="application/json" postQueryString="false">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request>{\r
@@ -1593,18 +1594,10 @@ with items are handled.</con:description>
     "allowableValues" : [ "string" ]\r
   } ]\r
 }</con:request>
-          <con:parameters/>
-        </con:request>
-        <con:request name="Request 2" id="34060e33-97d6-4feb-8f80-e3d8d3f5712a" mediaType="text/json">
-          <con:settings/>
-          <con:endpoint>https://localhost:8443/</con:endpoint>
-          <con:request/>
-          <con:parameters/>
-        </con:request>
-        <con:request name="Request 3" id="bd498f7d-a884-4729-9dbd-303b4479cda7" mediaType="application/*+json">
-          <con:settings/>
-          <con:endpoint>https://localhost:8443/</con:endpoint>
-          <con:request/>
+          <con:credentials>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -1672,7 +1665,9 @@ including some top-level metrics including its length and overall size.</con:des
 }</con:sampleContent>
         </con:representation>
         <con:request name="Request 1" id="b918465d-2fe4-48fc-919f-e1d72162492a" mediaType="application/json">
-          <con:settings/>
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
           <con:credentials>
@@ -1779,18 +1774,21 @@ including some top-level metrics including its length and overall size.</con:des
   "name" : "string",\r
   "description" : "string"\r
 }</con:request>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
         <con:request name="Request 2" id="3418ce6d-3908-4361-b31c-e98418e7c55d" mediaType="text/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
         <con:request name="Request 3" id="150365bc-4128-49f8-a5d3-a5444f0feaac" mediaType="application/*+json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -1841,6 +1839,7 @@ including some top-level metrics including its length and overall size.</con:des
         <con:request name="Request 1" id="0f8c5fa6-efff-463b-b876-55c2e96ea20c" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -1920,18 +1919,21 @@ Constraints take effect on the next operation against the collection.</con:descr
   "valueType" : "string",\r
   "allowableValues" : [ "string" ]\r
 } ]</con:request>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
         <con:request name="Request 2" id="8abb3edc-a934-4f92-80d0-4c548ae3d37e" mediaType="text/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
         <con:request name="Request 3" id="0bf1a4e6-b243-45ca-b3b3-4f9935886738" mediaType="application/*+json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -1985,6 +1987,7 @@ Constraints take effect on the next operation against the collection.</con:descr
         <con:request name="Request 1" id="d859d21b-79a3-45f0-9ba9-36e22f9ddef5" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2110,6 +2113,7 @@ this method can be used to retrieve information about the currently configured V
         <con:request name="Request 1" id="014a3071-6dfd-4082-9736-17a3495a02be" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2194,6 +2198,7 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2280,6 +2285,7 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
         <con:request name="Request 1" id="75528d26-126c-4eed-a0a6-175973d99c71" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2366,6 +2372,7 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
         <con:request name="Request 1" id="d2c31d9f-d514-497d-a213-a0fd36e6118d" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2407,6 +2414,7 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
         <con:request name="Request 1" id="0f9aa9cf-580f-49c7-a989-0ec42a7f384b" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2453,6 +2461,7 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
           <con:request/>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
@@ -2544,58 +2553,67 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
         <con:request name="Request 1" id="f172bbe9-926d-4e4f-8d27-03eaf1350091" mediaType="application/json">
           <con:settings/>
           <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:credentials/>
           <con:parameters/>
         </con:request>
       </con:method>
     </con:resource>
   </con:interface>
-  <con:testSuite id="12ff522b-57b8-4b3b-b02b-6abc98ecd72d" name="Configuration">
-    <con:settings>
-      <con:setting id="IncludeOverview">true</con:setting>
-      <con:setting id="IncludeResults">true</con:setting>
-      <con:setting id="FlowLayout">false</con:setting>
-      <con:setting id="ErrorDetails">true</con:setting>
-      <con:setting id="IncludeCoverage">true</con:setting>
-    </con:settings>
+  <con:testSuite id="7e73fa29-5cf9-450e-8649-6c25c8ed2670" name="Fuzz Tests">
+    <con:settings/>
     <con:savedRecentRuns>1</con:savedRecentRuns>
     <con:runType>SEQUENTIAL</con:runType>
-    <con:testCase id="9aaade96-99f6-4d0b-9893-7d27118c42ff" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Configuration (Active)" searchProperties="true" timeout="0">
-      <con:settings>
-        <con:setting id="IncludeOverview">true</con:setting>
-        <con:setting id="IncludeResults">true</con:setting>
-        <con:setting id="FlowLayout">false</con:setting>
-        <con:setting id="ErrorDetails">true</con:setting>
-        <con:setting id="IncludeCoverage">true</con:setting>
-      </con:settings>
+    <con:testCase id="a154e7a8-9255-4650-92d1-dc686201f35d" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Garbage" searchProperties="true" timeout="0">
+      <con:settings/>
       <con:savedRecentRuns>1</con:savedRecentRuns>
-      <con:testStep type="restrequest" name="REST Request" id="bb37cd27-b9ee-4087-9d97-da2968569456">
+      <con:testStep type="httprequest" name="HTTP Request" id="563497e5-c84a-4fc6-9196-95826b97ddac">
         <con:settings/>
-        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Configuration" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <con:restRequest name="REST Request" id="d397f51c-354e-4d6a-8806-a81296719903" mediaType="application/json">
-            <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
-            </con:settings>
-            <con:endpoint>https://localhost:8443/</con:endpoint>
-            <con:request/>
-            <con:originalUri>https://localhost/api/v1/Configuration</con:originalUri>
-            <con:assertion type="Valid HTTP Status Codes" id="69e9c14a-2b20-458f-89ad-9316a6ea3b36" name="Valid HTTP Status Codes">
-              <con:settings/>
-              <con:configuration>
-                <codes>200</codes>
-              </con:configuration>
-            </con:assertion>
-            <con:assertion type="Response SLA Assertion" id="565b42bc-02b6-42d6-a4b4-dc513fadb759" name="Response SLA">
-              <con:configuration>
-                <SLA>200</SLA>
-              </con:configuration>
-            </con:assertion>
-            <con:credentials>
-              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
-              <con:authType>No Authorization</con:authType>
-            </con:credentials>
-            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-            <con:parameters/>
-          </con:restRequest>
+        <con:config method="GET" xsi:type="con:HttpRequest" id="98d7f8a6-500f-47b0-a213-20b7918a6aac" name="HTTP Request" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://localhost:8443/Garbage</con:endpoint>
+          <con:request/>
+          <con:assertion type="Valid HTTP Status Codes" id="fd564a4c-329d-465e-9742-4c3182edb8ea" name="Valid HTTP Status Codes">
+            <con:settings/>
+            <con:configuration>
+              <codes>404</codes>
+            </con:configuration>
+          </con:assertion>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
+        </con:config>
+      </con:testStep>
+      <con:properties/>
+      <con:reportParameters/>
+    </con:testCase>
+    <con:testCase id="32185f46-ad3c-4a15-9caa-65708e1d8e34" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Index Trawl" searchProperties="true" timeout="0">
+      <con:settings/>
+      <con:savedRecentRuns>1</con:savedRecentRuns>
+      <con:testStep type="httprequest" name="HTTP Request" id="1cfe05a9-e371-4d9c-995a-3d1412cb07c1">
+        <con:settings/>
+        <con:config method="GET" xsi:type="con:HttpRequest" id="696b7fab-7782-43a3-a7f4-e59249365bc3" name="HTTP Request" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://localhost:8443/index.html</con:endpoint>
+          <con:request/>
+          <con:assertion type="Valid HTTP Status Codes" id="c73f414b-f884-42ec-abee-dd262e76746b" name="Valid HTTP Status Codes">
+            <con:settings/>
+            <con:configuration>
+              <codes>404</codes>
+            </con:configuration>
+          </con:assertion>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
         </con:config>
       </con:testStep>
       <con:properties/>
@@ -2604,38 +2622,34 @@ automatic type-detection is performed on the meta-data pairs.</con:description>
     <con:properties/>
     <con:reportParameters/>
   </con:testSuite>
-  <con:testSuite id="75cf6e52-d7c3-45ca-bbc2-798f57742501" name="Collections">
+  <con:testSuite id="c0b57f77-d067-4735-9eef-3503576a5256" name="Argon - Content Service Layer TestSuite">
+    <con:description>The test suite generated for the REST service [Argon - Content Service Layer]</con:description>
     <con:settings/>
     <con:savedRecentRuns>1</con:savedRecentRuns>
     <con:runType>SEQUENTIAL</con:runType>
-    <con:testCase id="af7764b6-b370-45cf-bf15-beeddc4a9217" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Retrieve All Collections" searchProperties="true" timeout="0">
+    <con:testCase id="ba56c3c3-3dc8-4364-be24-dc5d847b39ab" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Argon - Content Service Layer TestCase" searchProperties="true" timeout="0">
       <con:settings/>
       <con:savedRecentRuns>1</con:savedRecentRuns>
-      <con:testStep type="restrequest" name="REST Request" id="63d45324-c9e0-41f7-82e4-562b73e5208c">
+      <con:testStep type="restrequest" name="/api/v1/Collections" id="9aa77dd2-28cf-4261-91ad-2ab863b3aefd">
         <con:settings/>
         <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <con:restRequest name="REST Request" id="1c5c6ee4-2eb7-489e-9f48-b001fdff9a5e" mediaType="application/json">
+          <con:restRequest name="/api/v1/Collections" id="1c5c6ee4-2eb7-489e-9f48-b001fdff9a5e" mediaType="application/json">
             <con:settings>
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:endpoint>https://localhost:8443/</con:endpoint>
             <con:request/>
             <con:originalUri>https://localhost/api/v1/Collections</con:originalUri>
-            <con:assertion type="Valid HTTP Status Codes" id="101e7d86-362d-4840-805a-5fba3f64fbd4" name="Valid HTTP Status Codes">
-              <con:settings/>
-              <con:configuration>
-                <codes>200</codes>
-              </con:configuration>
-            </con:assertion>
-            <con:assertion type="Response SLA Assertion" id="f3b58887-df70-4cdb-ab69-182729f8fb5a" name="Response SLA">
-              <con:configuration>
-                <SLA>200</SLA>
-              </con:configuration>
-            </con:assertion>
-            <con:assertion type="GroovyScriptAssertion" id="72667f5e-0875-47ed-84f6-1828acee2353" name="Have Collections">
+            <con:assertion type="GroovyScriptAssertion" id="a63f1d73-b988-427c-bce2-6dd1fe627d9a" name="Script Assertion">
               <con:configuration>
                 <scriptText>def json = new groovy.json.JsonSlurper().parseText(context.response)
 json.Data.size() > 0</scriptText>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="Valid HTTP Status Codes" id="4ba2dce4-e68a-46c3-93f7-114b9e2cddb9" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>200</codes>
               </con:configuration>
             </con:assertion>
             <con:credentials>
@@ -2647,16 +2661,404 @@ json.Data.size() > 0</scriptText>
           </con:restRequest>
         </con:config>
       </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections Create" id="2839b1eb-8849-4041-87fa-d229fe6e233d">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections Create" id="93deba57-9b94-4536-8f07-91cb2aca4cce" mediaType="application/json" postQueryString="false">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request>{\r
+  "name" : "Collection ${=(int)(Math.random()*1000)}",\r
+  "providerTag" : "${fsProvider}",\r
+  "description" : "string",\r
+  "constraints" : [ {\r
+    "name" : "string",\r
+    "constraintType" : "mandatory",\r
+    "sourceProperty" : "string",\r
+    "targetProperty" : "string",\r
+    "valueType" : "string",\r
+    "allowableValues" : [ "string" ]\r
+  } ]\r
+}</con:request>
+            <con:originalUri>https://localhost/api/v1/Collections</con:originalUri>
+            <con:assertion type="Valid HTTP Status Codes" id="1f83a758-bf8f-455c-ba83-e75b6fded014" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>201</codes>
+              </con:configuration>
+            </con:assertion>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections Create Duplicate" id="132a280a-3c8a-420a-b1a2-b6160eddb7aa">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections Create Duplicate" id="93deba57-9b94-4536-8f07-91cb2aca4cce" mediaType="application/json" postQueryString="false">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request>{\r
+  "name" : "${/api/v1/Collections Create#Response#$['name']}",\r
+  "providerTag" : "${fsProvider}",\r
+  "description" : "string",\r
+  "constraints" : [ {\r
+    "name" : "string",\r
+    "constraintType" : "mandatory",\r
+    "sourceProperty" : "string",\r
+    "targetProperty" : "string",\r
+    "valueType" : "string",\r
+    "allowableValues" : [ "string" ]\r
+  } ]\r
+}</con:request>
+            <con:originalUri>https://localhost/api/v1/Collections</con:originalUri>
+            <con:assertion type="Valid HTTP Status Codes" id="1f83a758-bf8f-455c-ba83-e75b6fded014" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>400</codes>
+              </con:configuration>
+            </con:assertion>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}" id="ed8f56fc-3ff2-44c4-85ee-e0271df6ee3d">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}" id="b918465d-2fe4-48fc-919f-e1d72162492a" mediaType="application/json">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/</con:originalUri>
+            <con:assertion type="Valid HTTP Status Codes" id="ab452374-4f1b-4f24-90a5-d034e18ab643" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>200</codes>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="Simple Contains" id="fc88083a-7fee-4c16-aebe-57a67685494f" name="Contains">
+              <con:configuration>
+                <token>Collection</token>
+                <ignoreCase>false</ignoreCase>
+                <useRegEx>false</useRegEx>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="JsonPath RegEx Match" id="ee77fe22-7c1e-4a0f-9499-d2f4b8d388bf" name="JSONPath RegEx Match">
+              <con:configuration>
+                <path>$['name']</path>
+                <content>true</content>
+                <allowWildcards>false</allowWildcards>
+                <ignoreNamspaceDifferences>false</ignoreNamspaceDifferences>
+                <ignoreComments>false</ignoreComments>
+                <regEx>Collection.*</regEx>
+              </con:configuration>
+            </con:assertion>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters>
+              <con:entry key="collectionId" value="${/api/v1/Collections Create#Response#$['id']}"/>
+            </con:parameters>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId} 2" id="875a60be-40bb-4616-8e28-3ab39cf9fe5f">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}" methodName="PATCH" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId} 2" id="9dd2ded9-f060-4495-9bc7-5c5603755eaa" mediaType="application/json" postQueryString="false">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request>{\r
+  "name" : "string",\r
+  "description" : "string"\r
+}</con:request>
+            <con:originalUri>https://localhost/api/v1/Collections/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId} 3" id="a2be4161-6caa-4a94-a4e0-922d436b8c23">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}" methodName="PATCH" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId} 3" id="3418ce6d-3908-4361-b31c-e98418e7c55d" mediaType="text/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId} 4" id="2a60ae33-5d40-44a9-9fa0-a9c5321b6c97">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}" methodName="PATCH" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId} 4" id="150365bc-4128-49f8-a5d3-a5444f0feaac" mediaType="application/*+json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Constraints" id="277e6a01-6da9-4d60-a3d3-27432fe51e93">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Constraints" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Constraints" id="0f8c5fa6-efff-463b-b876-55c2e96ea20c" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Constraints</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Constraints 2" id="b6857b63-0678-483e-9f98-53d72af1b4de">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Constraints" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Constraints 2" id="5fe221a2-d580-4c22-9ef3-46d9863d455c" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request>[ {\r
+  "name" : "string",\r
+  "constraintType" : "mandatory",\r
+  "sourceProperty" : "string",\r
+  "targetProperty" : "string",\r
+  "valueType" : "string",\r
+  "allowableValues" : [ "string" ]\r
+} ]</con:request>
+            <con:originalUri>https://localhost/api/v1/Collections/Constraints</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Constraints 3" id="53ff53cf-49f6-46d6-80b5-40fa0198fab3">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Constraints" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Constraints 3" id="8abb3edc-a934-4f92-80d0-4c548ae3d37e" mediaType="text/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Constraints</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Constraints 4" id="4641cb8e-0110-4632-b539-c25e28563e9c">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Constraints" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Constraints 4" id="0bf1a4e6-b243-45ca-b3b3-4f9935886738" mediaType="application/*+json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Constraints</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Constraints/{constraintId}" id="e3cdf527-d280-40b9-be91-eabbd74392af">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Constraints/{constraintId}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Constraints/{constraintId}" id="d859d21b-79a3-45f0-9ba9-36e22f9ddef5" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Constraints/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Configuration" id="061666bc-4d39-41df-9d9e-aee541aed58d">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Configuration" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Configuration" id="d397f51c-354e-4d6a-8806-a81296719903" mediaType="application/json">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Configuration</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items" id="eedeb71e-f6db-4833-85b7-6c3ba63302e3">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items" id="014a3071-6dfd-4082-9736-17a3495a02be" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items 2" id="b26666b9-3f52-46ce-9967-e126b7d89ba6">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items 2" id="0252a3cd-a4ae-4b0e-b1cf-180043042eb9" mediaType="multipart/form-data">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items/{itemId}/Properties" id="9c497348-078a-43e8-a352-e34a53e01835">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items/{itemId}/Properties" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items/{itemId}/Properties" id="75528d26-126c-4eed-a0a6-175973d99c71" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items/Properties</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items/{itemId}" id="c56dec73-ff2d-4a07-a089-17141cc0e0e2">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items/{itemId}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items/{itemId}" id="d2c31d9f-d514-497d-a213-a0fd36e6118d" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}" id="167328d2-8029-4d77-b421-c6ad6b8eaa08">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}" id="0f9aa9cf-580f-49c7-a989-0ec42a7f384b" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items/Versions/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions" id="ce361c46-cd1f-4fcc-9dec-3ac6a3953673">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions" methodName="POST" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions" id="d3e31676-f5cf-47c3-84ae-914881a63f59" mediaType="multipart/form">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Items/Versions</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties" id="e5df7ad0-4bfb-4c95-a10b-398d540fa49c">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties" id="f172bbe9-926d-4e4f-8d27-03eaf1350091" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections/Item/Versions/Properties</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
       <con:properties/>
       <con:reportParameters/>
+      <con:breakPoints>
+        <con:testStepId>132a280a-3c8a-420a-b1a2-b6160eddb7aa</con:testStepId>
+        <con:status>NONE</con:status>
+        <con:properties/>
+      </con:breakPoints>
     </con:testCase>
-    <con:properties/>
-    <con:reportParameters/>
-  </con:testSuite>
-  <con:testSuite id="8fec4674-db7d-4d31-98f0-7c4a1621a37f" name="Items">
-    <con:settings/>
-    <con:savedRecentRuns>1</con:savedRecentRuns>
-    <con:runType>SEQUENTIAL</con:runType>
     <con:properties/>
     <con:reportParameters/>
   </con:testSuite>
@@ -2705,6 +3107,13 @@ json.Data.size() > 0</scriptText>
 // pw.close()
 // fos.close()</con:script>
   </con:eventHandlers>
+  <con:environment id="b8c3a210-ece5-4aac-940f-feacf804fe05" name="Local" index="0">
+    <con:service type="REST" name="Argon - Content Service Layer">
+      <con:endpoint authProfile="Inherit From Parent" username="" password="" domain="" incomingWss="" outgoingWss="" wssTimeToLive="" wssType="" proxyHost="" proxyPort="" proxyUsername="" proxyPassword="">https://localhost:8443/</con:endpoint>
+    </con:service>
+    <con:databaseConnectionContainer/>
+    <con:jmsConnectionContainer/>
+  </con:environment>
   <con:authRepository/>
   <con:tags/>
 </con:soapui-project>

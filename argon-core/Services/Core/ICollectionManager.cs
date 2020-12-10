@@ -55,7 +55,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="collectionId">The unique GUID associated with the collection</param>
         /// <returns></returns>
-        public Task<Collection> ReadCollectionAsync(Guid collectionId);
+        public Task<Collection> GetCollectionAsync(Guid collectionId);
 
         /// <summary>
         /// Attempts to update the meta-data associated with a given <see cref="Collection"/> instance,

@@ -207,8 +207,8 @@ namespace JCS.Argon.Services.Core
         }
 
 
-        /// <inheritdoc cref="ICollectionManager.ReadCollectionAsync"/> 
-        public async Task<Collection> ReadCollectionAsync(Guid collectionId)
+        /// <inheritdoc cref="ICollectionManager.GetCollectionAsync"/> 
+        public async Task<Collection> GetCollectionAsync(Guid collectionId)
         {
             if (await CollectionExistsAsync(collectionId))
             {

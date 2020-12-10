@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
@@ -8,6 +9,7 @@ using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.Core
 {
@@ -73,14 +75,30 @@ namespace JCS.Argon.Services.Core
                     "The specified item does not exist"); 
             }
         }
-        
-        /// <inheritdoc cref="IItemManager.CountItemsAsync" />
+
+        /// <inheritdoc />
+        public async Task<Version> GetCurrentItemVersion(Collection collection, Guid itemId)
+        {
+            var maxVersion= await _dbContext.Versions.Where(v => v.Item.Id == itemId).MaxAsync(v => v.Major);
+            return await _dbContext.Versions
+                .SingleAsync(v => (v.Major == maxVersion && v.Item.Id == itemId));
+        }
+
+        /// <inheritdoc/>
+        public async Task<Version> GetCurrentItemVersion(Collection collection, Item item)
+        {
+            var maxVersion= await _dbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
+            return await _dbContext.Versions
+                .SingleAsync(v => (v.Major == maxVersion && v.Item.Id == item.Id));
+        }
+
+        /// <inheritdoc></inheritdoc>
         public async Task<int> CountItemsAsync(Collection collection)
         {
             return await _dbContext.Items.CountAsync(c => c.Collection.Id == collection.Id);
         }
-        
-        /// <inheritdoc cref="IItemManager.CountItemsAsync"/>
+
+        /// <inheritdoc></inheritdoc>
         public async Task<int> CountItemsAsync()
         {
             return await _dbContext.Items.CountAsync();
@@ -96,6 +114,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private async Task PerformProviderItemCreationActions(Collection collection, Item item, JCS.Argon.Model.Schema.Version version, IFormFile source)
         {
+            _log.LogDebug($"Item version creation operation initiated");
             _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
             var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
             var creationResult= await provider.CreateCollectionItemVersionAsync(collection, item, version, source);
@@ -103,6 +122,31 @@ namespace JCS.Argon.Services.Core
             {
                 item.PropertyGroup.MergeDictionary(creationResult.Properties);
                 _dbContext.Update(item);
+            }
+        }
+
+        /// <summary>
+        /// Helper method that does the heavy lifting around the retrieval of specific version streams from storage
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="item"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        /// <exception cref="IItemManager.ItemManagerException"></exception>
+        private async Task<Stream> PerformProviderVersionRetrievalActions(Collection collection, Item item, Version version)
+        {
+            _log.LogDebug($"Item version retrieval operation initiated");
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
+            var retrievalResult= await provider.ReadCollectionItemVersionAsync(collection, item, version);
+            if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
+            {
+                return retrievalResult.Stream;
+            }
+            else
+            {
+                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
+                    $"An unhandled error occurred whilst attempting to retrieve a version from storage");
             }
         }
 
@@ -128,7 +172,6 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// Creates a new version template
         /// </summary>
-        /// <param name="item">The parent item</param>
         /// <param name="source">The source object</param>
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
         /// <param name="minorVersion">Optional minor version (default to 0)</param>
@@ -170,17 +213,57 @@ namespace JCS.Argon.Services.Core
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
             {
                 // roll back the entity changes
-                _log.LogWarning($"Caught storage exception whilst attempting item physical operation - rolling back db changes");
+                _log.LogWarning($"Caught storage exception whilst attempting item physical operation");
                 throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
             catch (Exception ex)
             {
                 // roll back the entity changes
-                _log.LogWarning($"Caught general exception whilst attempting item physical operation - rolling back db changes");
+                _log.LogWarning($"Caught general exception whilst attempting item physical operation");
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
+        }
+        
+        /// <inheritdoc cref="IItemManager.AddItemVersionToCollectionAsync"/>
+        public async Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object> properties, IFormFile inboundFile)
+        {
+            try
+            {
+                var maxVersion= await _dbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
+                var version = await CreateNewVersionTemplate(inboundFile, majorVersion: maxVersion+1);
+                version.Item = item;
+                var addOp= await _dbContext.Versions.AddAsync(version);
+                await _dbContext.SaveChangesAsync();
+                version = addOp.Entity;
+                await PerformProviderItemCreationActions(collection, item, version, inboundFile);
+                collection.Length = collection.Length + 1;
+                collection.Size = collection.Size + version.Size;
+                _dbContext.Collections.Update(collection);
+                await _dbContext.SaveChangesAsync();
+                return item;
+            }
+            catch (IVirtualStorageManager.VirtualStorageManagerException ex)
+            {
+                // roll back the entity changes
+                _log.LogWarning($"Caught storage exception whilst attempting item physical operation");
+                throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                    ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                // roll back the entity changes
+                _log.LogWarning($"Caught general exception whilst attempting version physical operation - rolling back db changes");
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    ex.Message, ex);
+            }
+            throw new NotImplementedException();
+        }
+
+        public async Task<Stream> GetStreamForVersion(Collection collection, Version version)
+        {
+            throw new NotImplementedException();
         }
     }
 }

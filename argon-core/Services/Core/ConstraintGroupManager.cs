@@ -23,7 +23,7 @@ namespace JCS.Argon.Services.Core
             _log.LogDebug("Creating new instance");
         }
 
-        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync"/> 
+        /// <inheritdoc></inheritdoc> 
         public async Task<ConstraintGroup> CreateConstraintGroupAsync()
         {
             try
@@ -39,7 +39,7 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync"/> 
+        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync"></inheritdoc> 
         public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> cmds)
         {
             try

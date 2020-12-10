@@ -46,7 +46,7 @@ namespace JCS.Argon.Controllers
         public async Task<List<Item>> ReadItems(Guid collectionId)
         {
             _log.LogDebug($"Reading collection items for collection with id: {collectionId}");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var items = await _itemManager.GetItemsForCollectionAsync(collection);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return items;
@@ -68,7 +68,7 @@ namespace JCS.Argon.Controllers
         public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId)
         {
             _log.LogDebug($"Reading collection item for collection with id: {collectionId}, item id: {itemId}");
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var items = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return items;
@@ -90,7 +90,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> ReadItemContent(Guid collectionId, Guid itemId)
+        public async Task<IActionResult> ReadItemContent(Guid collectionId, Guid itemId)
         {
             throw new NotImplementedException();
         }
@@ -108,7 +108,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Version> ReadVersionContent(Guid collectionId, Guid itemId, Guid versionId)
+        public async Task<IActionResult> ReadVersionContent(Guid collectionId, Guid itemId, Guid versionId)
         {
             throw new NotImplementedException();
         }
@@ -139,7 +139,7 @@ namespace JCS.Argon.Controllers
         public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
             var properties = ExtractPropertiesFromRequest();
-            var collection = await _collectionManager.ReadCollectionAsync(collectionId);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return item;
@@ -164,15 +164,19 @@ namespace JCS.Argon.Controllers
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Versions")]
-        [Consumes("multipart/form")]
+        [Consumes("multipart/form-data")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<List<Version>> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "version")] IFormFile file)
+        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")] IFormFile file)
         {
             var properties = ExtractPropertiesFromRequest();
-            throw new NotImplementedException();
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            var revisedItem = await _itemManager.AddItemVersionToCollectionAsync(collection, item, properties, file);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return revisedItem;
         }
 
         /// <summary>

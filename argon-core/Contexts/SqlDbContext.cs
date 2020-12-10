@@ -50,7 +50,7 @@ namespace JCS.Argon.Contexts
         public DbSet<Constraint> Constraints { get; set; } = null!;
 
         /// <summary>
-        /// The set of all <see cref="CacheEntry"> model elements
+        /// The set of all <see cref="CacheEntry"/> model elements
         /// </summary>
         public DbSet<CacheEntry> CacheEntries { get; set; } = null!;
 
@@ -71,7 +71,7 @@ namespace JCS.Argon.Contexts
             // add a custom conversion for string arrays 
             modelBuilder.Entity<Constraint>()
                 .Property(c => c.AllowableValues)
-                .HasConversion(v => string.Join(',', v),
+                .HasConversion(v => string.Join(',', v ?? Array.Empty<string>()),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
             
             base.OnModelCreating(modelBuilder);

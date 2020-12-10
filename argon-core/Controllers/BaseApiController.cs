@@ -21,7 +21,7 @@ namespace JCS.Argon.Controllers
         /// Helper function which attempts to decode any supplied properties within an inbound request
         /// </summary>
         /// <returns></returns>
-        protected Dictionary<string, object> ExtractPropertiesFromRequest()
+        protected Dictionary<string, object>? ExtractPropertiesFromRequest()
         {
             Dictionary<string, object>? properties = null;
             if (Request.Form.ContainsKey("Properties"))
