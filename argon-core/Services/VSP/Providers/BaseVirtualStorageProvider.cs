@@ -43,14 +43,20 @@ namespace JCS.Argon.Services.VSP.Providers
         
         /// <inheritdoc cref="IVirtualStorageProvider.Binding"/>
         public VirtualStorageBinding? Binding => _binding;
-        
+
+        /// <summary>
+        /// A captured instance of <see cref="IServiceProvider"/>
+        /// </summary>
+        protected IServiceProvider? _serviceProvider; 
+
         /// <inheritdoc cref="IVirtualStorageProvider.ProviderType"/>
         public abstract string ProviderType { get; }
 
         /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
-        public void Bind(VirtualStorageBinding binding)
+        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider)
         {
             _binding = binding;
+            _serviceProvider = serviceProvider;
             _log.LogDebug($"Performing VSP bind: {_binding}");
             AfterBind();
         }

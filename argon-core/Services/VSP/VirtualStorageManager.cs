@@ -22,6 +22,11 @@ namespace JCS.Argon.Services.VSP
         private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
 
         /// <summary>
+        /// The current IoC <see cref="IServiceProvider"/>
+        /// </summary>
+        private readonly IServiceProvider _serviceProvider;
+
+        /// <summary>
         /// Internal cache of the types associated with different <see cref="IVirtualStorageProvider"/> implementations
         /// </summary>
         private readonly Dictionary<string, Type> _providerTypesMap = new Dictionary<string, Type>();
@@ -31,10 +36,13 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         private readonly ILogger<VirtualStorageManager> _log;
 
-        public VirtualStorageManager(ILogger<VirtualStorageManager> log, IOptionsMonitor<VirtualStorageConfiguration> vspConfiguration)
+        public VirtualStorageManager(ILogger<VirtualStorageManager> log, 
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<VirtualStorageConfiguration> vspConfiguration)
         {
             log.LogDebug("Creating new instance");
             _virtualStorageConfiguration= vspConfiguration.CurrentValue;
+            _serviceProvider = serviceProvider;
             _log = log;
             ResolveProviders();
         }
@@ -169,7 +177,7 @@ namespace JCS.Argon.Services.VSP
                 try
                 {
                     var provider = CreateProviderInstance(binding.ProviderType);
-                    provider.Bind(binding);
+                    provider.Bind(binding, _serviceProvider);
                     return provider;
                 }
                 catch (IVirtualStorageProvider.VirtualStorageProviderException ex)

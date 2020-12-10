@@ -41,7 +41,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collection"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        public Task<Item> GetItemForCollection(Collection collection, Guid itemId);
+        public Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId);
         
         /// <summary>
         /// Return a count of items for a specific collection

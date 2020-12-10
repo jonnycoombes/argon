@@ -55,8 +55,8 @@ namespace JCS.Argon.Services.Core
                     .ToListAsync();
                 return items;
         }
-        /// <inheritdoc cref="IItemManager.GetItemForCollection"/>
-        public async Task<Item> GetItemForCollection(Collection collection, Guid itemId)
+        /// <inheritdoc cref="IItemManager.GetItemForCollectionAsync"/>
+        public async Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId)
         {
             if (await _dbContext.Items.AnyAsync(i => i.Id == itemId))
             {
@@ -162,6 +162,7 @@ namespace JCS.Argon.Services.Core
                 item = itemEntity.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.Length = collection.Length + 1;
+                collection.Size = collection.Size + version.Size;
                 _dbContext.Collections.Update(collection);
                 await _dbContext.SaveChangesAsync();
                 return item;

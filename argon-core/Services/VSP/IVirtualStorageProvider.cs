@@ -83,6 +83,7 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         VirtualStorageBinding? Binding { get; }
         
+        
         /// <summary>
         /// Should return a unique identifying string for the provider.  This is used within
         /// <see cref="VirtualStorageBinding"/> configuration elements in order to tell instances of <see cref="IVirtualStorageManager"/>
@@ -94,7 +95,8 @@ namespace JCS.Argon.Services.VSP
         /// Binds a given provider to its configuration
         /// </summary>
         /// <param name="binding"></param>
-        public void Bind(VirtualStorageBinding binding);
+        /// <param name="serviceProvider"></param>
+        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider);
 
         /// <summary>
         /// Asks a provider to create a physical representation of a <see cref="Collection"/>

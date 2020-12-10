@@ -51,11 +51,6 @@ namespace JCS.Argon.Model.Schema
         public string ProviderTag { get; set; }
         
         /// <summary>
-        /// An (optional) <see cref="Uri"/> that may be passed back by the underlying storage provider
-        /// </summary>
-        public Uri? StorageLocation { get; set; }
-        
-        /// <summary>
         /// The items associated with this collection
         /// </summary>
         [JsonIgnore]

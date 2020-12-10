@@ -69,7 +69,7 @@ namespace JCS.Argon.Controllers
         {
             _log.LogDebug($"Reading collection item for collection with id: {collectionId}, item id: {itemId}");
             var collection = await _collectionManager.ReadCollectionAsync(collectionId);
-            var items = await _itemManager.GetItemForCollection(collection, itemId);
+            var items = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return items;
         }
