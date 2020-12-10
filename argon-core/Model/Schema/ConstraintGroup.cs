@@ -16,7 +16,7 @@ namespace JCS.Argon.Model.Schema
         [JsonIgnore]
         [Timestamp]
         public byte[]? Timestamp { get; set; }
-    
+
         /// <summary>
         /// The unique identifier for the constraint group
         /// </summary>

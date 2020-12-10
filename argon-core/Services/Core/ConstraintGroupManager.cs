@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Transactions;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
 #pragma warning disable 1574
 
 namespace JCS.Argon.Services.Core
@@ -114,7 +114,7 @@ namespace JCS.Argon.Services.Core
                     "Failed to create a new constraint", ex);
             }
         }
-        
+
         /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints"/>
         public async Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties)
         {

@@ -14,13 +14,12 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/[controller]")]
     public class CollectionsController : BaseApiController
     {
-
         /// <summary>
         /// An instance of <see cref="ICollectionManager"/>, used for most of the interactions
         /// with collections
         /// </summary>
         protected readonly ICollectionManager _collectionManager;
-        
+
         /// <summary>
         /// Default constructor.  Parameters are DI'd at runtime
         /// </summary>

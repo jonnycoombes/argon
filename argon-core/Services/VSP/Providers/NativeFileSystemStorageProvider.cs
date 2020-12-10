@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Threading.Tasks;
-using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
 using Version = JCS.Argon.Model.Schema.Version;
 
@@ -98,7 +95,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Tries to determine the path of a given <see cref="Version"/> object
+        /// Tries to determine the path of a given <see cref="Model.Schema.Version"/> object
         /// </summary>
         /// <param name="item"></param>
         /// <param name="version"></param>
@@ -179,7 +176,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     $"Unable to add new version: {ex.Message}", ex);
             }
 
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)

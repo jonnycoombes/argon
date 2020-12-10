@@ -1,15 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Helpers;
-using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.Core;
-using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,9 +13,8 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/[controller]")]
     public class ConfigurationController : BaseApiController
     {
-
         protected ICollectionManager _collectionManager;
-        
+
         public ConfigurationController(ILogger<ConfigurationController> log, ICollectionManager collectionManager ) : base(log)
         {
             _log.LogDebug("Creating new instance");

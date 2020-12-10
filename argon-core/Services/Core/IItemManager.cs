@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
+using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.Core
 {
@@ -13,22 +14,6 @@ namespace JCS.Argon.Services.Core
     /// </summary>
     public interface IItemManager
     {
-        /// <summary>
-        /// Exception type which may be thrown by methods across this interface
-        /// </summary>
-        public sealed class ItemManagerException : ResponseAwareException
-        {
-            public ItemManagerException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(IItemManager);
-            }
-
-            public ItemManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(IItemManager); 
-            }
-        }
-        
         /// <summary>
         /// Returns a list of items for a given collection
         /// </summary>
@@ -50,7 +35,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="???"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        public Task<JCS.Argon.Model.Schema.Version> GetCurrentItemVersion(Collection collection, Guid itemId);
+        public Task<Version> GetCurrentItemVersion(Collection collection, Guid itemId);
 
         /// <summary>
         /// Gets the current version for a specified item
@@ -58,9 +43,9 @@ namespace JCS.Argon.Services.Core
         /// <param name="collection"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public Task<JCS.Argon.Model.Schema.Version> GetCurrentItemVersion(Collection collection, Item item); 
-        
-        
+        public Task<Version> GetCurrentItemVersion(Collection collection, Item item);
+
+
         /// <summary>
         /// Return a count of items for a specific collection
         /// </summary>
@@ -95,11 +80,27 @@ namespace JCS.Argon.Services.Core
             IFormFile inboundFile);
 
         /// <summary>
-        /// Retrieves a stream for a given <see cref="Version"/>
+        /// Retrieves a stream for a given <see cref="System.Version"/>
         /// </summary>
         /// <param name="collection"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        public Task<Stream> GetStreamForVersion(Collection collection, JCS.Argon.Model.Schema.Version version);
+        public Task<Stream> GetStreamForVersion(Collection collection, Version version);
+
+        /// <summary>
+        /// Exception type which may be thrown by methods across this interface
+        /// </summary>
+        public sealed class ItemManagerException : ResponseAwareException
+        {
+            public ItemManagerException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(IItemManager);
+            }
+
+            public ItemManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(IItemManager); 
+            }
+        }
     }
 }

@@ -16,11 +16,6 @@ namespace JCS.Argon.Services.Core
     public class ItemManager : BaseCoreService, IItemManager
     {
         /// <summary>
-        /// Scoped instance of <see cref="IVirtualStorageManager"/>
-        /// </summary>
-        protected readonly IVirtualStorageManager _virtualStorageManager;
-
-        /// <summary>
         /// Scoped instance of <see cref="IConstraintGroupManager"/>
         /// </summary>
         protected readonly IConstraintGroupManager _constraintGroupManager;
@@ -29,7 +24,12 @@ namespace JCS.Argon.Services.Core
         /// Scoped instance of <see cref="IPropertyGroupManager"/>
         /// </summary>
         protected readonly IPropertyGroupManager _propertyGroupManager;
-        
+
+        /// <summary>
+        /// Scoped instance of <see cref="IVirtualStorageManager"/>
+        /// </summary>
+        protected readonly IVirtualStorageManager _virtualStorageManager;
+
         /// <summary>
         /// Default constructor with necessary IoC injected service dependencies
         /// </summary>
@@ -57,6 +57,7 @@ namespace JCS.Argon.Services.Core
                     .ToListAsync();
                 return items;
         }
+
         /// <inheritdoc cref="IItemManager.GetItemForCollectionAsync"/>
         public async Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId)
         {
@@ -104,94 +105,6 @@ namespace JCS.Argon.Services.Core
             return await _dbContext.Items.CountAsync();
         }
 
-        /// <summary>
-        /// Interact with the storage provider to store the actual item in the storage layer
-        /// </summary>
-        /// <param name="collection">The parent collection</param>
-        /// <param name="item">The freshly minted item</param>
-        /// <param name="version"></param>
-        /// <param name="source">The underlying source for the item</param>
-        /// <returns></returns>
-        private async Task PerformProviderItemCreationActions(Collection collection, Item item, JCS.Argon.Model.Schema.Version version, IFormFile source)
-        {
-            _log.LogDebug($"Item version creation operation initiated");
-            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
-            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
-            var creationResult= await provider.CreateCollectionItemVersionAsync(collection, item, version, source);
-            if (creationResult.Properties != null)
-            {
-                item.PropertyGroup.MergeDictionary(creationResult.Properties);
-                _dbContext.Update(item);
-            }
-        }
-
-        /// <summary>
-        /// Helper method that does the heavy lifting around the retrieval of specific version streams from storage
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="item"></param>
-        /// <param name="version"></param>
-        /// <returns></returns>
-        /// <exception cref="IItemManager.ItemManagerException"></exception>
-        private async Task<Stream> PerformProviderVersionRetrievalActions(Collection collection, Item item, Version version)
-        {
-            _log.LogDebug($"Item version retrieval operation initiated");
-            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
-            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
-            var retrievalResult= await provider.ReadCollectionItemVersionAsync(collection, item, version);
-            if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
-            {
-                return retrievalResult.Stream;
-            }
-            else
-            {
-                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
-                    $"An unhandled error occurred whilst attempting to retrieve a version from storage");
-            }
-        }
-
-        protected async Task<Item> CreateNewItemTemplate(Collection collection, JCS.Argon.Model.Schema.Version version, 
-            Dictionary<string, object>? properties)
-        {
-            var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
-            propertyGroup.MergeDictionary(properties);
-            var item = new Item()
-            {
-                Name = version.Name,
-                Collection= collection,
-                CreatedDate = DateTime.Now,
-                LastModified = DateTime.Now,
-                PropertyGroup = propertyGroup,
-                Versions = new List<JCS.Argon.Model.Schema.Version>()
-            };
-            item.Versions.Add(version);
-            version.Item = item;
-            return item;
-        }
-
-        /// <summary>
-        /// Creates a new version template
-        /// </summary>
-        /// <param name="source">The source object</param>
-        /// <param name="majorVersion">Optional major version (defaults to 1)</param>
-        /// <param name="minorVersion">Optional minor version (default to 0)</param>
-        /// <returns></returns>
-        protected Task<JCS.Argon.Model.Schema.Version> CreateNewVersionTemplate(IFormFile source, int majorVersion=1, int minorVersion=0)
-        {
-            return Task.Run(() =>
-            {
-                var version = new JCS.Argon.Model.Schema.Version()
-                {
-                    Name = source.FileName,
-                    MIMEType = source.ContentType,
-                    Size = source.Length,
-                    Major = majorVersion,
-                    Minor = minorVersion
-                };
-                return version;
-            });
-        }
-
         /// <inheritdoc cref="IItemManager.AddItemToCollectionAsync"/>
         public async Task<Item> AddItemToCollectionAsync(Collection collection, Dictionary<string, object>? properties,
             IFormFile inboundFile)
@@ -225,7 +138,7 @@ namespace JCS.Argon.Services.Core
                     ex.Message, ex);
             }
         }
-        
+
         /// <inheritdoc cref="IItemManager.AddItemVersionToCollectionAsync"/>
         public async Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object> properties, IFormFile inboundFile)
         {
@@ -264,6 +177,94 @@ namespace JCS.Argon.Services.Core
         public async Task<Stream> GetStreamForVersion(Collection collection, Version version)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Interact with the storage provider to store the actual item in the storage layer
+        /// </summary>
+        /// <param name="collection">The parent collection</param>
+        /// <param name="item">The freshly minted item</param>
+        /// <param name="version"></param>
+        /// <param name="source">The underlying source for the item</param>
+        /// <returns></returns>
+        private async Task PerformProviderItemCreationActions(Collection collection, Item item, Version version, IFormFile source)
+        {
+            _log.LogDebug($"Item version creation operation initiated");
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
+            var creationResult= await provider.CreateCollectionItemVersionAsync(collection, item, version, source);
+            if (creationResult.Properties != null)
+            {
+                item.PropertyGroup.MergeDictionary(creationResult.Properties);
+                _dbContext.Update(item);
+            }
+        }
+
+        /// <summary>
+        /// Helper method that does the heavy lifting around the retrieval of specific version streams from storage
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="item"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        /// <exception cref="IItemManager.ItemManagerException"></exception>
+        private async Task<Stream> PerformProviderVersionRetrievalActions(Collection collection, Item item, Version version)
+        {
+            _log.LogDebug($"Item version retrieval operation initiated");
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(collection.ProviderTag);
+            var retrievalResult= await provider.ReadCollectionItemVersionAsync(collection, item, version);
+            if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
+            {
+                return retrievalResult.Stream;
+            }
+            else
+            {
+                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
+                    $"An unhandled error occurred whilst attempting to retrieve a version from storage");
+            }
+        }
+
+        protected async Task<Item> CreateNewItemTemplate(Collection collection, Version version, 
+            Dictionary<string, object>? properties)
+        {
+            var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
+            propertyGroup.MergeDictionary(properties);
+            var item = new Item()
+            {
+                Name = version.Name,
+                Collection= collection,
+                CreatedDate = DateTime.Now,
+                LastModified = DateTime.Now,
+                PropertyGroup = propertyGroup,
+                Versions = new List<Version>()
+            };
+            item.Versions.Add(version);
+            version.Item = item;
+            return item;
+        }
+
+        /// <summary>
+        /// Creates a new version template
+        /// </summary>
+        /// <param name="source">The source object</param>
+        /// <param name="majorVersion">Optional major version (defaults to 1)</param>
+        /// <param name="minorVersion">Optional minor version (default to 0)</param>
+        /// <returns></returns>
+        protected Task<Version> CreateNewVersionTemplate(IFormFile source, int majorVersion=1, int minorVersion=0)
+        {
+            return Task.Run(() =>
+            {
+                var version = new Version()
+                {
+                    Name = source.FileName,
+                    MIMEType = source.ContentType,
+                    Size = source.Length,
+                    Major = majorVersion,
+                    Minor = minorVersion
+                };
+                return version;
+            });
         }
     }
 }

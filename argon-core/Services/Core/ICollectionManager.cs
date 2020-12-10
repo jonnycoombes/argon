@@ -5,29 +5,11 @@ using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
-using Microsoft.AspNetCore.Http;
 
 namespace JCS.Argon.Services.Core
 {
     public interface ICollectionManager
     {
-        
-        /// <summary>
-        /// Thrown in the event of a failure within the collection manager
-        /// </summary>
-        public sealed class CollectionManagerException : ResponseAwareException
-        {
-            public CollectionManagerException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(ICollectionManager);
-            }
-
-            public CollectionManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(ICollectionManager); 
-            }
-        }
-        
         /// <summary>
         /// Retrieves a list of all current collections
         /// </summary>
@@ -75,6 +57,20 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         public List<VirtualStorageBinding> GetStorageBindings();
 
+        /// <summary>
+        /// Thrown in the event of a failure within the collection manager
+        /// </summary>
+        public sealed class CollectionManagerException : ResponseAwareException
+        {
+            public CollectionManagerException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(ICollectionManager);
+            }
 
+            public CollectionManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(ICollectionManager); 
+            }
+        }
     }
 }

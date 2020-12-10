@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using JCS.Argon.Model.Schema;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -14,6 +12,11 @@ namespace JCS.Argon.Contexts
     /// </summary>
     public class SqlDbContext : DbContext
     {
+        public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
+        {
+            
+        }
+
         /// <summary>
         /// The set of all <see cref="Collection"/> model elements
         /// </summary>
@@ -53,11 +56,6 @@ namespace JCS.Argon.Contexts
         /// The set of all <see cref="CacheEntry"/> model elements
         /// </summary>
         public DbSet<CacheEntry> CacheEntries { get; set; } = null!;
-
-        public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
-        {
-            
-        }
 
         /// <summary>
         /// Perform any more technical modifications to the schema creation logic in here

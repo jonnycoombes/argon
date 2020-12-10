@@ -8,7 +8,6 @@ using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 using Version = JCS.Argon.Model.Schema.Version;
 
-
 namespace JCS.Argon.Services.VSP
 {
     /// <summary>
@@ -16,74 +15,18 @@ namespace JCS.Argon.Services.VSP
     /// </summary>
     public interface IVirtualStorageProvider
     {
-        
-        public sealed class VirtualStorageProviderException : ResponseAwareException
-        {
-            public VirtualStorageProviderException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(IVirtualStorageProvider);
-            }
-
-            public VirtualStorageProviderException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(IVirtualStorageProvider);
-            }
-        }
-
         public enum StorageOperationStatus
         {
             Ok,
             Failed
-        }
-        
-        /// <summary>
-        /// Class used to standardise responses back from the virtual storage provider layer
-        /// </summary>
-        public class StorageOperationResult
-        {
-            /// <summary>
-            /// A required operation status code
-            /// </summary>
-            public StorageOperationStatus Status { get; set; } = StorageOperationStatus.Ok;
-            
-            /// <summary>
-            /// And optional set of properties that may or may not be merged into
-            /// <see cref="PropertyGroup"/> instances
-            /// </summary>
-            public Dictionary<string, object>? Properties { get; set; }
-            
-            /// <summary>
-            /// An optional stream object which may be returned by certain operations
-            /// </summary>
-            public Stream? Stream { get; set; }
-            
-            /// <summary>
-            /// An optional error message that can be passed back up through the stack
-            /// In general, only used if some kind of 'retryable' error occurs
-            /// </summary>
-            public string? ErrorMessage { get; set; }
-            
-            /// <summary>
-            /// An optional size property
-            /// </summary>
-            public long? Size { get; set; }
-
-            /// <summary>
-            /// Default constructor
-            /// </summary>
-            public StorageOperationResult()
-            {
-                
-            }
-            
         }
 
         /// <summary>
         /// Read-only property that contains the current <see cref="VirtualStorageBinding"/>
         /// </summary>
         VirtualStorageBinding? Binding { get; }
-        
-        
+
+
         /// <summary>
         /// Should return a unique identifying string for the provider.  This is used within
         /// <see cref="VirtualStorageBinding"/> configuration elements in order to tell instances of <see cref="IVirtualStorageManager"/>
@@ -125,5 +68,58 @@ namespace JCS.Argon.Services.VSP
         /// <returns></returns>
         public Task<StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
 
+        public sealed class VirtualStorageProviderException : ResponseAwareException
+        {
+            public VirtualStorageProviderException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(IVirtualStorageProvider);
+            }
+
+            public VirtualStorageProviderException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(IVirtualStorageProvider);
+            }
+        }
+
+        /// <summary>
+        /// Class used to standardise responses back from the virtual storage provider layer
+        /// </summary>
+        public class StorageOperationResult
+        {
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            public StorageOperationResult()
+            {
+                
+            }
+
+            /// <summary>
+            /// A required operation status code
+            /// </summary>
+            public StorageOperationStatus Status { get; set; } = StorageOperationStatus.Ok;
+
+            /// <summary>
+            /// And optional set of properties that may or may not be merged into
+            /// <see cref="PropertyGroup"/> instances
+            /// </summary>
+            public Dictionary<string, object>? Properties { get; set; }
+
+            /// <summary>
+            /// An optional stream object which may be returned by certain operations
+            /// </summary>
+            public Stream? Stream { get; set; }
+
+            /// <summary>
+            /// An optional error message that can be passed back up through the stack
+            /// In general, only used if some kind of 'retryable' error occurs
+            /// </summary>
+            public string? ErrorMessage { get; set; }
+
+            /// <summary>
+            /// An optional size property
+            /// </summary>
+            public long? Size { get; set; }
+        }
     }
 }

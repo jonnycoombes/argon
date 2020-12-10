@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 
 namespace JCS.Argon.Model.Schema
 {
@@ -17,7 +16,7 @@ namespace JCS.Argon.Model.Schema
         [JsonIgnore]
         [Timestamp]
         public byte[]? Timestamp { get; set; }
-    
+
         /// <summary>
         /// The unique identifier for the version
         /// </summary>
@@ -152,7 +151,7 @@ namespace JCS.Argon.Model.Schema
                 }
             }
         }
-        
+
         /// <summary>
         /// Helper function for searching for a given property
         /// </summary>

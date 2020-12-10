@@ -10,7 +10,6 @@ namespace JCS.Argon
 {
     public class Program
     {
-    
         /// <summary>
         /// Generate a configuration object based on the current working directory and the
         /// root-level appsettings.json file
@@ -19,8 +18,8 @@ namespace JCS.Argon
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables()
-            .Build(); 
-        
+            .Build();
+
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()

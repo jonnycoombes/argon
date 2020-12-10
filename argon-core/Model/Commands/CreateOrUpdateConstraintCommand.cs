@@ -13,7 +13,7 @@ namespace JCS.Argon.Model.Commands
         /// </summary>
         [Required]
         public string Name { get; set; } = null!;
-        
+
         /// <summary>
         /// The type of the constraint.
         /// <remarks>
@@ -39,7 +39,7 @@ namespace JCS.Argon.Model.Commands
         /// that defines the mapping to a property/action within the underlying storage layer
         /// </summary>
         public string? TargetProperty { get; set; } = null!;
-        
+
         /// <summary>
         /// If this is an AllowableType constraint, contains one of the following:
         ///
@@ -52,7 +52,7 @@ namespace JCS.Argon.Model.Commands
         /// Exceptions will be thrown if the constraint is violated (i.e. the coercion fails)
         /// </summary>
         public ConstraintValidTypes? ValueType { get; set; }
-        
+
         /// <summary>
         /// An optional list of values for a specified target property
         /// </summary>

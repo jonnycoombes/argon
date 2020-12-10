@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using JCS.Argon.Model.Responses;
 using Microsoft.AspNetCore.Http;
 

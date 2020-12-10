@@ -5,7 +5,5 @@ namespace JCS.Argon.Helpers
     /// converters/serialisers
     /// </summary>
     public static class JsonHelper
-    {
-        
-    }
+    {}
 }

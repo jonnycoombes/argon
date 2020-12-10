@@ -23,24 +23,23 @@ namespace JCS.Argon.Model.Commands
         /// </summary>
         [Required]
         public string Name { get; set; }
-        
+
         /// <summary>
         /// The provider to be used to create the collection.  Must equate to a provider tag
         /// listed within the current set of registered VSP bindings.
         /// </summary>
         [Required]
         public string ProviderTag { get; set; }
-        
+
         /// <summary>
         /// Optional description for the collection.
         /// </summary>
         public string? Description { get; set; }
-        
+
         /// <summary>
         /// An optional list of <see cref="JCS.Argon.Model.Schema.Constraint"/> elements
         /// for the collection
         /// </summary>
         public List<CreateOrUpdateConstraintCommand>? Constraints { get; set; }
-
     }
 }

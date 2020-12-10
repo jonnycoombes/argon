@@ -15,32 +15,32 @@ namespace JCS.Argon.Model.Schema
         [JsonIgnore]
         [Timestamp]
         public byte[]? Timestamp { get; set; }
-        
+
         /// <summary>
         /// The unique identifier for the item
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid? Id { get; set; }
-        
+
         /// <summary>
         /// The name of the item
         /// </summary>
         [Required]
         public string Name { get; set; } = null!;
-        
+
         /// <summary>
         /// The created date for the item
         /// </summary>
         [Required]
         public DateTime CreatedDate { get; set; }
-        
+
         /// <summary>
         /// The last created time for the item
         /// </summary>
         [Required]
         public DateTime LastModified { get; set; }
-        
+
         /// <summary>
         /// This items parent <see cref="Collection"/>
         /// </summary>

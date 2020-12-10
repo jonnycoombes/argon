@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using JCS.Argon.Contexts;
 using JCS.Argon.Helpers;
 using JCS.Argon.Model.Commands;
@@ -12,23 +10,13 @@ using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 #pragma warning disable 1574
 
 namespace JCS.Argon.Services.Core
 {
     public class CollectionManager  : BaseCoreService, ICollectionManager
     {
-
-        /// <summary>
-        /// The currently configured <see cref="IVirtualStorageManager"/> instance
-        /// </summary>
-        protected IVirtualStorageManager _virtualStorageManager;
-
-        /// <summary>
-        /// The currently scoped <see cref="IPropertyGroupManager"/> instance
-        /// </summary>
-        protected readonly IPropertyGroupManager _propertyGroupManager;
-
         /// <summary>
         /// The current scoped <see cref="IConstraintGroupManager"/> instance
         /// </summary>
@@ -38,6 +26,16 @@ namespace JCS.Argon.Services.Core
         /// The currently scoped <see cref="IItemManager"/> instance
         /// </summary>
         protected readonly IItemManager _itemManager;
+
+        /// <summary>
+        /// The currently scoped <see cref="IPropertyGroupManager"/> instance
+        /// </summary>
+        protected readonly IPropertyGroupManager _propertyGroupManager;
+
+        /// <summary>
+        /// The currently configured <see cref="IVirtualStorageManager"/> instance
+        /// </summary>
+        protected IVirtualStorageManager _virtualStorageManager;
 
         /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
@@ -61,7 +59,7 @@ namespace JCS.Argon.Services.Core
             _constraintGroupManager = constraintGroupManager;
             _log.LogDebug("Creating new instance");
         }
-        
+
         public async Task<int> CountCollectionsAsync()
         {
             return await _dbContext.Collections.CountAsync();
@@ -76,43 +74,6 @@ namespace JCS.Argon.Services.Core
                 .Include(c => c.PropertyGroup)
                 .Include(c => c.PropertyGroup!.Properties)
                 .ToListAsync();
-        }
-
-        /// <summary>
-        /// Checks whether a given collection already exists within the database
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
-        protected async Task<bool> CollectionExistsAsync(string name)
-        {
-            if (await _dbContext.Collections.AnyAsync())
-            {
-                var existing = await _dbContext.Collections
-                    .FirstOrDefaultAsync(c => c.Name.Equals(name));
-                return !(existing is null);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks whether a given collection already exists within the database
-        /// </summary>
-        /// <param name="collectionId">The unique GUID for the collection</param>
-        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
-        protected async Task<bool> CollectionExistsAsync(Guid collectionId)
-        {
-            if (await _dbContext.Collections.AnyAsync())
-            {
-                var existing = await _dbContext.Collections.FirstOrDefaultAsync(c => c.Id.Equals(collectionId));
-                return !(existing is null);
-            }
-            else
-            {
-                return false;
-            }
         }
 
         /// <inheritdoc cref="ICollectionManager.CreateCollectionAsync"/>
@@ -178,34 +139,6 @@ namespace JCS.Argon.Services.Core
                 }
         }
 
-        /// <summary>
-        /// Performs the provider actions required for the creation of a new collection
-        /// </summary>
-        /// <param name="cmd"></param>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        /// <exception cref="CollectionManagerException"></exception>
-        private async Task PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
-        {
-            _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
-            var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
-            var creationResult = await provider.CreateCollectionAsync(collection);
-            if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
-            {
-                if (creationResult.Properties != null)
-                {
-                    collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
-                    _dbContext.Update(collection);
-                    await _dbContext.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
-                    $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
-            }
-        }
-
 
         /// <inheritdoc cref="ICollectionManager.GetCollectionAsync"/> 
         public async Task<Collection> GetCollectionAsync(Guid collectionId)
@@ -226,29 +159,6 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <summary>
-        /// Performs a number of checks to ensure that a collection update is valid
-        /// </summary>
-        /// <param name="target">The collection against which the validation is performed</param>
-        /// <param name="cmd">A <see cref="PatchCollectionCommand"/> instance</param>
-        /// <returns>A list of validation errors if any occur, otherwise an empty list</returns>
-        protected async Task<List<string>> ValidateCollectionUpdateAsync(Collection target, PatchCollectionCommand cmd)
-        {
-            List<string> validationErrors = new List<string>();
-            if (cmd.Name != null)
-            {
-                if (target.Name != cmd.Name)
-                {
-                    var exists = await CollectionExistsAsync(cmd.Name);
-                    if (exists)
-                    {
-                        validationErrors.Add("A collection with the supplied name already exists");
-                    }    
-                }
-            }
-            return validationErrors;
-        }
-        
         /// <inheritdoc cref="ICollectionManager.UpdateCollectionAsync"/>
         public async Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd)
         {
@@ -289,6 +199,93 @@ namespace JCS.Argon.Services.Core
         {
             return _virtualStorageManager.GetBindings();
         }
-        
+
+        /// <summary>
+        /// Checks whether a given collection already exists within the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
+        protected async Task<bool> CollectionExistsAsync(string name)
+        {
+            if (await _dbContext.Collections.AnyAsync())
+            {
+                var existing = await _dbContext.Collections
+                    .FirstOrDefaultAsync(c => c.Name.Equals(name));
+                return !(existing is null);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether a given collection already exists within the database
+        /// </summary>
+        /// <param name="collectionId">The unique GUID for the collection</param>
+        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
+        protected async Task<bool> CollectionExistsAsync(Guid collectionId)
+        {
+            if (await _dbContext.Collections.AnyAsync())
+            {
+                var existing = await _dbContext.Collections.FirstOrDefaultAsync(c => c.Id.Equals(collectionId));
+                return !(existing is null);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Performs the provider actions required for the creation of a new collection
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        /// <exception cref="CollectionManagerException"></exception>
+        private async Task PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
+        {
+            _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
+            var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
+            var creationResult = await provider.CreateCollectionAsync(collection);
+            if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
+            {
+                if (creationResult.Properties != null)
+                {
+                    collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
+                    _dbContext.Update(collection);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
+            }
+        }
+
+        /// <summary>
+        /// Performs a number of checks to ensure that a collection update is valid
+        /// </summary>
+        /// <param name="target">The collection against which the validation is performed</param>
+        /// <param name="cmd">A <see cref="PatchCollectionCommand"/> instance</param>
+        /// <returns>A list of validation errors if any occur, otherwise an empty list</returns>
+        protected async Task<List<string>> ValidateCollectionUpdateAsync(Collection target, PatchCollectionCommand cmd)
+        {
+            List<string> validationErrors = new List<string>();
+            if (cmd.Name != null)
+            {
+                if (target.Name != cmd.Name)
+                {
+                    var exists = await CollectionExistsAsync(cmd.Name);
+                    if (exists)
+                    {
+                        validationErrors.Add("A collection with the supplied name already exists");
+                    }    
+                }
+            }
+            return validationErrors;
+        }
     }
 }

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JCS.Argon.Contexts;
 using JCS.Argon.Helpers;
 using JCS.Argon.Model.Configuration;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -17,14 +15,9 @@ namespace JCS.Argon.Services.VSP
     public class VirtualStorageManager  : IVirtualStorageManager
     {
         /// <summary>
-        /// The overall application configuration, used to extract VSP bindings
+        /// Logger for logging
         /// </summary>
-        private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
-
-        /// <summary>
-        /// The current IoC <see cref="IServiceProvider"/>
-        /// </summary>
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<VirtualStorageManager> _log;
 
         /// <summary>
         /// Internal cache of the types associated with different <see cref="IVirtualStorageProvider"/> implementations
@@ -32,9 +25,14 @@ namespace JCS.Argon.Services.VSP
         private readonly Dictionary<string, Type> _providerTypesMap = new Dictionary<string, Type>();
 
         /// <summary>
-        /// Logger for logging
+        /// The current IoC <see cref="IServiceProvider"/>
         /// </summary>
-        private readonly ILogger<VirtualStorageManager> _log;
+        private readonly IServiceProvider _serviceProvider;
+
+        /// <summary>
+        /// The overall application configuration, used to extract VSP bindings
+        /// </summary>
+        private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
 
         public VirtualStorageManager(ILogger<VirtualStorageManager> log, 
             IServiceProvider serviceProvider,
@@ -45,6 +43,45 @@ namespace JCS.Argon.Services.VSP
             _serviceProvider = serviceProvider;
             _log = log;
             ResolveProviders();
+        }
+
+
+        /// <inheritdoc cref="IVirtualStorageManager.GetBindings"/>
+        public List<VirtualStorageBinding> GetBindings()
+        {
+            return _virtualStorageConfiguration.Bindings;
+        }
+
+        /// <summary>
+        /// Instantiates and then binds a <see cref="IVirtualStorageProvider"/> for a given tag
+        /// </summary>
+        /// <param name="tag">The tag for the provider</param>
+        /// <returns></returns>
+        /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
+        public IVirtualStorageProvider GetProvider(string tag)
+        {
+            _log.LogDebug($"Attempting instantiation of VSP provider with tag [{tag}]");
+            var binding = GetBindingFromTag(tag);
+            if (binding == null)
+            {
+                throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                    $"No virtual storage provider exists for the specified tag: {tag}");
+            }
+            else
+            {
+                try
+                {
+                    var provider = CreateProviderInstance(binding.ProviderType);
+                    provider.Bind(binding, _serviceProvider);
+                    return provider;
+                }
+                catch (IVirtualStorageProvider.VirtualStorageProviderException ex)
+                {
+                    _log.LogWarning($"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
+                    throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                        "Failed to instantiate and bind specified provider [{tag}]", ex);
+                }
+            } 
         }
 
         /// <summary>
@@ -96,7 +133,7 @@ namespace JCS.Argon.Services.VSP
             }
         }
 
-        
+
         /// <summary>
         /// Scans the current runtime environment and looks for types that implement the <see cref="IVirtualStorageProvider"/>
         /// interface
@@ -131,13 +168,6 @@ namespace JCS.Argon.Services.VSP
                 throw new IVirtualStorageManager.VirtualStorageManagerException(500, "Failed to load VSP providers", ex);
             }
         }
-        
-       
-        /// <inheritdoc cref="IVirtualStorageManager.GetBindings"/>
-        public List<VirtualStorageBinding> GetBindings()
-        {
-            return _virtualStorageConfiguration.Bindings;
-        }
 
         /// <summary>
         /// Looks up a <see cref="VirtualStorageBinding"/> based on a tag
@@ -155,38 +185,6 @@ namespace JCS.Argon.Services.VSP
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Instantiates and then binds a <see cref="IVirtualStorageProvider"/> for a given tag
-        /// </summary>
-        /// <param name="tag">The tag for the provider</param>
-        /// <returns></returns>
-        /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
-        public IVirtualStorageProvider GetProvider(string tag)
-        {
-            _log.LogDebug($"Attempting instantiation of VSP provider with tag [{tag}]");
-            var binding = GetBindingFromTag(tag);
-            if (binding == null)
-            {
-                throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                    $"No virtual storage provider exists for the specified tag: {tag}");
-            }
-            else
-            {
-                try
-                {
-                    var provider = CreateProviderInstance(binding.ProviderType);
-                    provider.Bind(binding, _serviceProvider);
-                    return provider;
-                }
-                catch (IVirtualStorageProvider.VirtualStorageProviderException ex)
-                {
-                    _log.LogWarning($"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
-                    throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                        "Failed to instantiate and bind specified provider [{tag}]", ex);
-                }
-            } 
         }
     }
 }

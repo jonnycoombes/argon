@@ -17,23 +17,6 @@ namespace JCS.Argon.Services.Core
     /// </summary>
     public interface IConstraintGroupManager
     {
-        
-        /// <summary>
-        /// Thrown in the event of a failure within the constraint group manager
-        /// </summary>
-        public sealed class ConstraintGroupManagerException: ResponseAwareException
-        {
-            public ConstraintGroupManagerException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(ICollectionManager);
-            }
-
-            public ConstraintGroupManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(ICollectionManager); 
-            }
-        }
-        
         /// <summary>
         /// Create an empty <see cref="ConstraintGroup"/> and return it
         /// </summary>
@@ -63,5 +46,21 @@ namespace JCS.Argon.Services.Core
         /// <param name="properties">A valid (possibly empty) set of properties</param>
         /// <returns></returns>
         public Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties);
+
+        /// <summary>
+        /// Thrown in the event of a failure within the constraint group manager
+        /// </summary>
+        public sealed class ConstraintGroupManagerException: ResponseAwareException
+        {
+            public ConstraintGroupManagerException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(ICollectionManager);
+            }
+
+            public ConstraintGroupManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(ICollectionManager); 
+            }
+        }
     }
 }

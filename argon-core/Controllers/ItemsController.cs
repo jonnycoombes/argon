@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Controllers
 {
@@ -23,7 +21,7 @@ namespace JCS.Argon.Controllers
         /// The <see cref="ItemManager"/> instance - DI'd
         /// </summary>
         protected readonly IItemManager _itemManager;
-        
+
         public ItemsController(ILogger<ItemsController> log, ICollectionManager collectionManager, IItemManager itemManager) : base(log)
         {
             _log.LogInformation("Creating new instance");
@@ -94,7 +92,7 @@ namespace JCS.Argon.Controllers
         {
             throw new NotImplementedException();
         }
-        
+
         /// <summary>
         /// Reads the contents of a specific version
         /// </summary>

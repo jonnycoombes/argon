@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP.Providers
@@ -18,7 +13,6 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
-
         /// <summary>
         /// An enumeration of "stock" provider properties - returned in the property bag for certain operations
         /// </summary>
@@ -30,7 +24,7 @@ namespace JCS.Argon.Services.VSP.Providers
             Length,
             ContentType
         }
-        
+
         /// <summary>
         /// Copy of the current binding
         /// </summary>
@@ -40,14 +34,31 @@ namespace JCS.Argon.Services.VSP.Providers
         /// The logger
         /// </summary>
         protected ILogger _log;
-        
-        /// <inheritdoc cref="IVirtualStorageProvider.Binding"/>
-        public VirtualStorageBinding? Binding => _binding;
 
         /// <summary>
         /// A captured instance of <see cref="IServiceProvider"/>
         /// </summary>
-        protected IServiceProvider? _serviceProvider; 
+        protected IServiceProvider? _serviceProvider;
+
+
+        /// <summary>
+        /// Default constructor required for dynamic instantiation
+        /// </summary>
+        protected BaseVirtualStorageProvider(ILogger log)
+        {
+            _log = log;
+            _binding = null;
+        }
+
+        /// <summary>
+        /// Equiv of a virtual destructor
+        /// </summary>
+        public virtual void Dispose()
+        {
+        }
+
+        /// <inheritdoc cref="IVirtualStorageProvider.Binding"/>
+        public VirtualStorageBinding? Binding => _binding;
 
         /// <inheritdoc cref="IVirtualStorageProvider.ProviderType"/>
         public abstract string ProviderType { get; }
@@ -61,25 +72,9 @@ namespace JCS.Argon.Services.VSP.Providers
             AfterBind();
         }
 
-
-        /// <summary>
-        /// Default constructor required for dynamic instantiation
-        /// </summary>
-        protected BaseVirtualStorageProvider(ILogger log)
-        {
-            _log = log;
-            _binding = null;
-        }
-
-        /// <summary>
-        /// Called after a bind operation - subclasses should perform initialisation logic in
-        /// here
-        /// </summary>
-        public abstract void AfterBind();
-        
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
-        
+
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source);
 
@@ -87,10 +82,9 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
 
         /// <summary>
-        /// Equiv of a virtual destructor
+        /// Called after a bind operation - subclasses should perform initialisation logic in
+        /// here
         /// </summary>
-        public virtual void Dispose()
-        {
-        }
+        public abstract void AfterBind();
     }
 }

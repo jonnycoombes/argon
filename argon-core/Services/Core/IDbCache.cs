@@ -12,20 +12,6 @@ namespace JCS.Argon.Services.Core
     public interface IDbCache
     {
         /// <summary>
-        /// Can optionally be thrown if something goes Pete Tong within a cache operation
-        /// </summary>
-        public class DbCacheException : ResponseAwareException
-        {
-            public DbCacheException(int? statusHint, string? message) : base(statusHint, message)
-            {
-            }
-
-            public DbCacheException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-            }
-        }
-        
-        /// <summary>
         /// Adds or replaces a string value
         /// </summary>
         /// <param name="key"></param>
@@ -85,5 +71,19 @@ namespace JCS.Argon.Services.Core
         /// <param name="key"></param>
         /// <returns><code>true</code> if the entry existed, <code>false</code> otherwise</returns>
         public Task<bool> DeleteEntry(string key);
+
+        /// <summary>
+        /// Can optionally be thrown if something goes Pete Tong within a cache operation
+        /// </summary>
+        public class DbCacheException : ResponseAwareException
+        {
+            public DbCacheException(int? statusHint, string? message) : base(statusHint, message)
+            {
+            }
+
+            public DbCacheException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace JCS.Argon.Model.Schema
 {
@@ -17,20 +16,25 @@ namespace JCS.Argon.Model.Schema
     [Table("property", Schema = "core")]
     public class Property
     {
+        public Property()
+        {
+            
+        }
+
         /// <summary>
         /// The primary concurrency token for this entity
         /// </summary>
         [JsonIgnore]
         [Timestamp]
         public byte[]? Timestamp { get; set; }
-    
+
         /// <summary>
         /// The unique identifier for the version
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid? Id { get; set; }
-        
+
         /// <summary>
         /// The name of the property
         /// </summary>
@@ -42,34 +46,34 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         [Required]
         public PropertyType Type { get; set; }
-        
+
         /// <summary>
         /// Optional string value for the property
         /// </summary>
         public string? StringValue { get; set; }
-        
+
         /// <summary>
         /// Optional numeric value for the property
         /// </summary>
         public double? NumberValue { get; set; }
-        
+
         /// <summary>
         /// Optional date-time value for the property
         /// </summary>
         public DateTime? DateTimeValue { get; set; }
-        
+
         /// <summary>
         /// Optional boolean value for the property
         /// </summary>
         public bool? BooleanValue { get; set; }
-        
+
         /// <summary>
         /// The identifier for the parent property group
         /// </summary>
         [Required]
         [JsonIgnore]
         public Guid PropertyGroupId { get; set; }
-        
+
         /// <summary>
         /// The parent <see cref="PropertyGroup"/>
         /// </summary>
@@ -96,13 +100,6 @@ namespace JCS.Argon.Model.Schema
                     DateTimeValue = null;
                     break;
             }
-        }
-        
-        
-
-        public Property()
-        {
-            
         }
     }
 }

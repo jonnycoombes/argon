@@ -14,11 +14,11 @@ namespace JCS.Argon.Model.Responses
         public ExceptionResponse()
         {
         }
-        
+
         public int HttpResponseCode { get; set; }
 
         public string? Message { get; set; }
-        
+
         public string? Source { get; set; }
     }
 }

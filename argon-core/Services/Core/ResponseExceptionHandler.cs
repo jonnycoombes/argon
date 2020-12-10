@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Responses;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;

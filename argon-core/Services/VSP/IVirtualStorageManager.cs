@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Configuration;
+using JCS.Argon.Model.Exceptions;
 
 namespace JCS.Argon.Services.VSP
 {
@@ -11,20 +10,6 @@ namespace JCS.Argon.Services.VSP
     /// </summary>
     public interface IVirtualStorageManager
     {
-
-        public sealed class VirtualStorageManagerException : ResponseAwareException
-        {
-            public VirtualStorageManagerException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(IVirtualStorageManager);
-            }
-
-            public VirtualStorageManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(IVirtualStorageManager);
-            }
-        }
-        
         /// <summary>
         /// Returns a list of currently reigstered VSP providers
         /// </summary>
@@ -38,5 +23,18 @@ namespace JCS.Argon.Services.VSP
         /// <returns>An in-scope implementation of the <see cref="IVirtualStorageProvider"/> interface</returns>
         /// <exception></exception>
         public IVirtualStorageProvider GetProvider(string tag);
+
+        public sealed class VirtualStorageManagerException : ResponseAwareException
+        {
+            public VirtualStorageManagerException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(IVirtualStorageManager);
+            }
+
+            public VirtualStorageManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(IVirtualStorageManager);
+            }
+        }
     }
 }

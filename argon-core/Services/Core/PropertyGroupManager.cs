@@ -12,7 +12,6 @@ namespace JCS.Argon.Services.Core
     /// </summary>
     public class PropertyGroupManager : BaseCoreService, IPropertyGroupManager
     {
-
         /// <summary>
         /// Default constructor, parameters are DI'd
         /// </summary>

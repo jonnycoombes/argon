@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Primitives;
 using static System.DateTime;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -15,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static string X_ARGON_TIMINGS_TOTAL = "X-Argon-Timing";
 
         public static string X_ARGON_TIMESTAMP = "X-Argon-Timestamp";
-        
+
         public static IApplicationBuilder UseArgonTelemetry(this IApplicationBuilder app)
         {
             app.Use(async (context,next) =>

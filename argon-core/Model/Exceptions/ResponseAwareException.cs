@@ -1,5 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Http;
 
 namespace JCS.Argon.Model.Exceptions
 {
@@ -8,11 +7,6 @@ namespace JCS.Argon.Model.Exceptions
     /// </summary>
     public abstract class ResponseAwareException : Exception
     {
-        /// <summary>
-        /// "Suggested" response code if bubbled up via the HTTP layer
-        /// </summary>
-        public int? ResponseCodeHint { get; set; }
-
         /// <summary>
         /// Default constructor that takes a response code hint
         /// </summary>
@@ -35,5 +29,10 @@ namespace JCS.Argon.Model.Exceptions
         {
            ResponseCodeHint = statusHint;
         }
+
+        /// <summary>
+        /// "Suggested" response code if bubbled up via the HTTP layer
+        /// </summary>
+        public int? ResponseCodeHint { get; set; }
     }
 }

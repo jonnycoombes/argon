@@ -16,6 +16,12 @@ namespace JCS.Argon.Services.Core
     public interface IPropertyGroupManager
     {
         /// <summary>
+        /// Creates a new (empty) property group
+        /// </summary>
+        /// <returns></returns>
+        public Task<PropertyGroup> CreatePropertyGroupAsync();
+
+        /// <summary>
         /// Thrown in the event of a failure within the constraint group manager
         /// </summary>
         public sealed class PropertyGroupManagerException: ResponseAwareException
@@ -30,12 +36,5 @@ namespace JCS.Argon.Services.Core
                 Source = nameof(IPropertyGroupManager); 
             }
         }
-
-        /// <summary>
-        /// Creates a new (empty) property group
-        /// </summary>
-        /// <returns></returns>
-        public Task<PropertyGroup> CreatePropertyGroupAsync();
-
     }
 }

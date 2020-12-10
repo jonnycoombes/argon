@@ -12,7 +12,6 @@ using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -68,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             ConfigureResponseCompression(services);
             return services;
         }
-        
+
         /// <summary>
         /// Do anything specific to controller bindings, Swagger configuration etc...
         /// Specific alterations here to ignore null values in Json serialisation to
@@ -103,7 +102,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }); 
             
         }
-        
+
         /// <summary>
         /// Register all application-specific services such as the VSP registry etc...
         /// Note the differences between whether services are scoped (basically per-session) or
