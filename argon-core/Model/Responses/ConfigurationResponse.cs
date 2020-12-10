@@ -14,9 +14,14 @@ namespace JCS.Argon.Model.Responses
         public int TotalCollections { get; set; } = 0;
 
         /// <summary>
-        /// The current total number of managed documents
+        /// The current total number of managed items
         /// </summary>
-        public int TotalDocuments { get; set; } = 0;
+        public int TotalItems { get; set; } = 0;
+
+        /// <summary>
+        /// The current total number of versions
+        /// </summary>
+        public int TotalVersions { get; set; } = 0;
     }
     public class ConfigurationResponse
     {

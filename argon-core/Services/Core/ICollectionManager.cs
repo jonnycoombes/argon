@@ -22,6 +22,10 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         public Task<int> CountCollectionsAsync();
 
+        public Task<int> CountTotalItemsAsync();
+
+        public Task<int> CountTotalVersionsAsync();
+
         /// <summary>
         /// Attempts the creation of a new <see cref="Collection"/> object, along with
         /// all associated VSP structures

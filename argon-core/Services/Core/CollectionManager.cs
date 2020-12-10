@@ -65,6 +65,16 @@ namespace JCS.Argon.Services.Core
             return await _dbContext.Collections.CountAsync();
         }
 
+        public async Task<int> CountTotalItemsAsync()
+        {
+            return await _dbContext.Items.CountAsync();
+        }
+
+        public async Task<int> CountTotalVersionsAsync()
+        {
+            return await _dbContext.Versions.CountAsync();
+        }
+
         /// <inheritdoc cref="ICollectionManager.ListCollectionsAsync" />
         public async Task<List<Collection>> ListCollectionsAsync()
         {

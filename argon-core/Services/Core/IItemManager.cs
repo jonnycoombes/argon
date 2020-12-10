@@ -30,12 +30,21 @@ namespace JCS.Argon.Services.Core
         public Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId);
 
         /// <summary>
+        /// Retrieve a specified version for an item
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="item"></param>
+        /// <param name="versionId"></param>
+        /// <returns></returns>
+        public Task<Version> GetItemVersionAsync(Collection collection, Item item, Guid versionId);
+
+        /// <summary>
         /// Gets the current version for a specified item
         /// </summary>
-        /// <param name="???"></param>
+        /// <param name="collection"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        public Task<Version> GetCurrentItemVersion(Collection collection, Guid itemId);
+        public Task<Version> GetCurrentItemVersionAsync(Collection collection, Guid itemId);
 
         /// <summary>
         /// Gets the current version for a specified item
@@ -43,7 +52,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collection"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public Task<Version> GetCurrentItemVersion(Collection collection, Item item);
+        public Task<Version> GetCurrentItemVersionAsync(Collection collection, Item item);
 
 
         /// <summary>
@@ -76,16 +85,17 @@ namespace JCS.Argon.Services.Core
         /// <param name="properties"></param>
         /// <param name="inboundFile"></param>
         /// <returns></returns>
-        public Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object> properties,
+        public Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object>? properties,
             IFormFile inboundFile);
 
         /// <summary>
         /// Retrieves a stream for a given <see cref="System.Version"/>
         /// </summary>
         /// <param name="collection"></param>
+        /// <param name="item"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        public Task<Stream> GetStreamForVersion(Collection collection, Version version);
+        public Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, Version version);
 
         /// <summary>
         /// Exception type which may be thrown by methods across this interface

@@ -142,7 +142,7 @@ namespace JCS.Argon.Controllers
             }
             else
             {
-                var constraint = constraintGroup.Constraints.Find(c => c.Id.Equals(constraintId));
+                var constraint = constraintGroup.Constraints?.Find(c => c.Id.Equals(constraintId));
                 if (constraint == null)
                 {
                     HttpContext.Response.StatusCode = StatusCodes.Status200OK;

@@ -28,7 +28,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The constraints for this group
         /// </summary>
-        public List<Constraint> Constraints { get; set; }
+        public List<Constraint>? Constraints { get; set; }
 
         /// <summary>
         /// Utility function for locating a given constraint

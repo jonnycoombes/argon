@@ -6,6 +6,7 @@ using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Version = System.Version;
 
 namespace JCS.Argon.Controllers
 {
@@ -84,13 +85,19 @@ namespace JCS.Argon.Controllers
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
-        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ReadItemContent(Guid collectionId, Guid itemId)
         {
-            throw new NotImplementedException();
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            var latestVersion = await _itemManager.GetCurrentItemVersionAsync(collection, item);
+            var stream = await _itemManager.GetStreamForVersionAsync(collection, item, latestVersion);
+            return new FileStreamResult(stream, latestVersion.MIMEType)
+            {
+                FileDownloadName = latestVersion.Name
+            };
         }
 
         /// <summary>
@@ -108,7 +115,15 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ReadVersionContent(Guid collectionId, Guid itemId, Guid versionId)
         {
-            throw new NotImplementedException();
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            var version = await _itemManager.GetItemVersionAsync(collection, item, versionId);
+            var stream = await _itemManager.GetStreamForVersionAsync(collection, item, version);
+            return new FileStreamResult(stream, version.MIMEType)
+            {
+                FileDownloadName = version.Name
+            };
+            
         }
 
         /// <summary>
@@ -191,9 +206,11 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
+        public async Task<JCS.Argon.Model.Schema.Version> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
         {
-            throw new NotImplementedException();
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            return await _itemManager.GetItemVersionAsync(collection, item, versionId);
         }
     }
 }

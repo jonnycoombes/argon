@@ -181,7 +181,20 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)
         {
-            throw new NotImplementedException();
+            var itemStoragePath = GenerateItemStoragePath(collection, item);
+            var versionStoragePath = GenerateVersionPath(collection, item, version);
+            if (!File.Exists(versionStoragePath))
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"The specified version storage location doesn't exist, when it should: {versionStoragePath}");
+            }
+
+            var stream = new FileStream(versionStoragePath, FileMode.Open);
+            return new IVirtualStorageProvider.StorageOperationResult()
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                Stream = stream
+            };
         }
     }
 }

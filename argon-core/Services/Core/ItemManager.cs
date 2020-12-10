@@ -54,6 +54,7 @@ namespace JCS.Argon.Services.Core
         {
                 var items = await _dbContext.Items.
                     Where(i => i.Collection.Id == collection.Id)
+                    .Include(i => i.Versions)
                     .ToListAsync();
                 return items;
         }
@@ -77,8 +78,14 @@ namespace JCS.Argon.Services.Core
             }
         }
 
+        public async Task<Version> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
+        {
+            return await _dbContext.Versions
+                .SingleAsync(v => (v.Id == versionId && v.Item.Id == item.Id));
+        }
+
         /// <inheritdoc />
-        public async Task<Version> GetCurrentItemVersion(Collection collection, Guid itemId)
+        public async Task<Version> GetCurrentItemVersionAsync(Collection collection, Guid itemId)
         {
             var maxVersion= await _dbContext.Versions.Where(v => v.Item.Id == itemId).MaxAsync(v => v.Major);
             return await _dbContext.Versions
@@ -86,7 +93,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc/>
-        public async Task<Version> GetCurrentItemVersion(Collection collection, Item item)
+        public async Task<Version> GetCurrentItemVersionAsync(Collection collection, Item item)
         {
             var maxVersion= await _dbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
             return await _dbContext.Versions
@@ -140,7 +147,8 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IItemManager.AddItemVersionToCollectionAsync"/>
-        public async Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object> properties, IFormFile inboundFile)
+        public async Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object>? properties,
+            IFormFile inboundFile)
         {
             try
             {
@@ -174,9 +182,10 @@ namespace JCS.Argon.Services.Core
             throw new NotImplementedException();
         }
 
-        public async Task<Stream> GetStreamForVersion(Collection collection, Version version)
+        /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync"/>
+        public async Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, Version version)
         {
-            throw new NotImplementedException();
+            return await PerformProviderVersionRetrievalActions(collection, item, version);
         }
 
         /// <summary>

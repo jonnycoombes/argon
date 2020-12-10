@@ -47,7 +47,8 @@ namespace JCS.Argon.Controllers
                 Metrics = new Metrics
                 {
                     TotalCollections = await _collectionManager.CountCollectionsAsync(),
-                    TotalDocuments = 0
+                    TotalItems = await _collectionManager.CountTotalItemsAsync(),
+                    TotalVersions = await _collectionManager.CountTotalVersionsAsync()
                 }
             };
         }
