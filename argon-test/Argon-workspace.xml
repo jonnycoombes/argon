@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-workspace name="Argon" cid="11a2e1b0-e7af-4d3c-8a2c-add954e8b913" soapui-version="6.0.0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:project name="Argon" lastOpened="2020-12-10T15:13:07.302Z">D:/Documents/Source/JCS/argon/argon-test/Argon-Test.xml</con:project>
+  <con:recentItemCollection>
+    <con:moduleId>SoapUiNGModule</con:moduleId>
+    <con:itemId>b26f889f-c8ef-4cc1-b49c-2433f2414984</con:itemId>
+    <con:itemId>24137362-0ecf-4f26-93df-32d6290c0bb1</con:itemId>
+    <con:itemId>51b9fdd6-1e41-46b1-911f-c68efbc350ec</con:itemId>
+    <con:itemId>b918465d-2fe4-48fc-919f-e1d72162492a</con:itemId>
+    <con:itemId>43950517-6282-4deb-a70d-c3a510878d12</con:itemId>
+  </con:recentItemCollection>
+  <con:expandedTreeNodes>
+    <con:project path="D:\Documents\Source\JCS\argon\argon-test\Argon-Test.xml">
+      <nodeId>12ff522b-57b8-4b3b-b02b-6abc98ecd72d</nodeId>
+      <nodeId>d1b52162-ba0e-44e2-95da-15165f204832</nodeId>
+      <nodeId>379354bd-89c6-481d-a3ab-a93074e7fb0fapis</nodeId>
+      <nodeId>9aaade96-99f6-4d0b-9893-7d27118c42ff</nodeId>
+      <nodeId>21a80e55-361f-4c0a-b2c1-72d132ae7c30</nodeId>
+      <nodeId>379354bd-89c6-481d-a3ab-a93074e7fb0f</nodeId>
+      <nodeId>43950517-6282-4deb-a70d-c3a510878d12</nodeId>
+      <nodeId>75cf6e52-d7c3-45ca-bbc2-798f57742501</nodeId>
+      <nodeId>51b9fdd6-1e41-46b1-911f-c68efbc350ec</nodeId>
+      <nodeId>af7764b6-b370-45cf-bf15-beeddc4a9217</nodeId>
+      <nodeId>b26f889f-c8ef-4cc1-b49c-2433f2414984</nodeId>
+      <nodeId>379354bd-89c6-481d-a3ab-a93074e7fb0fsoapui</nodeId>
+      <nodeId>d3b7ff65-028b-475e-b97f-0ec3f7c68adc</nodeId>
+      <nodeId>24137362-0ecf-4f26-93df-32d6290c0bb1</nodeId>
+    </con:project>
+  </con:expandedTreeNodes>
+  <con:dashboardTileCollection>
+    <con:dashboardTiles>
+      <con:dashboardTile tileId="92bc02e0-a127-4704-9ed7-3aed40d70f42" tileType="NEW_TEST"/>
+      <con:dashboardTile tileId="f926e6de-1fb1-462f-9611-116219fb7c99" tileType="TEST_SUITE_STATUS">
+        <con:settings xsi:type="con:TestStatusTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="fc570a5f-ccbf-4103-a16c-1126b6e016ff" tileType="TEST_CASE_STATUS_TILE">
+        <con:settings xsi:type="con:TestCaseStatusTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="8ddd9c17-0eb8-4479-a050-1c656ce4b843" tileType="SECURE_TILE">
+        <con:settings xsi:type="con:SecureTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:scan>All Scans</con:scan>
+          <con:project>All Projects</con:project>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="ba3b2d6e-e8a7-4c5c-9240-8cb9dbb48565" tileType="LOADUI_HISTORY_TILE">
+        <con:settings xsi:type="con:LoadHistoryTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:project>All Projects</con:project>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="bfab5e1c-c68a-4e7b-b38c-f372576a8bf9" tileType="SERVICEV">
+        <con:settings xsi:type="con:ServiceVTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:tableSettings>
+            <con:column>Name</con:column>
+            <con:column>Status</con:column>
+            <con:column>Location</con:column>
+            <con:column>Port</con:column>
+          </con:tableSettings>
+        </con:settings>
+      </con:dashboardTile>
+    </con:dashboardTiles>
+    <con:recentDashboardTiles/>
+  </con:dashboardTileCollection>
+</con:soapui-workspace>

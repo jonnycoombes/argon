@@ -20,17 +20,17 @@ namespace JCS.Argon
         /// <summary>
         /// Schema major version
         /// </summary>
-        public static int SchemaMajor { get; } = 0;
+        public static int SchemaMajor { get; } = 1;
 
         /// <summary>
         /// Schema minor version
         /// </summary>
-        public static int SchemaMinor { get; } = 3;
+        public static int SchemaMinor { get; } = 0;
 
         /// <summary>
         /// Schema patch/build number
         /// </summary>
-        public static int SchemaBuild { get; } = 6;
+        public static int SchemaBuild { get; } = 2;
         
         /// <summary>
         /// Returns the current internal version number

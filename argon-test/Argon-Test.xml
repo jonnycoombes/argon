@@ -1,0 +1,2710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="379354bd-89c6-481d-a3ab-a93074e7fb0f" created="3.5.0" activeEnvironment="Default environment" name="Argon" resourceRoot="" updated="3.5.0 2020-11-11T18:12:01Z" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings>
+    <con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.ProTestRunnerAction@values-local"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  <con:entry key="Settings File Password" value=""/>
+  <con:entry key="Report Format(s)" value="XML"/>
+  <con:entry key="Host:Port" value=""/>
+  <con:entry key="Export JUnit Results" value="true"/>
+  <con:entry key="Export All" value="true"/>
+  <con:entry key="Save After" value="false"/>
+  <con:entry key="Slack Channel(s)" value=""/>
+  <con:entry key="Add Settings" value="false"/>
+  <con:entry key="WSS Password Type" value=""/>
+  <con:entry key="Endpoint" value=""/>
+  <con:entry key="Test Suite Tags" value=""/>
+  <con:entry key="Select Report Type" value="JUnit-Style report for automation"/>
+  <con:entry key="System Properties" value=""/>
+  <con:entry key="Test Suite" value="https://localhost:8443 TestSuite 1"/>
+  <con:entry key="Run in-process" value="false"/>
+  <con:entry key="Password" value=""/>
+  <con:entry key="Print Report" value="true"/>
+  <con:entry key="Open Report" value="false"/>
+  <con:entry key="Test Case Tags" value=""/>
+  <con:entry key="Export JUnit Results with test properties" value="false"/>
+  <con:entry key="Global Properties" value=""/>
+  <con:entry key="Project Properties" value=""/>
+  <con:entry key="Test Case" value="&lt;all>"/>
+  <con:entry key="Slack Access Token" value=""/>
+  <con:entry key="Project Password" value=""/>
+  <con:entry key="Username" value=""/>
+  <con:entry key="TestRunner Path" value="C:\Program Files\SmartBear\ReadyAPI-3.5.0\bin"/>
+  <con:entry key="Environment" value="Default environment"/>
+  <con:entry key="Coverage Report" value="false"/>
+  <con:entry key="Enable UI" value="false"/>
+  <con:entry key="Root Folder" value="${WORKSPACE}"/>
+  <con:entry key="Ignore Errors" value="false"/>
+  <con:entry key="Domain" value=""/>
+  <con:entry key="Tool Args" value=""/>
+  <con:entry key="Save Project" value="false"/>
+</xml-fragment>]]></con:setting>
+    <con:setting id="IncludeOverview">true</con:setting>
+    <con:setting id="IncludeResults">true</con:setting>
+    <con:setting id="FlowLayout">false</con:setting>
+    <con:setting id="ErrorDetails">true</con:setting>
+    <con:setting id="IncludeCoverage">true</con:setting>
+  </con:settings>
+  <con:interface xsi:type="con:RestService" id="24137362-0ecf-4f26-93df-32d6290c0bb1" name="Argon - Content Service Layer" type="rest_ex" wadlVersion="https://swagger.io/openapiv3/specification" definitionUrl="https://localhost:8443/swagger/v1/swagger.json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:description>Argon. (Build Version: 1.0.2)</con:description>
+    <con:settings/>
+    <con:definitionCache type="TEXT" rootPart="https://localhost:8443/swagger/v1/swagger.json">
+      <con:part>
+        <con:url>https://localhost:8443/swagger/v1/swagger.json</con:url>
+        <con:content>{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Argon - Content Service Layer",
+    "description": "Argon. (Build Version: 1.0.2)",
+    "contact": {
+      "name": "Jonny Coombes",
+      "email": "jcoombes@jcs-software.co.uk"
+    },
+    "version": "v1 (1.0.2)"
+  },
+  "paths": {
+    "/api/v1/Collections": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Call this method in order to retrieve a list of all current collections",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Collection"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - check the response payload"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Call this method in order to create a new collection",
+        "description": "A collection is a top-level container for a series of items (documents).  Each collection may have a\r\nseries of constraints configured against it, which loosely define how meta-data properties associated\r\nwith items are handled.",
+        "requestBody": {
+          "description": "Contains the information relating to the new collection",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Collection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given\r\n            in response payload.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - check the response payload"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Call this method in order to retrieve the details for an individual collection",
+        "description": "If the specified collection exists, then this method will retrieve the details for it,\r\nincluding some top-level metrics including its length and overall size.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Collection"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Allows for the update of an individual collection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier associated with the collection to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier associated with the collection to update",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A JCS.Argon.Model.Commands.PatchCollectionCommand instance containing the updates to be made",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCollectionCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCollectionCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCollectionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Collection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Constraints": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Gets the constraint group for a given collection, if it exists",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConstraintGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Updates the constraints associated with a given collection.",
+        "description": "The same format of command is used to create\r\nand update constraints.  If a constraint referenced by name already exists, then it is overwritten with the\r\nnew details.  If no such constraint exists, then a new constraint is created and added to the collection.\r\nConstraints take effect on the next operation against the collection.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A list of create/update commands",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateOrUpdateConstraintCommand"
+                },
+                "description": "A list of create/update commands",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateOrUpdateConstraintCommand"
+                },
+                "description": "A list of create/update commands",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateOrUpdateConstraintCommand"
+                },
+                "description": "A list of create/update commands",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConstraintGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Constraints/{constraintId}": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Gets a specific constraint for a given collection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "constraintId",
+            "in": "path",
+            "description": "The unique identifier for the constraint",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the constraint",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Constraint"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Configuration": {
+      "get": {
+        "tags": [
+          "Configuration"
+        ],
+        "summary": "Retrieves the current configuration for the Content Service Layer",
+        "description": "Call this method in order to retrieve information about the current CSL configuration.  In particular,\r\nthis method can be used to retrieve information about the currently configured VSP providers.",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - check the logs"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Items": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Retrieves a list of items for a given collection.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Performs an upload of new content to a given collection.  This will create the initial version for the content",
+        "description": "This is a multi-part file upload request, with the addition that the \"Headers\" object may also be\r\nused in order to specify a map of meta-data values to be assigned against the content.  Where possible,\r\nautomatic type-detection is performed on the meta-data pairs.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ContentType": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "ContentDisposition": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "Headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "nullable": true
+                  },
+                  "Length": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "Name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "FileName": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              },
+              "encoding": {
+                "ContentType": {
+                  "style": "form"
+                },
+                "ContentDisposition": {
+                  "style": "form"
+                },
+                "Headers": {
+                  "style": "form"
+                },
+                "Length": {
+                  "style": "form"
+                },
+                "Name": {
+                  "style": "form"
+                },
+                "FileName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful creation of new content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given\r\n            in response payload."
+          },
+          "500": {
+            "description": "Internal server error - check the response payload"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Items/{itemId}/Properties": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Reads the meta-data (including JCS.Argon.Model.Schema.PropertyGroup) for a given item",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "The unique identifier for the item",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the item",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Items/{itemId}": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Reads the content for a specific collection item. By default, this will return the content of the latest version",
+        "description": "This method will return the latest version of the item by default.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "The unique identifier for the item",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the item",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Reads the contents of a specific version",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Items/{itemId}/Versions": {
+      "post": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Will add a new version to a given item of content",
+        "description": "This is a multi-part file upload request, with the addition that the \"Headers\" object may also be\r\n used in order to specify a map of meta-data values to be assigned against the content.  Where possible,\r\n automatic type-detection is performed on the meta-data pairs.",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "The",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ContentType": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "ContentDisposition": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "Headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "nullable": true
+                  },
+                  "Length": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "Name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "FileName": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              },
+              "encoding": {
+                "ContentType": {
+                  "style": "form"
+                },
+                "ContentDisposition": {
+                  "style": "form"
+                },
+                "Headers": {
+                  "style": "form"
+                },
+                "Length": {
+                  "style": "form"
+                },
+                "Name": {
+                  "style": "form"
+                },
+                "FileName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful creation of new content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Version"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given\r\n             in response payload."
+          },
+          "500": {
+            "description": "Internal server error - check the response payload"
+          }
+        }
+      }
+    },
+    "/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Retrieves the content of a specific item version",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The unique identifier for the collection",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the collection",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "The unique identifier for the item",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the item",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "description": "The unique identifier for the item version",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier for the item version",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PropertyType": {
+        "enum": [
+          "string",
+          "number",
+          "dateTime",
+          "boolean"
+        ],
+        "type": "string"
+      },
+      "Property": {
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the version",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the property"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PropertyType"
+          },
+          "stringValue": {
+            "type": "string",
+            "description": "Optional string value for the property",
+            "nullable": true
+          },
+          "numberValue": {
+            "type": "number",
+            "description": "Optional numeric value for the property",
+            "format": "double",
+            "nullable": true
+          },
+          "dateTimeValue": {
+            "type": "string",
+            "description": "Optional date-time value for the property",
+            "format": "date-time",
+            "nullable": true
+          },
+          "booleanValue": {
+            "type": "boolean",
+            "description": "Optional boolean value for the property",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyGroup": {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Property"
+            },
+            "description": "The properties in the bag",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConstraintType": {
+        "enum": [
+          "mandatory",
+          "mapping",
+          "allowableType",
+          "allowableTypeAndValues"
+        ],
+        "type": "string",
+        "description": "An enumeration of the currently implemented constraint types"
+      },
+      "ConstraintValidTypes": {
+        "enum": [
+          "string",
+          "number",
+          "dateTime",
+          "boolean"
+        ],
+        "type": "string",
+        "description": "Enumeration of the different type coercions available within constraints"
+      },
+      "Constraint": {
+        "required": [
+          "constraintType",
+          "name",
+          "sourceProperty"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the constraint",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "The required name for the constraint.  The name of a given constraint\r\ndoes not necessarily need to be unique"
+          },
+          "constraintType": {
+            "$ref": "#/components/schemas/ConstraintType"
+          },
+          "sourceProperty": {
+            "type": "string",
+            "description": "The source property for the constraint"
+          },
+          "targetProperty": {
+            "type": "string",
+            "description": "The target property for the constaint.  Only applicable if the constaint is of \"mapping\" type",
+            "nullable": true
+          },
+          "valueType": {
+            "$ref": "#/components/schemas/ConstraintValidTypes"
+          },
+          "allowableValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An optional list of allowable values for the property guarded by the constraint",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Defines an individual constraint that can be imposed upon items within a collection.\r\nThe interpretation of a given constraint may be dependent on the underlying VSP\r\nprovider for the collection."
+      },
+      "ConstraintGroup": {
+        "type": "object",
+        "properties": {
+          "constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "description": "The constraints for this group",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Collection": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the collection",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the collection"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the collection (optional)",
+            "nullable": true
+          },
+          "length": {
+            "type": "integer",
+            "description": "The length of the collection in terms of number of collection items",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "description": "The aggregate size of the collection in bytes",
+            "format": "int64"
+          },
+          "providerTag": {
+            "type": "string",
+            "description": "The tag associated with the VSP provider for this collection",
+            "nullable": true
+          },
+          "propertyGroup": {
+            "$ref": "#/components/schemas/PropertyGroup"
+          },
+          "constraintGroup": {
+            "$ref": "#/components/schemas/ConstraintGroup"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOrUpdateConstraintCommand": {
+        "required": [
+          "constraintType",
+          "name",
+          "sourceProperty"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the constraint"
+          },
+          "constraintType": {
+            "$ref": "#/components/schemas/ConstraintType"
+          },
+          "sourceProperty": {
+            "type": "string",
+            "description": "The property that the constraint applies to"
+          },
+          "targetProperty": {
+            "type": "string",
+            "description": "Only applicable for mapping constraint types.  Should contain a string value\r\nthat defines the mapping to a property/action within the underlying storage layer",
+            "nullable": true
+          },
+          "valueType": {
+            "$ref": "#/components/schemas/ConstraintValidTypes"
+          },
+          "allowableValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An optional list of values for a specified target property",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "CreateCollectionCommand": {
+        "required": [
+          "name",
+          "providerTag"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name for the new collection.  Must not already be registered.  Although\r\ncollections are unique based on system-allocated GUIDS, it is good practice\r\nto not create collections with identical names.  This restriction may be removed in\r\nfuture releases."
+          },
+          "providerTag": {
+            "type": "string",
+            "description": "The provider to be used to create the collection.  Must equate to a provider tag\r\nlisted within the current set of registered VSP bindings."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description for the collection.",
+            "nullable": true
+          },
+          "constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateOrUpdateConstraintCommand"
+            },
+            "description": "An optional list of JCS.Argon.Model.Schema.Constraint elements\r\nfor the collection",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": ""
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "PatchCollectionCommand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Updated name for a collection - must be unique",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Updated description for a collection",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VirtualStorageBinding": {
+        "required": [
+          "providerType",
+          "tag"
+        ],
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The tag for VSP provider"
+          },
+          "providerType": {
+            "type": "string",
+            "description": "The provider type of the VSP provider"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description for the VSP provider",
+            "nullable": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": { },
+            "description": "Generic set of properties for the provider, which will vary based on the underlying\r\nimplementation",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Metrics": {
+        "type": "object",
+        "properties": {
+          "totalCollections": {
+            "type": "integer",
+            "description": "The current total number of managed collections",
+            "format": "int32"
+          },
+          "totalDocuments": {
+            "type": "integer",
+            "description": "The current total number of managed documents",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConfigurationResponse": {
+        "required": [
+          "bindings",
+          "endpoint",
+          "hostName",
+          "schemaVersion",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "hostName": {
+            "type": "string",
+            "description": "The current hostname"
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "The current root endpoint for the API"
+          },
+          "version": {
+            "type": "string",
+            "description": "The internal version of the API"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "description": "The internal schema version of the API"
+          },
+          "bindings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VirtualStorageBinding"
+            },
+            "description": "A list of the currently configured VSP bindings"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Version": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the version",
+            "format": "uuid",
+            "nullable": true
+          },
+          "major": {
+            "type": "integer",
+            "description": "The major version number",
+            "format": "int32"
+          },
+          "minor": {
+            "type": "integer",
+            "description": "The minor version number",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the version"
+          },
+          "size": {
+            "type": "integer",
+            "description": "The size of this version in bytes",
+            "format": "int64"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "The MIME type for the version",
+            "nullable": true
+          },
+          "thumbprint": {
+            "type": "string",
+            "description": "The unique thumbrpint for this version",
+            "format": "byte",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Item": {
+        "required": [
+          "collection",
+          "createdDate",
+          "lastModified",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the item",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the item"
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "The created date for the item",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "description": "The last created time for the item",
+            "format": "date-time"
+          },
+          "collection": {
+            "$ref": "#/components/schemas/Collection"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Version"
+            },
+            "description": "The System.Version versions for this item",
+            "nullable": true
+          },
+          "propertyGroup": {
+            "$ref": "#/components/schemas/PropertyGroup"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}</con:content>
+        <con:type>https://swagger.io/openapiv3/specification</con:type>
+      </con:part>
+    </con:definitionCache>
+    <con:endpoints>
+      <con:endpoint>https://localhost:8443/</con:endpoint>
+    </con:endpoints>
+    <con:resource name="/api/v1/Collections" path="/api/v1/Collections" id="b26f889f-c8ef-4cc1-b49c-2433f2414984">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="21a80e55-361f-4c0a-b2c1-72d132ae7c30" method="GET">
+        <con:description>Call this method in order to retrieve a list of all current collections</con:description>
+        <con:settings/>
+        <con:parameters/>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Successful</con:description>
+          <con:sampleContent>[ {
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "description" : "string",
+  "length" : 0,
+  "size" : 0,
+  "providerTag" : "string",
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  },
+  "constraintGroup" : {
+    "constraints" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "constraintType" : "mandatory",
+      "sourceProperty" : "string",
+      "targetProperty" : "string",
+      "valueType" : "string",
+      "allowableValues" : [ "string" ]
+    } ]
+  }
+} ]</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="1c5c6ee4-2eb7-489e-9f48-b001fdff9a5e" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:credentials>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+      <con:method name="POST" id="ade652bf-b378-467b-b604-fe6487451f0a" method="POST">
+        <con:description>A collection is a top-level container for a series of items (documents).  Each collection may have a
+series of constraints configured against it, which loosely define how meta-data properties associated
+with items are handled.</con:description>
+        <con:settings/>
+        <con:parameters/>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>201</con:status>
+          <con:params/>
+          <con:description>Successful creation.</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "description" : "string",
+  "length" : 0,
+  "size" : 0,
+  "providerTag" : "string",
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  },
+  "constraintGroup" : {
+    "constraints" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "constraintType" : "mandatory",
+      "sourceProperty" : "string",
+      "targetProperty" : "string",
+      "valueType" : "string",
+      "allowableValues" : [ "string" ]
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>400</con:status>
+          <con:params/>
+          <con:description>Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
+            in response payload.</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent>{
+  "name" : "string",
+  "providerTag" : "string",
+  "description" : "string",
+  "constraints" : [ {
+    "name" : "string",
+    "constraintType" : "mandatory",
+    "sourceProperty" : "string",
+    "targetProperty" : "string",
+    "valueType" : "string",
+    "allowableValues" : [ "string" ]
+  } ]
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>text/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/*+json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:request name="Request 1" id="93deba57-9b94-4536-8f07-91cb2aca4cce" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request>{\r
+  "name" : "string",\r
+  "providerTag" : "string",\r
+  "description" : "string",\r
+  "constraints" : [ {\r
+    "name" : "string",\r
+    "constraintType" : "mandatory",\r
+    "sourceProperty" : "string",\r
+    "targetProperty" : "string",\r
+    "valueType" : "string",\r
+    "allowableValues" : [ "string" ]\r
+  } ]\r
+}</con:request>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 2" id="34060e33-97d6-4feb-8f80-e3d8d3f5712a" mediaType="text/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 3" id="bd498f7d-a884-4729-9dbd-303b4479cda7" mediaType="application/*+json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}" path="/api/v1/Collections/{collectionId}" id="43950517-6282-4deb-a70d-c3a510878d12">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="51b9fdd6-1e41-46b1-911f-c68efbc350ec" method="GET">
+        <con:description>If the specified collection exists, then this method will retrieve the details for it,
+including some top-level metrics including its length and overall size.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "description" : "string",
+  "length" : 0,
+  "size" : 0,
+  "providerTag" : "string",
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  },
+  "constraintGroup" : {
+    "constraints" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "constraintType" : "mandatory",
+      "sourceProperty" : "string",
+      "targetProperty" : "string",
+      "valueType" : "string",
+      "allowableValues" : [ "string" ]
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>404</con:status>
+          <con:params/>
+          <con:description>Not Found</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="b918465d-2fe4-48fc-919f-e1d72162492a" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:credentials>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+      <con:method name="PATCH" id="ec8274cf-3329-49be-bcbe-e9630ee94c1f" method="PATCH">
+        <con:description>Allows for the update of an individual collection</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier associated with the collection to update</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>201</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "description" : "string",
+  "length" : 0,
+  "size" : 0,
+  "providerTag" : "string",
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  },
+  "constraintGroup" : {
+    "constraints" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "constraintType" : "mandatory",
+      "sourceProperty" : "string",
+      "targetProperty" : "string",
+      "valueType" : "string",
+      "allowableValues" : [ "string" ]
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>400</con:status>
+          <con:params/>
+          <con:description>Bad Request</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>404</con:status>
+          <con:params/>
+          <con:description>Not Found</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent>{
+  "name" : "string",
+  "description" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>text/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/*+json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:request name="Request 1" id="9dd2ded9-f060-4495-9bc7-5c5603755eaa" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request>{\r
+  "name" : "string",\r
+  "description" : "string"\r
+}</con:request>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 2" id="3418ce6d-3908-4361-b31c-e98418e7c55d" mediaType="text/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 3" id="150365bc-4128-49f8-a5d3-a5444f0feaac" mediaType="application/*+json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Constraints" path="/api/v1/Collections/{collectionId}/Constraints" id="d9e1a8e5-8a34-4c87-ba43-1fa329049d2f">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="324fa570-b41e-4b6f-85c5-a666427a6801" method="GET">
+        <con:description>Gets the constraint group for a given collection, if it exists</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "constraints" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "constraintType" : "mandatory",
+    "sourceProperty" : "string",
+    "targetProperty" : "string",
+    "valueType" : "string",
+    "allowableValues" : [ "string" ]
+  } ]
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>404</con:status>
+          <con:params/>
+          <con:description>Not Found</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="0f8c5fa6-efff-463b-b876-55c2e96ea20c" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+      <con:method name="POST" id="81f9e2ba-feec-4430-9760-76aef9f7e9c9" method="POST">
+        <con:description>The same format of command is used to create
+and update constraints.  If a constraint referenced by name already exists, then it is overwritten with the
+new details.  If no such constraint exists, then a new constraint is created and added to the collection.
+Constraints take effect on the next operation against the collection.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "constraints" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "constraintType" : "mandatory",
+    "sourceProperty" : "string",
+    "targetProperty" : "string",
+    "valueType" : "string",
+    "allowableValues" : [ "string" ]
+  } ]
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>404</con:status>
+          <con:params/>
+          <con:description>Not Found</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent>[ {
+  "name" : "string",
+  "constraintType" : "mandatory",
+  "sourceProperty" : "string",
+  "targetProperty" : "string",
+  "valueType" : "string",
+  "allowableValues" : [ "string" ]
+} ]</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>text/json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/*+json</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:request name="Request 1" id="5fe221a2-d580-4c22-9ef3-46d9863d455c" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request>[ {\r
+  "name" : "string",\r
+  "constraintType" : "mandatory",\r
+  "sourceProperty" : "string",\r
+  "targetProperty" : "string",\r
+  "valueType" : "string",\r
+  "allowableValues" : [ "string" ]\r
+} ]</con:request>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 2" id="8abb3edc-a934-4f92-80d0-4c548ae3d37e" mediaType="text/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+        <con:request name="Request 3" id="0bf1a4e6-b243-45ca-b3b3-4f9935886738" mediaType="application/*+json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Constraints/{constraintId}" path="/api/v1/Collections/{collectionId}/Constraints/{constraintId}" id="e25e6619-ae10-4e9b-9bf4-cec65213e116">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="75ac771d-c444-4958-897f-fa87e0c9407b" method="GET">
+        <con:description>Gets a specific constraint for a given collection</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>constraintId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the constraint</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "constraintType" : "mandatory",
+  "sourceProperty" : "string",
+  "targetProperty" : "string",
+  "valueType" : "string",
+  "allowableValues" : [ "string" ]
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>404</con:status>
+          <con:params/>
+          <con:description>Not Found</con:description>
+          <con:sampleContent>{
+  "type" : "string",
+  "title" : "string",
+  "status" : 0,
+  "detail" : "string",
+  "instance" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="d859d21b-79a3-45f0-9ba9-36e22f9ddef5" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Configuration" path="/api/v1/Configuration" id="d1b52162-ba0e-44e2-95da-15165f204832">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="d3b7ff65-028b-475e-b97f-0ec3f7c68adc" method="GET">
+        <con:description>Call this method in order to retrieve information about the current CSL configuration.  In particular,
+this method can be used to retrieve information about the currently configured VSP providers.</con:description>
+        <con:settings/>
+        <con:parameters/>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Successful</con:description>
+          <con:sampleContent>{
+  "hostName" : "string",
+  "endpoint" : "string",
+  "version" : "string",
+  "schemaVersion" : "string",
+  "bindings" : [ {
+    "tag" : "string",
+    "providerType" : "string",
+    "description" : "string"
+  } ],
+  "metrics" : {
+    "totalCollections" : 0,
+    "totalDocuments" : 0
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="d397f51c-354e-4d6a-8806-a81296719903" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://localhost/api/v1/Configuration</con:originalUri>
+          <con:credentials>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Items" path="/api/v1/Collections/{collectionId}/Items" id="3875cab0-28ce-48eb-aec0-f720039c611c">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="67c462bd-536e-4c8f-b4b4-3ea93bb0235c" method="GET">
+        <con:description>Retrieves a list of items for a given collection.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>[ {
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "createdDate" : "2015-07-20T15:49:04-07:00",
+  "lastModified" : "2015-07-20T15:49:04-07:00",
+  "collection" : {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "description" : "string",
+    "length" : 0,
+    "size" : 0,
+    "providerTag" : "string",
+    "propertyGroup" : {
+      "properties" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "type" : "string",
+        "stringValue" : "string",
+        "numberValue" : 1.100000023841858,
+        "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+        "booleanValue" : true
+      } ]
+    },
+    "constraintGroup" : {
+      "constraints" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "constraintType" : "mandatory",
+        "sourceProperty" : "string",
+        "targetProperty" : "string",
+        "valueType" : "string",
+        "allowableValues" : [ "string" ]
+      } ]
+    }
+  },
+  "versions" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "major" : 0,
+    "minor" : 0,
+    "name" : "string",
+    "size" : 0,
+    "mimeType" : "string"
+  } ],
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  }
+} ]</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="014a3071-6dfd-4082-9736-17a3495a02be" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+      <con:method name="POST" id="b26403e6-0662-4f74-bde4-b0c3839d767c" method="POST">
+        <con:description>This is a multi-part file upload request, with the addition that the "Headers" object may also be
+used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
+automatic type-detection is performed on the meta-data pairs.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>201</con:status>
+          <con:params/>
+          <con:description>Successful creation of new content</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "createdDate" : "2015-07-20T15:49:04-07:00",
+  "lastModified" : "2015-07-20T15:49:04-07:00",
+  "collection" : {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "description" : "string",
+    "length" : 0,
+    "size" : 0,
+    "providerTag" : "string",
+    "propertyGroup" : {
+      "properties" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "type" : "string",
+        "stringValue" : "string",
+        "numberValue" : 1.100000023841858,
+        "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+        "booleanValue" : true
+      } ]
+    },
+    "constraintGroup" : {
+      "constraints" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "constraintType" : "mandatory",
+        "sourceProperty" : "string",
+        "targetProperty" : "string",
+        "valueType" : "string",
+        "allowableValues" : [ "string" ]
+      } ]
+    }
+  },
+  "versions" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "major" : 0,
+    "minor" : 0,
+    "name" : "string",
+    "size" : 0,
+    "mimeType" : "string"
+  } ],
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>multipart/form-data</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:request name="Request 1" id="0252a3cd-a4ae-4b0e-b1cf-180043042eb9" mediaType="multipart/form-data">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Items/{itemId}/Properties" path="/api/v1/Collections/{collectionId}/Items/{itemId}/Properties" id="a2caeec0-4ce6-487f-95ae-f9b61b4b9e5f">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="597b7ce6-2c96-4ce8-ad62-ef4a9ca06edb" method="GET">
+        <con:description>Reads the meta-data (including JCS.Argon.Model.Schema.PropertyGroup) for a given item</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>itemId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the item</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "createdDate" : "2015-07-20T15:49:04-07:00",
+  "lastModified" : "2015-07-20T15:49:04-07:00",
+  "collection" : {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "description" : "string",
+    "length" : 0,
+    "size" : 0,
+    "providerTag" : "string",
+    "propertyGroup" : {
+      "properties" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "type" : "string",
+        "stringValue" : "string",
+        "numberValue" : 1.100000023841858,
+        "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+        "booleanValue" : true
+      } ]
+    },
+    "constraintGroup" : {
+      "constraints" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "constraintType" : "mandatory",
+        "sourceProperty" : "string",
+        "targetProperty" : "string",
+        "valueType" : "string",
+        "allowableValues" : [ "string" ]
+      } ]
+    }
+  },
+  "versions" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "major" : 0,
+    "minor" : 0,
+    "name" : "string",
+    "size" : 0,
+    "mimeType" : "string"
+  } ],
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="75528d26-126c-4eed-a0a6-175973d99c71" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Items/{itemId}" path="/api/v1/Collections/{collectionId}/Items/{itemId}" id="df184a72-a5bd-441f-ae5d-aa4ada4d17a7">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="ea192c42-bd59-4dab-be8c-938bbd4dcc47" method="GET">
+        <con:description>This method will return the latest version of the item by default.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>itemId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the item</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "createdDate" : "2015-07-20T15:49:04-07:00",
+  "lastModified" : "2015-07-20T15:49:04-07:00",
+  "collection" : {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "description" : "string",
+    "length" : 0,
+    "size" : 0,
+    "providerTag" : "string",
+    "propertyGroup" : {
+      "properties" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "type" : "string",
+        "stringValue" : "string",
+        "numberValue" : 1.100000023841858,
+        "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+        "booleanValue" : true
+      } ]
+    },
+    "constraintGroup" : {
+      "constraints" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "constraintType" : "mandatory",
+        "sourceProperty" : "string",
+        "targetProperty" : "string",
+        "valueType" : "string",
+        "allowableValues" : [ "string" ]
+      } ]
+    }
+  },
+  "versions" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "major" : 0,
+    "minor" : 0,
+    "name" : "string",
+    "size" : 0,
+    "mimeType" : "string"
+  } ],
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="d2c31d9f-d514-497d-a213-a0fd36e6118d" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}" path="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}" id="d7f98c1c-7c5c-4ed3-b622-3423f4206e6b">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="9bddd05c-79a9-4fe0-a8bb-c9ab04452328" method="GET">
+        <con:description>Reads the contents of a specific version</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>itemId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>versionId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "major" : 0,
+  "minor" : 0,
+  "name" : "string",
+  "size" : 0,
+  "mimeType" : "string"
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="0f9aa9cf-580f-49c7-a989-0ec42a7f384b" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions" path="/api/v1/Collections/{collectionId}/Items/{itemId}/Versions" id="9c06a2ab-76b0-477d-a8af-f1b1ce385e8e">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="POST" id="02adff53-3a92-4c94-b9b5-ccf4ce599e31" method="POST">
+        <con:description>This is a multi-part file upload request, with the addition that the "Headers" object may also be
+ used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
+ automatic type-detection is performed on the meta-data pairs.</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>itemId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>201</con:status>
+          <con:params/>
+          <con:description>Successful creation of new content</con:description>
+          <con:sampleContent>[ {
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "major" : 0,
+  "minor" : 0,
+  "name" : "string",
+  "size" : 0,
+  "mimeType" : "string"
+} ]</con:sampleContent>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>multipart/form</con:mediaType>
+          <con:params/>
+          <con:sampleContent/>
+        </con:representation>
+        <con:request name="Request 1" id="d3e31676-f5cf-47c3-84ae-914881a63f59" mediaType="multipart/form">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:request/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties" path="/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties" id="57cd5c4b-d5a3-40a1-a730-87508415f506">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="GET" id="af67bc92-d298-4f13-9286-f5e37975f27a" method="GET">
+        <con:description>Retrieves the content of a specific item version</con:description>
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>collectionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the collection</con:description>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>itemId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the item</con:description>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>versionId</con:name>
+            <con:style>TEMPLATE</con:style>
+            <con:description>The unique identifier for the item version</con:description>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:description>Success</con:description>
+          <con:sampleContent>{
+  "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name" : "string",
+  "createdDate" : "2015-07-20T15:49:04-07:00",
+  "lastModified" : "2015-07-20T15:49:04-07:00",
+  "collection" : {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name" : "string",
+    "description" : "string",
+    "length" : 0,
+    "size" : 0,
+    "providerTag" : "string",
+    "propertyGroup" : {
+      "properties" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "type" : "string",
+        "stringValue" : "string",
+        "numberValue" : 1.100000023841858,
+        "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+        "booleanValue" : true
+      } ]
+    },
+    "constraintGroup" : {
+      "constraints" : [ {
+        "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name" : "string",
+        "constraintType" : "mandatory",
+        "sourceProperty" : "string",
+        "targetProperty" : "string",
+        "valueType" : "string",
+        "allowableValues" : [ "string" ]
+      } ]
+    }
+  },
+  "versions" : [ {
+    "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "major" : 0,
+    "minor" : 0,
+    "name" : "string",
+    "size" : 0,
+    "mimeType" : "string"
+  } ],
+  "propertyGroup" : {
+    "properties" : [ {
+      "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name" : "string",
+      "type" : "string",
+      "stringValue" : "string",
+      "numberValue" : 1.100000023841858,
+      "dateTimeValue" : "2015-07-20T15:49:04-07:00",
+      "booleanValue" : true
+    } ]
+  }
+}</con:sampleContent>
+        </con:representation>
+        <con:request name="Request 1" id="f172bbe9-926d-4e4f-8d27-03eaf1350091" mediaType="application/json">
+          <con:settings/>
+          <con:endpoint>https://localhost:8443/</con:endpoint>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+  </con:interface>
+  <con:testSuite id="12ff522b-57b8-4b3b-b02b-6abc98ecd72d" name="Configuration">
+    <con:settings>
+      <con:setting id="IncludeOverview">true</con:setting>
+      <con:setting id="IncludeResults">true</con:setting>
+      <con:setting id="FlowLayout">false</con:setting>
+      <con:setting id="ErrorDetails">true</con:setting>
+      <con:setting id="IncludeCoverage">true</con:setting>
+    </con:settings>
+    <con:savedRecentRuns>1</con:savedRecentRuns>
+    <con:runType>SEQUENTIAL</con:runType>
+    <con:testCase id="9aaade96-99f6-4d0b-9893-7d27118c42ff" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Configuration (Active)" searchProperties="true" timeout="0">
+      <con:settings>
+        <con:setting id="IncludeOverview">true</con:setting>
+        <con:setting id="IncludeResults">true</con:setting>
+        <con:setting id="FlowLayout">false</con:setting>
+        <con:setting id="ErrorDetails">true</con:setting>
+        <con:setting id="IncludeCoverage">true</con:setting>
+      </con:settings>
+      <con:savedRecentRuns>1</con:savedRecentRuns>
+      <con:testStep type="restrequest" name="REST Request" id="bb37cd27-b9ee-4087-9d97-da2968569456">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Configuration" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="REST Request" id="d397f51c-354e-4d6a-8806-a81296719903" mediaType="application/json">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Configuration</con:originalUri>
+            <con:assertion type="Valid HTTP Status Codes" id="69e9c14a-2b20-458f-89ad-9316a6ea3b36" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>200</codes>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="Response SLA Assertion" id="565b42bc-02b6-42d6-a4b4-dc513fadb759" name="Response SLA">
+              <con:configuration>
+                <SLA>200</SLA>
+              </con:configuration>
+            </con:assertion>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:properties/>
+      <con:reportParameters/>
+    </con:testCase>
+    <con:properties/>
+    <con:reportParameters/>
+  </con:testSuite>
+  <con:testSuite id="75cf6e52-d7c3-45ca-bbc2-798f57742501" name="Collections">
+    <con:settings/>
+    <con:savedRecentRuns>1</con:savedRecentRuns>
+    <con:runType>SEQUENTIAL</con:runType>
+    <con:testCase id="af7764b6-b370-45cf-bf15-beeddc4a9217" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Retrieve All Collections" searchProperties="true" timeout="0">
+      <con:settings/>
+      <con:savedRecentRuns>1</con:savedRecentRuns>
+      <con:testStep type="restrequest" name="REST Request" id="63d45324-c9e0-41f7-82e4-562b73e5208c">
+        <con:settings/>
+        <con:config service="Argon - Content Service Layer" resourcePath="/api/v1/Collections" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="REST Request" id="1c5c6ee4-2eb7-489e-9f48-b001fdff9a5e" mediaType="application/json">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://localhost:8443/</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://localhost/api/v1/Collections</con:originalUri>
+            <con:assertion type="Valid HTTP Status Codes" id="101e7d86-362d-4840-805a-5fba3f64fbd4" name="Valid HTTP Status Codes">
+              <con:settings/>
+              <con:configuration>
+                <codes>200</codes>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="Response SLA Assertion" id="f3b58887-df70-4cdb-ab69-182729f8fb5a" name="Response SLA">
+              <con:configuration>
+                <SLA>200</SLA>
+              </con:configuration>
+            </con:assertion>
+            <con:assertion type="GroovyScriptAssertion" id="72667f5e-0875-47ed-84f6-1828acee2353" name="Have Collections">
+              <con:configuration>
+                <scriptText>def json = new groovy.json.JsonSlurper().parseText(context.response)
+json.Data.size() > 0</scriptText>
+              </con:configuration>
+            </con:assertion>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:parameters/>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:properties/>
+      <con:reportParameters/>
+    </con:testCase>
+    <con:properties/>
+    <con:reportParameters/>
+  </con:testSuite>
+  <con:testSuite id="8fec4674-db7d-4d31-98f0-7c4a1621a37f" name="Items">
+    <con:settings/>
+    <con:savedRecentRuns>1</con:savedRecentRuns>
+    <con:runType>SEQUENTIAL</con:runType>
+    <con:properties/>
+    <con:reportParameters/>
+  </con:testSuite>
+  <con:savedRecentRuns>1</con:savedRecentRuns>
+  <con:requirements/>
+  <con:properties/>
+  <con:wssContainer/>
+  <con:databaseConnectionContainer/>
+  <con:jmsConnectionContainer/>
+  <con:oAuth2ProfileContainer/>
+  <con:oAuth1ProfileContainer/>
+  <con:reporting>
+    <con:reportTemplates/>
+    <con:xmlTemplates/>
+    <con:xmlTemplates/>
+    <con:parameters/>
+    <con:parameters/>
+  </con:reporting>
+  <con:reporting/>
+  <con:eventHandlers type="RequestFilter.filterRequest" name="RequestFilter.filterRequest">
+    <con:script>// Sample event script to add custom HTTP header to all outgoing REST, SOAP and HTTP(S) calls
+// This code is often used for adding custom authentication to ReadyAPI functional tests
+
+// If hardcoding the token, uncomment and change line 5
+// token = '4567'
+
+// If your token is parameterized in Project level custom property, uncomment line 8
+// token = request.parent.testCase.testSuite.project.getProperty('auth_token').getValue()
+
+// To modify all outgoing calls, remove comments from lines 11 to 16
+// headers = request.requestHeaders
+// if (headers.containsKey('auth_token2') == false) {
+//   headers.put('auth_token2', token)
+//   request.requestHeaders = headers
+// }</con:script>
+  </con:eventHandlers>
+  <con:eventHandlers type="TestRunListener.afterStep" name="TestRunListener.afterStep">
+    <con:script>// Save all test step results into files
+// Change the directory path in line 5 to a location where you want to store details
+// then uncomment lines 5 to 10
+
+// filePath = 'C:\\tempOutputDirectory\\'
+// fos = new java.io.FileOutputStream(filePath + testStepResult.testStep.label + '.txt', true)
+// pw = new java.io.PrintWriter(fos)
+// testStepResult.writeTo(pw)
+// pw.close()
+// fos.close()</con:script>
+  </con:eventHandlers>
+  <con:authRepository/>
+  <con:tags/>
+</con:soapui-project>
