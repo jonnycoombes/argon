@@ -157,9 +157,9 @@ namespace JCS.Argon.Services.Core
             {
                 var version = await CreateNewVersionTemplate(inboundFile);
                 var item = await CreateNewItemTemplate(collection, version, properties);
-                var itemEntity= await _dbContext.Items.AddAsync(item);
+                var addOp= await _dbContext.Items.AddAsync(item);
                 await _dbContext.SaveChangesAsync();
-                item = itemEntity.Entity;
+                item = addOp.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.Length = collection.Length + 1;
                 collection.Size = collection.Size + version.Size;

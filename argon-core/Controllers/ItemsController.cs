@@ -94,6 +94,24 @@ namespace JCS.Argon.Controllers
         {
             throw new NotImplementedException();
         }
+        
+        /// <summary>
+        /// Reads the contents of a specific version
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <param name="itemId"></param>
+        /// <param name="versionId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Versions/{versionId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Version> ReadVersionContent(Guid collectionId, Guid itemId, Guid versionId)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Performs an upload of new content to a given collection.  This will create the initial version for the content
@@ -120,17 +138,13 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
-            Dictionary<string, object>? properties= null;
-            if (Request.Form.ContainsKey("Properties"))
-            {
-                properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
-            }
+            var properties = ExtractPropertiesFromRequest();
             var collection = await _collectionManager.ReadCollectionAsync(collectionId);
             var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return item;
         }
-        
+
         /// <summary>
         /// Will add a new version to a given item of content 
         /// </summary>
@@ -157,12 +171,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Version>> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "version")] IFormFile file)
         {
-            Dictionary<string, object>? properties = null;
-            if (Request.Form.ContainsKey("Properties"))
-            {
-                properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
-            }
-
+            var properties = ExtractPropertiesFromRequest();
             throw new NotImplementedException();
         }
 
@@ -175,7 +184,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}")]
+        [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

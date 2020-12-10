@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Primitives;
+using static System.DateTime;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,9 +12,11 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ArgonApplicationBuilderExtension
     {
-        public static string X_ARGON_TIMINGS_TOTAL = "X-Argon-Timing-Total-Ms";
+        public static string X_ARGON_TIMINGS_TOTAL = "X-Argon-Timing";
+
+        public static string X_ARGON_TIMESTAMP = "X-Argon-Timestamp";
         
-        public static IApplicationBuilder UseArgonTimings(this IApplicationBuilder app)
+        public static IApplicationBuilder UseArgonTelemetry(this IApplicationBuilder app)
         {
             app.Use(async (context,next) =>
             {
@@ -25,6 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     timer.Stop();
                     context.Response.Headers.Add(X_ARGON_TIMINGS_TOTAL, timer.ElapsedMilliseconds.ToString());
+                    context.Response.Headers.Add(X_ARGON_TIMESTAMP, UtcNow.ToString("HH:m:s tt zzz"));
                 });
                 await next.Invoke();
             });

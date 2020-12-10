@@ -29,9 +29,9 @@ namespace JCS.Argon.Services.Core
         {
             try
             {
-                var propertyGroup = await _dbContext.AddAsync(new PropertyGroup());
+                var addOp = await _dbContext.AddAsync(new PropertyGroup());
                 await _dbContext.SaveChangesAsync();
-                return propertyGroup.Entity;
+                return addOp.Entity;
             }
             catch (Exception ex)
             {

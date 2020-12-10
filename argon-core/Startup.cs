@@ -134,7 +134,7 @@ namespace JCS.Argon
             
             ConfigureGlobalExceptionHandling(app, log);
             app.UseResponseCompression();
-            app.UseArgonTimings();
+            app.UseArgonTelemetry();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

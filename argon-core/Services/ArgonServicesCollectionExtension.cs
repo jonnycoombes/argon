@@ -130,6 +130,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Information("Registering a scoped collection manager");
             services.AddScoped<ICollectionManager, CollectionManager>();
             Log.ForContext("SourceContext", "JCS.Argon")
+                .Information("Registering db cache");
+            services.AddScoped<IDbCache, DbCache>();
+            Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering global response exception handler");
             services.AddSingleton<IResponseExceptionHandler, ResponseExceptionHandler>();
         }

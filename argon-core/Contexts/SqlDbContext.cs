@@ -49,6 +49,11 @@ namespace JCS.Argon.Contexts
         /// </summary>
         public DbSet<Constraint> Constraints { get; set; } = null!;
 
+        /// <summary>
+        /// The set of all <see cref="CacheEntry"> model elements
+        /// </summary>
+        public DbSet<CacheEntry> CacheEntries { get; set; } = null!;
+
         public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
             

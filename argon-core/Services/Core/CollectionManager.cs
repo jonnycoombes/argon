@@ -133,7 +133,7 @@ namespace JCS.Argon.Services.Core
                     }
 
                     var propertyGroup = await _propertyGroupManager.CreatePropertyGroupAsync();
-                    var collectionEntity = await _dbContext.Collections.AddAsync(new Collection()
+                    var addOp = await _dbContext.Collections.AddAsync(new Collection()
                     {
                         Name = cmd.Name,
                         Description = cmd.Description,
@@ -143,7 +143,7 @@ namespace JCS.Argon.Services.Core
                     });
 
                     await _dbContext.SaveChangesAsync();
-                    var collection = collectionEntity.Entity;
+                    var collection = addOp.Entity;
                    
                     // grab the provider and then ask for the physical operations to be performed
                     try
