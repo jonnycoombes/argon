@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,7 +14,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
+using Polly;
 using Serilog;
+using Polly.Extensions.Http;
+using Microsoft.Extensions.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -57,15 +62,30 @@ namespace Microsoft.Extensions.DependencyInjection
         /// All Argon-specific services should be added to the IoC container here
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        public static IServiceCollection RegisterArgonServices(this IServiceCollection services)
+        public static IServiceCollection RegisterArgonServices(this IServiceCollection services, IConfiguration config)
         {
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Registering Argon services");
-            RegisterApiServices(services);
-            RegisterCoreServices(services);
+            RegisterApiServices(services, config);
+            RegisterCoreServices(services, config);
+            RegisterHttpClientServices(services, config);
             ConfigureResponseCompression(services);
             return services;
+        }
+
+        /// <summary>
+        /// Register any typed/untyped IHttpClientFactories here
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        private static void RegisterHttpClientServices(IServiceCollection services, IConfiguration config)
+        {
+            Log.ForContext("SourceContext", "JCS.Argon")
+                .Information("Registering generic HTTP client for re-use");
+            services.AddHttpClient<IVirtualStorageManager, VirtualStorageManager>();
+
         }
 
         /// <summary>
@@ -75,7 +95,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// in here
         /// </summary>
         /// <param name="services">Current services collection</param>
-        private static void RegisterApiServices(IServiceCollection services)
+        /// <param name="config"></param>
+        private static void RegisterApiServices(IServiceCollection services, IConfiguration config)
         {
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Configuring controllers and Swagger components");
@@ -109,7 +130,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// singleton
         /// </summary>
         /// <param name="services">The current services collection</param>
-        private static void RegisterCoreServices(IServiceCollection services)
+        /// <param name="config"></param>
+        private static void RegisterCoreServices(IServiceCollection services, IConfiguration config)
         {
             Log.ForContext("SourceContext", "JCS.Argon")
                 .Information("Configuring core API services");

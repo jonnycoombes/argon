@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +11,7 @@ namespace JCS.Argon.Services.VSP.Providers
 {
     public class OpenTextRestStorageProvider : BaseVirtualStorageProvider
     {
+
         public OpenTextRestStorageProvider(ILogger log) : base(log)
         {
         }
@@ -17,7 +20,8 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override void AfterBind()
         {
-            _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation ");
+            _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation, creating new OTCS REST client");
+            
         }
 
         public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)

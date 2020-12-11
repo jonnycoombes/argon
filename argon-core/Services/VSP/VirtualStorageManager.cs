@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using JCS.Argon.Helpers;
 using JCS.Argon.Model.Configuration;
 using Microsoft.AspNetCore.Http;
@@ -30,17 +31,24 @@ namespace JCS.Argon.Services.VSP
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
+        /// An injected, pre-configured instance of <see cref="HttpClient"/>
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
         /// The overall application configuration, used to extract VSP bindings
         /// </summary>
         private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
 
         public VirtualStorageManager(ILogger<VirtualStorageManager> log, 
             IServiceProvider serviceProvider,
+            HttpClient httpClient,
             IOptionsMonitor<VirtualStorageConfiguration> vspConfiguration)
         {
             log.LogDebug("Creating new instance");
             _virtualStorageConfiguration= vspConfiguration.CurrentValue;
             _serviceProvider = serviceProvider;
+            _httpClient = httpClient;
             _log = log;
             ResolveProviders();
         }
@@ -72,7 +80,7 @@ namespace JCS.Argon.Services.VSP
                 try
                 {
                     var provider = CreateProviderInstance(binding.ProviderType);
-                    provider.Bind(binding, _serviceProvider);
+                    provider.Bind(binding, _serviceProvider, _httpClient);
                     return provider;
                 }
                 catch (IVirtualStorageProvider.VirtualStorageProviderException ex)

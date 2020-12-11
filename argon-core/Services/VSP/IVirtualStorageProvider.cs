@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
@@ -39,7 +40,8 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         /// <param name="binding"></param>
         /// <param name="serviceProvider"></param>
-        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider);
+        /// <param name="httpClient"></param>
+        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider, HttpClient httpClient);
 
         /// <summary>
         /// Asks a provider to create a physical representation of a <see cref="Collection"/>

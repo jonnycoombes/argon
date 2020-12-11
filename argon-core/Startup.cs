@@ -72,7 +72,7 @@ namespace JCS.Argon
                 .Information("Configuring services");
             RegisterDbContext(services);
             services.RegisterArgonConfig(Configuration);
-            services.RegisterArgonServices();
+            services.RegisterArgonServices(Configuration);
             Log.Information("Service configuration and registration completed");
         }
 

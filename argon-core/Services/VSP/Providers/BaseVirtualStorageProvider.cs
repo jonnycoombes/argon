@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
@@ -40,6 +41,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// </summary>
         protected IServiceProvider? _serviceProvider;
 
+        /// <summary>
+        /// An instance of <see cref="HttpClient"/>
+        /// </summary>
+        protected HttpClient _httpClient;
 
         /// <summary>
         /// Default constructor required for dynamic instantiation
@@ -64,10 +69,11 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract string ProviderType { get; }
 
         /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
-        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider)
+        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider, HttpClient httpClient)
         {
             _binding = binding;
             _serviceProvider = serviceProvider;
+            _httpClient = httpClient;
             _log.LogDebug($"Performing VSP bind: {_binding}");
             AfterBind();
         }
