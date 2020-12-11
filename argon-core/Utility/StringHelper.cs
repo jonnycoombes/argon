@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace JCS.Argon.Helpers
+namespace JCS.Argon.Utility
 {
     public static class StringHelper
     {

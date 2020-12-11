@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
-using JCS.Argon.Helpers;
+using JCS.Argon.Utility;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
@@ -119,7 +119,9 @@ namespace JCS.Argon.Services.Core
                     // grab the provider and then ask for the physical operations to be performed
                     try
                     {
-                        await PerformProviderCollectionCreationActions(cmd, collection);
+                        collection= await PerformProviderCollectionCreationActions(cmd, collection);
+                        _dbContext.Update(collection);
+                        await _dbContext.SaveChangesAsync();
                     }
                     catch (IVirtualStorageManager.VirtualStorageManagerException ex)
                     {
@@ -253,8 +255,8 @@ namespace JCS.Argon.Services.Core
         /// <param name="cmd"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        /// <exception cref="CollectionManagerException"></exception>
-        private async Task PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
+        /// <exception cref="ICollectionManager.CollectionManagerException"></exception>
+        private async Task<Collection> PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
         {
             _log.LogDebug($"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
             var provider = _virtualStorageManager.GetProvider(cmd.ProviderTag);
@@ -264,9 +266,8 @@ namespace JCS.Argon.Services.Core
                 if (creationResult.Properties != null)
                 {
                     collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
-                    _dbContext.Update(collection);
-                    await _dbContext.SaveChangesAsync();
                 }
+                return collection;
             }
             else
             {

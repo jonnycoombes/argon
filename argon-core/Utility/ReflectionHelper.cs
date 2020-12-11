@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JCS.Argon.Helpers
+namespace JCS.Argon.Utility
 {
     /// <summary>
     /// Contains any reflection-related utilities

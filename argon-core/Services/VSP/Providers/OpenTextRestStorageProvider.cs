@@ -24,12 +24,31 @@ namespace JCS.Argon.Services.VSP.Providers
             
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new OpenTextRestClient(_log)
+                {
+                    EndpointAddress = Binding!.Properties["endpoint"].ToString(),
+                    UserName = Binding!.Properties["user"].ToString(),
+                    Password = Binding!.Properties["password"].ToString(),
+                    HttpClient = _httpClient
+                };
+                await client.Authenticate();
+                return new IVirtualStorageProvider.StorageOperationResult()
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Failed
+                };
+            }
+            catch (OpenTextRestClient.OpenTextRestClientException ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(ex.ResponseCodeHint,
+                    $"An exception was caught from within the OTCS REST layer: {ex.GetBaseException().Message}", ex);
+            }
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
         {
             throw new NotImplementedException();
         }

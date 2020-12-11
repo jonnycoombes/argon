@@ -1,6 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
-using JCS.Argon.Helpers;
+using JCS.Argon.Utility;
 using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;

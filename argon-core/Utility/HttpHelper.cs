@@ -1,7 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Http;
 
-namespace JCS.Argon.Helpers
+namespace JCS.Argon.Utility
 {
     /// <summary>
     /// Simple Http related helpers and utilities
