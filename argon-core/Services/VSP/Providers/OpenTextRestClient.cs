@@ -92,9 +92,11 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             _log.LogDebug($"{this.GetType()}: Attempting authentication");
             ValidateConfiguration();
-            var content = CreateMultiPartFormTemplate();
-            content.Add(CreateStringFormField("username", UserName!));
-            content.Add(CreateStringFormField("password", Password!));
+            var content = CreateMultiPartFormTemplate(new (string, string)[]{
+                ("username", UserName!),
+                ("password", Password!)
+            });
+            
             try
             {
                 var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"), content); 

@@ -46,8 +46,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.Providers.Add<GzipCompressionProvider>();
                 options.Providers.Add<BrotliCompressionProvider>();
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] {"application/json"});
-            });
+                    new[] {"application/pdf"});
+                });
             services.Configure<GzipCompressionProviderOptions>(options =>
             {
                 options.Level = CompressionLevel.Fastest;

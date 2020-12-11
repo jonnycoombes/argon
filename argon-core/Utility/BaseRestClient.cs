@@ -21,7 +21,7 @@ namespace JCS.Argon.Utility
         }
 
         /// <summary>
-        /// 
+        /// Creates a multi-part form body, with a guid-based boundary
         /// </summary>
         /// <returns></returns>
         protected MultipartFormDataContent CreateMultiPartFormTemplate()
@@ -29,6 +29,24 @@ namespace JCS.Argon.Utility
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"{OpenTextRestClient.MultiPartFormContentType}; boundary={boundary}");
+            return template;
+        }
+
+        /// <summary>
+        /// Creates a multi-part form body, by converting a passed in array of string tuples into a series of
+        /// string field body parts
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        protected MultipartFormDataContent CreateMultiPartFormTemplate((string, string)[] fields)
+        {
+            var boundary = Guid.NewGuid().ToString();
+            var template = new MultipartFormDataContent(boundary);
+            template.Headers.ContentType = MediaTypeHeaderValue
+                .Parse($"{OpenTextRestClient.MultiPartFormContentType}; boundary={boundary}");
+            foreach(var field in fields){
+                template.Add(CreateStringFormField(field.Item1, field.Item2));
+            }    
             return template;
         }
 
@@ -50,7 +68,7 @@ namespace JCS.Argon.Utility
             {
                 return JObject.Parse(json);
             }
-            catch (JsonReaderException ex)
+            catch (JsonReaderException)
             {
                 _log.LogWarning($"{this.GetType()}: Invalid JSON returned in response to a request");
                 return null;
