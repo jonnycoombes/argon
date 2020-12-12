@@ -44,7 +44,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// An instance of <see cref="HttpClient"/>
         /// </summary>
-        protected HttpClient _httpClient;
+        protected HttpClient _httpClient= null!;
 
         /// <summary>
         /// Default constructor required for dynamic instantiation

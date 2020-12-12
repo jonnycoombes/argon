@@ -108,7 +108,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
             var result = new IVirtualStorageProvider.StorageOperationResult();
             var collectionRootPath = GenerateCollectionPath(collection); 
@@ -119,7 +119,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             else
             {
-                return Task.Run(() =>
+                return await Task.Run(() =>
                 {
                     _log.LogDebug($"Creating a new collection storage root at {collectionRootPath}");
                     var info = Directory.CreateDirectory(collectionRootPath);
@@ -190,11 +190,14 @@ namespace JCS.Argon.Services.VSP.Providers
             }
 
             var stream = new FileStream(versionStoragePath, FileMode.Open);
-            return new IVirtualStorageProvider.StorageOperationResult()
+            return await Task.Run(() =>
             {
-                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
-                Stream = stream
-            };
+                return new IVirtualStorageProvider.StorageOperationResult()
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                    Stream = stream
+                };
+            });
         }
     }
 }

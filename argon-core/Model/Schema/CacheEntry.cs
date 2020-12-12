@@ -38,6 +38,12 @@ namespace JCS.Argon.Model.Schema
         public Guid? Id { get; set; }
 
         /// <summary>
+        /// A partition identiier, allows for the grouping and subsetting of cache entries
+        /// </summary>
+        [Required]
+        public string Partition { get; set; } = null!;
+
+        /// <summary>
         /// The name of the property
         /// </summary>
         [Required]
