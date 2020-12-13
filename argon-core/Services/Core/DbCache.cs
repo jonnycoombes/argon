@@ -14,12 +14,13 @@ namespace JCS.Argon.Services.Core
         {
         }
 
-        public async Task<CacheEntry> AddOrReplaceStringValueAsync(string key, string value)
+        public async Task<CacheEntry> AddOrReplaceStringValueAsync(string partition, string key, string value)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            await DeleteEntry(key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            await DeleteEntry(partition, key);
             var addOp = await _dbContext.CacheEntries.AddAsync(new CacheEntry()
             {
+                Partition = partition,
                 Key = key,
                 StringValue = value
             });
@@ -27,12 +28,13 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
-        public async Task<CacheEntry> AddOrReplaceLongValueAsync(string key, long value)
+        public async Task<CacheEntry> AddOrReplaceLongValueAsync(string partition, string key, long value)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            await DeleteEntry(key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            await DeleteEntry(partition, key);
             var addOp = await _dbContext.CacheEntries.AddAsync(new CacheEntry()
             {
+                Partition = partition,
                 Key = key,
                 LongValue = value
             });
@@ -40,12 +42,13 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
-        public async Task<CacheEntry> AddOrReplaceIntValueAsync(string key, int value)
+        public async Task<CacheEntry> AddOrReplaceIntValueAsync(string partition, string key, int value)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            await DeleteEntry(key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            await DeleteEntry(partition, key);
             var addOp = await _dbContext.CacheEntries.AddAsync(new CacheEntry()
             {
+                Partition = partition,
                 Key = key,
                 IntValue = value
             });
@@ -53,12 +56,13 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
-        public async Task<CacheEntry> AddOrReplaceJsonValueAsync(string key, JsonDocument value)
+        public async Task<CacheEntry> AddOrReplaceJsonValueAsync(string key, JsonDocument value, string partition)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            await DeleteEntry(key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            await DeleteEntry(partition, key);
             var addOp = await _dbContext.CacheEntries.AddAsync(new CacheEntry()
             {
+                Partition = partition,
                 Key = key,
                 StringValue = value.ToString()
             });
@@ -66,12 +70,13 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
-        public async Task<CacheEntry> AddOrReplaceDatetimeValueAsync(string key, DateTime value)
+        public async Task<CacheEntry> AddOrReplaceDatetimeValueAsync(string partition, string key, DateTime value)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            await DeleteEntry(key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            await DeleteEntry(partition, key);
             var addOp = await _dbContext.CacheEntries.AddAsync(new CacheEntry()
             {
+                Partition = partition,
                 Key = key,
                 DateTimeValue = value
             });
@@ -79,23 +84,23 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
-        public async Task<bool> HasEntry(string key)
+        public async Task<bool> HasEntry(string partition, string key)
         {
-            _log.LogDebug($"Performing cache existence check for key [{key}]");
-            var entry = await _dbContext.CacheEntries.FirstAsync(e => e.Key == key);
+            _log.LogDebug($"Performing cache existence check for key [{partition},{key}]");
+            var entry = await _dbContext.CacheEntries.FirstAsync(e => e.Partition == partition && e.Key == key);
             return entry != null;
         }
 
-        public async Task<CacheEntry?> LookupEntry(string key)
+        public async Task<CacheEntry?> LookupEntry(string partition, string key)
         {
-            _log.LogDebug($"Performing cache lookup for key [{key}]");
-            return await _dbContext.CacheEntries.FirstAsync(e => e.Key == key);
+            _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
+            return await _dbContext.CacheEntries.FirstAsync(e => e.Partition == partition && e.Key == key);
         }
 
-        public async Task<bool> DeleteEntry(string key)
+        public async Task<bool> DeleteEntry(string partition, string key)
         {
-            _log.LogDebug($"Performing cache deletion for key [{key}]");
-            var entry = await LookupEntry(key);
+            _log.LogDebug($"Performing cache deletion for key [{partition},{key}]");
+            var entry = await LookupEntry(partition, key);
             if (entry != null)
             {
                 _dbContext.CacheEntries.Remove(entry);

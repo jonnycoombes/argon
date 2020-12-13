@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,8 +17,21 @@ namespace JCS.Argon.Services.VSP.Providers
     {
         public override string ProviderType => "openTextRestful";
 
+        /// <summary>
+        /// An internal instance of <see cref="OpenTextRestClient"/>
+        /// </summary>
         private OpenTextRestClient _client= null!;
+
+        /// <summary>
+        /// The root storage path, relative to the Enterprise workspace
+        /// </summary>
+        private string? _rootCollectionPath; 
         
+        /// <summary>
+        /// Default constructor - since providers are loaded dynamically at run time,
+        /// this is really just delegated to the base class
+        /// </summary>
+        /// <param name="log"></param>
         public OpenTextRestStorageProvider(ILogger log) : base(log)
         {
         }
@@ -29,7 +43,20 @@ namespace JCS.Argon.Services.VSP.Providers
         public override void AfterBind()
         {
             _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation, creating new OTCS REST client");
+            _rootCollectionPath = Binding!.Properties["rootCollectionPath"].ToString()!;
+            this.AssertNotNull(_rootCollectionPath, "Root path hasn't been specified!");
+            _log.LogDebug($"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
             _client = CreateRestClient();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        private string GenerateCollectionPath(Collection collection)
+        {
+            return Path.Combine(_rootCollectionPath!, collection.Id.ToString()!);
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
@@ -55,9 +82,8 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         private OpenTextRestClient CreateRestClient()
         {
-            this.AssertNotNull(_serviceProvider, "Service provider has not been injected!");
             this.AssertNotNull(_httpClient, "HTTP client has not been injected!");
-            var client = new OpenTextRestClient(_log, (IDbCache?) _serviceProvider!.GetService(typeof(IDbCache)))
+            var client = new OpenTextRestClient(_log, _dbCache)
             {
                 CachePartition = Binding!.Tag,
                 EndpointAddress = Binding!.Properties["endpoint"].ToString(),

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
+using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Version = JCS.Argon.Model.Schema.Version;
 
@@ -39,9 +40,9 @@ namespace JCS.Argon.Services.VSP
         /// Binds a given provider to its configuration
         /// </summary>
         /// <param name="binding"></param>
-        /// <param name="serviceProvider"></param>
+        /// <param name="dbCache"></param>
         /// <param name="httpClient"></param>
-        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider, HttpClient httpClient);
+        public void Bind(VirtualStorageBinding binding, IDbCache dbCache, HttpClient httpClient);
 
         /// <summary>
         /// Asks a provider to create a physical representation of a <see cref="Collection"/>

@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Services.Core;
-using Microsoft.AspNetCore.Http;
 using JCS.Argon.Utility;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace JCS.Argon.Services.VSP.Providers
 {

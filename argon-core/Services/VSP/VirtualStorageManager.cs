@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using JCS.Argon.Utility;
 using JCS.Argon.Model.Configuration;
+using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -80,7 +81,7 @@ namespace JCS.Argon.Services.VSP
                 try
                 {
                     var provider = CreateProviderInstance(binding.ProviderType);
-                    provider.Bind(binding, _serviceProvider, _httpClient);
+                    provider.Bind(binding, (IDbCache)_serviceProvider.GetService(typeof(IDbCache))!, _httpClient);
                     return provider;
                 }
                 catch (IVirtualStorageProvider.VirtualStorageProviderException ex)

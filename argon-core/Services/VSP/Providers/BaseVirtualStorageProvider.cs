@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
+using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Version = JCS.Argon.Model.Schema.Version;
@@ -29,7 +30,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Copy of the current binding
         /// </summary>
-        protected VirtualStorageBinding? _binding;
+        protected VirtualStorageBinding _binding = null!;
 
         /// <summary>
         /// The logger
@@ -37,14 +38,14 @@ namespace JCS.Argon.Services.VSP.Providers
         protected ILogger _log;
 
         /// <summary>
-        /// A captured instance of <see cref="IServiceProvider"/>
-        /// </summary>
-        protected IServiceProvider? _serviceProvider;
-
-        /// <summary>
         /// An instance of <see cref="HttpClient"/>
         /// </summary>
         protected HttpClient _httpClient= null!;
+
+        /// <summary>
+        /// An instance of <see cref="IDbCache"/>
+        /// </summary>
+        protected IDbCache _dbCache = null!;
 
         /// <summary>
         /// Default constructor required for dynamic instantiation
@@ -52,7 +53,6 @@ namespace JCS.Argon.Services.VSP.Providers
         protected BaseVirtualStorageProvider(ILogger log)
         {
             _log = log;
-            _binding = null;
         }
 
         /// <summary>
@@ -69,10 +69,10 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract string ProviderType { get; }
 
         /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
-        public void Bind(VirtualStorageBinding binding, IServiceProvider serviceProvider, HttpClient httpClient)
+        public void Bind(VirtualStorageBinding binding, IDbCache dbCache, HttpClient httpClient)
         {
             _binding = binding;
-            _serviceProvider = serviceProvider;
+            _dbCache = dbCache;
             _httpClient = httpClient;
             _log.LogDebug($"Performing VSP bind: {_binding}");
             AfterBind();

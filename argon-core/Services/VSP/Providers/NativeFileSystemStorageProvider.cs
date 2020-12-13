@@ -59,11 +59,12 @@ namespace JCS.Argon.Services.VSP.Providers
             else
             {
                 _rootPathInfo = new DirectoryInfo(@$"{(string)_binding!.Properties[ROOTPATH_PROPERTY]}");
+                _log.LogInformation($"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
                 if (!Directory.Exists(_rootPathInfo.FullName))
                 {
                     try
                     {
-                        _log.LogInformation($"Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
+                        _log.LogInformation($"{ProviderType}: Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
                         _rootPathInfo = Directory.CreateDirectory(_rootPathInfo.FullName);
                     }
                     catch (Exception ex)
@@ -89,7 +90,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             else
             {
-                _log.LogWarning($"The expected path property wasn't found against item with id {item.Id}");
+                _log.LogWarning($"{ProviderType}: The expected path property wasn't found against item with id {item.Id}");
                 return null;
             }
         }
@@ -121,7 +122,7 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 return await Task.Run(() =>
                 {
-                    _log.LogDebug($"Creating a new collection storage root at {collectionRootPath}");
+                    _log.LogDebug($"{ProviderType}: Creating a new collection storage root at {collectionRootPath}");
                     var info = Directory.CreateDirectory(collectionRootPath);
                     result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                     result.Properties = new Dictionary<string, object>()

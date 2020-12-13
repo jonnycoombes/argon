@@ -37,7 +37,7 @@ namespace JCS.Argon.Model.Schema
         /// <returns></returns>
         public bool HasPropertyConstraint(string sourceProperty)
         {
-            return Constraints.Any(c => c.SourceProperty.Equals(sourceProperty));
+            return Constraints != null && Constraints.Any(c => c.SourceProperty.Equals(sourceProperty));
         }
 
         /// <summary>
@@ -49,12 +49,13 @@ namespace JCS.Argon.Model.Schema
         {
             if (HasPropertyConstraint(sourceProperty))
             {
-                return Constraints?.First(c => c.SourceProperty.Equals(sourceProperty));
+                if (Constraints != null) return Constraints.First(c => c.SourceProperty.Equals(sourceProperty));
             }
             else
             {
                 return null;
             }
+            return null;
         }
     }
 }
