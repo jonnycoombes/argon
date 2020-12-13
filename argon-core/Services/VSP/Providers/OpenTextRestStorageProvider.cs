@@ -1,11 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
-using JCS.Argon.Services.Core;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
