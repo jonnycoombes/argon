@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
@@ -52,7 +54,12 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         private string GenerateCollectionPath(Collection collection)
         {
-            return Path.Combine(_rootCollectionPath!, collection.Id.ToString()!);
+            return $"{_rootCollectionPath!}/{collection.Id.ToString()!}";
+        }
+
+        private string GenerateItemPath(Collection collection, Item item)
+        {
+            return $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
@@ -60,10 +67,28 @@ namespace JCS.Argon.Services.VSP.Providers
             try
             {
                 await _client.Authenticate();
-                return new IVirtualStorageProvider.StorageOperationResult()
+                var collectionRootPath = GenerateCollectionPath(collection);
+                var nodeId= await _client.CreatePath(GenerateCollectionPath(collection));
+                if (nodeId == null)
                 {
-                    Status = IVirtualStorageProvider.StorageOperationStatus.Failed
-                };
+                    return new IVirtualStorageProvider.StorageOperationResult()
+                    {
+                        Status = IVirtualStorageProvider.StorageOperationStatus.Failed
+                    };
+                }
+                else
+                {
+                    var result = new IVirtualStorageProvider.StorageOperationResult();
+                    result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
+                    result.Properties = new Dictionary<string, object>()
+                    {
+                        {$"{ProviderProperties.Path}", collectionRootPath},
+                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
+                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                        {"nodeId", nodeId}
+                    };
+                    return result;
+                }
             }
             catch (OpenTextRestClient.OpenTextRestClientException ex)
             {
@@ -92,7 +117,52 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
         {
-            throw new NotImplementedException();
+            if (!collection.PropertyGroup.HasProperty("nodeId"))
+            {
+                throw new OpenTextRestClient.OpenTextRestClientException(StatusCodes.Status400BadRequest,
+                    $"Unable to locate cached node id for collection");
+            }
+            else
+            {
+                long itemNodeId;
+                await _client.Authenticate();
+                var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                if (item.PropertyGroup.HasProperty("nodeId"))
+                {
+                    itemNodeId = (long)item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                }
+                else if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
+                {
+                    itemNodeId= await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
+                }
+                else
+                {
+                    itemNodeId= await _client.GetChildFolderId(collectionNodeId, item.Id.ToString());
+                }
+                if (itemNodeId != 0)
+                {
+                    item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
+                    var versionNodeId = await _client.CreateFolder(itemNodeId, $"{version.Major}_{version.Minor}", version.Name);
+                    if (versionNodeId != 0)
+                    {
+                        var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
+                        return new IVirtualStorageProvider.StorageOperationResult()
+                        {
+                            Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+                        };
+                    }
+                    else
+                    {
+                        throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest, 
+                            $"Unable to create/locate node id");
+                    }
+                }
+                else
+                {
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest, 
+                        $"Unable to create/locate node id");
+                }
+            }
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <con:soapui-workspace name="Argon" cid="11a2e1b0-e7af-4d3c-8a2c-add954e8b913" soapui-version="6.0.0" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
-  <con:project name="Argon" lastOpened="2020-12-10T15:45:24.099Z">D:/Documents/Source/JCS/argon/argon-test/Argon-Test.xml</con:project>
+  <con:project name="Argon" lastOpened="2020-12-14T12:45:15.738Z">D:/Documents/Source/JCS/argon/argon-test/Argon-Test.xml</con:project>
   <con:recentItemCollection>
     <con:moduleId>SoapUiNGModule</con:moduleId>
-    <con:itemId>2839b1eb-8849-4041-87fa-d229fe6e233d</con:itemId>
-    <con:itemId>132a280a-3c8a-420a-b1a2-b6160eddb7aa</con:itemId>
-    <con:itemId>ed8f56fc-3ff2-44c4-85ee-e0271df6ee3d</con:itemId>
-    <con:itemId>9aa77dd2-28cf-4261-91ad-2ab863b3aefd</con:itemId>
-    <con:itemId>ba56c3c3-3dc8-4364-be24-dc5d847b39ab</con:itemId>
+    <con:itemId>c0b57f77-d067-4735-9eef-3503576a5256</con:itemId>
+    <con:itemId>eedeb71e-f6db-4833-85b7-6c3ba63302e3</con:itemId>
+    <con:itemId>9c497348-078a-43e8-a352-e34a53e01835</con:itemId>
+    <con:itemId>c56dec73-ff2d-4a07-a089-17141cc0e0e2</con:itemId>
+    <con:itemId>b26666b9-3f52-46ce-9967-e126b7d89ba6</con:itemId>
   </con:recentItemCollection>
   <con:expandedTreeNodes>
     <con:project path="D:\Documents\Source\JCS\argon\argon-test\Argon-Test.xml">
@@ -24,6 +24,9 @@
       <nodeId>d3b7ff65-028b-475e-b97f-0ec3f7c68adc</nodeId>
       <nodeId>ba56c3c3-3dc8-4364-be24-dc5d847b39ab</nodeId>
       <nodeId>ade652bf-b378-467b-b604-fe6487451f0a</nodeId>
+      <nodeId>24137362-0ecf-4f26-93df-32d6290c0bb1</nodeId>
+      <nodeId>9c06a2ab-76b0-477d-a8af-f1b1ce385e8e</nodeId>
+      <nodeId>02adff53-3a92-4c94-b9b5-ccf4ce599e31</nodeId>
     </con:project>
   </con:expandedTreeNodes>
   <con:dashboardTileCollection>
@@ -34,7 +37,11 @@
           <con:mode>
             <con:today>true</con:today>
           </con:mode>
-          <con:filter/>
+          <con:filter>
+            <con:failed>true</con:failed>
+            <con:passed>true</con:passed>
+            <con:unknown>true</con:unknown>
+          </con:filter>
         </con:settings>
       </con:dashboardTile>
       <con:dashboardTile tileId="fc570a5f-ccbf-4103-a16c-1126b6e016ff" tileType="TEST_CASE_STATUS_TILE">
@@ -42,7 +49,11 @@
           <con:mode>
             <con:today>true</con:today>
           </con:mode>
-          <con:filter/>
+          <con:filter>
+            <con:failed>true</con:failed>
+            <con:passed>true</con:passed>
+            <con:unknown>true</con:unknown>
+          </con:filter>
         </con:settings>
       </con:dashboardTile>
       <con:dashboardTile tileId="8ddd9c17-0eb8-4479-a050-1c656ce4b843" tileType="SECURE_TILE">
@@ -60,7 +71,11 @@
             <con:today>true</con:today>
           </con:mode>
           <con:project>All Projects</con:project>
-          <con:filter/>
+          <con:filter>
+            <con:avg>true</con:avg>
+            <con:duration>true</con:duration>
+            <con:failures>true</con:failures>
+          </con:filter>
         </con:settings>
       </con:dashboardTile>
       <con:dashboardTile tileId="bfab5e1c-c68a-4e7b-b38c-f372576a8bf9" tileType="SERVICEV">
@@ -71,6 +86,9 @@
             <con:column>Location</con:column>
             <con:column>Port</con:column>
           </con:tableSettings>
+          <con:searchSettings>
+            <con:searchType>All</con:searchType>
+          </con:searchSettings>
         </con:settings>
       </con:dashboardTile>
     </con:dashboardTiles>

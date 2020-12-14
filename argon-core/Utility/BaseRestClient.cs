@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Services.VSP.Providers;
@@ -61,7 +62,7 @@ namespace JCS.Argon.Utility
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
             foreach(var field in fields){
                 template.Add(CreateStringFormField(field.Item1, field.Item2));
-            }    
+            }
             return template;
         }
 
@@ -72,10 +73,61 @@ namespace JCS.Argon.Utility
         /// <param name="content"></param>
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
-        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, MultipartFormDataContent content, bool checkResponseCodes = true)
+        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, (string, string)[] headers, MultipartFormDataContent content, bool checkResponseCodes = true)
         {
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected");
-            var response = await HttpClient.PostAsync(uri, content);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+            requestMessage.Content = content;
+            foreach (var header in headers)
+            {
+                requestMessage.Headers.Add(header.Item1, header.Item2);
+            }
+            var response = await HttpClient.SendAsync(requestMessage);
+            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            try
+            {
+                return JObject.Parse(json);
+            }
+            catch (JsonReaderException ex)
+            {
+                _log.LogWarning($"{this.GetType()}: Invalid JSON returned in response to a request");
+                throw new BaseRestClientException(StatusCodes.Status500InternalServerError,
+                    $"Invalid JSON response received", ex);
+            }
+        }
+
+        protected Uri AppendQueryStringParametersToUri(Uri source, (string, string)[] fields)
+        {
+            var sb = new StringBuilder();
+            foreach(var field in fields)
+            {
+                sb.Append($"{field.Item1}={field.Item2}&");
+            }
+            var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
+            return new Uri($"{source.ToString()}?{queryString}");
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="queryParams"></param>
+        /// <param name="headers"></param>
+        /// <param name="checkResponseCodes"></param>
+        /// <returns></returns>
+        /// <exception cref="BaseRestClientException"></exception>
+        protected async Task<JObject> GetRequestForJsonAsync(Uri uri, (string, string)[] headers, 
+            (string, string)[] queryParams, bool checkResponseCodes = true)
+        {
+            this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
+            uri = AppendQueryStringParametersToUri(uri, queryParams);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            foreach (var header in headers)
+            {
+                requestMessage.Headers.Add(header.Item1, header.Item2);
+            }
+            var response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             try

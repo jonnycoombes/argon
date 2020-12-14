@@ -87,14 +87,14 @@ namespace JCS.Argon.Services.Core
         public async Task<bool> HasEntry(string partition, string key)
         {
             _log.LogDebug($"Performing cache existence check for key [{partition},{key}]");
-            var entry = await _dbContext.CacheEntries.FirstAsync(e => e.Partition == partition && e.Key == key);
+            var entry = await _dbContext.CacheEntries.FirstOrDefaultAsync(e => e.Partition == partition && e.Key == key);
             return entry != null;
         }
 
         public async Task<CacheEntry?> LookupEntry(string partition, string key)
         {
             _log.LogDebug($"Performing cache lookup for key [{partition},{key}]");
-            return await _dbContext.CacheEntries.FirstAsync(e => e.Partition == partition && e.Key == key);
+            return await _dbContext.CacheEntries.FirstOrDefaultAsync(e => e.Partition == partition && e.Key == key);
         }
 
         public async Task<bool> DeleteEntry(string partition, string key)
