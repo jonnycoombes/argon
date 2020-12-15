@@ -46,6 +46,7 @@ The Git versioning scheme for Argon is straightforward:
         \item 0.1.0 - build after the initial development sprint.
         \item 0.2.0 - build after the second development sprint.
         \item 0.3.0 - build after the third development sprint.
+        \item 1.0.0 - build after the fourth development sprint.
     \end{enumerate}
     \item Individual feature implementations will be carried out on a dedicated branch, prefixed with the corresponding \textbf{Jira} ticket.  For example, ticket number \textbf{JA-15} would have a branch named \textit{feature\\JA-15-Summary}, where the summary is automatically generated as part of the development toolchain.
     \item Within the local development environment, changes are mastered and then pushed to multiple remotes.  (There may be multiple remotes based on the number of environments stood up).
@@ -200,6 +201,13 @@ This release is the build at the end of Argon Sprint 2.  A number of issues to m
     \item Need to validate the build against Windows and Ubuntu variants of OTCS.
     \item Virtual storage provider implementations are now dynamically loaded and scanned during startup/first request.
 \end{enumerate}
-\section{Build 0.3.X}
-
+\section{Build 1.0.X}
+Deploy Date 12\textsuperscript{th} December, 2020
+This release is the first milestone related at the end of Argon Sprint 4.  A number of issues to mention:
+\begin{enumerate}
+    \item Search operations currently still being optimised at the DB level.
+    \item Tempest integration present, but subject to configuration within the Glencore environment.
+    \item Default role for broad-level access will be "Argon".
+    \item OpenText REST layer (within CS 16.2.11) seems to occasionally timeout authentication immediately.  This may be a problem with running in Administrative mode, or OTCS general reliability.  Polly implemented retries will be required if no resolution can be found for this.  (Currently researching a couple of KC articles relating to this - appears to be a known issue).
+\end{enumerate}
 \end{document}

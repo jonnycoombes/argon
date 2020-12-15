@@ -1,7 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1606490887 "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.tex" "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.pdf" "dev" 1606490888
-  "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.aux" 1606490888 3570 55dea90de485be6cdcf60b1f6b9bd982 ""
-  "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.tex" 1606490887 10474 2a1f5cf8045855542432936be71b65f0 ""
+["pdflatex"] 1608028640 "dev.tex" "dev.pdf" "dev" 1608028641
   "/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -36,6 +34,7 @@
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
+  "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb" 1248133631 35022 e40946b20bfdcd1099eafb2bcd9f25dd ""
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1248133631 37944 359e864bd06cde3b1cf57bb20757fb06 ""
@@ -90,15 +89,13 @@
   "/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1586288239 4811913 0be9a7e86c70a26e5e3042966bcd7097 ""
   "/usr/local/texlive/2020/texmf-var/web2c/pdftex/pdflatex.fmt" 1604703821 2432465 eb9e5fef738a504940bdfb4c28e32a02 ""
   "/usr/local/texlive/2020/texmf.cnf" 1586288231 577 d60164b4589a341208aff7a667fbbdcb ""
-  "dev.aux" 1606490888 3570 55dea90de485be6cdcf60b1f6b9bd982 "pdflatex"
-  "dev.out" 1606490888 967 528e419037753c54c7c7594e05385ad1 "pdflatex"
-  "dev.tex" 1606490887 10474 2a1f5cf8045855542432936be71b65f0 ""
-  "dev.toc" 1606490888 1371 eccaf8044f38515a0c9e35bddc6d3744 "pdflatex"
+  "dev.aux" 1608028641 3570 433b95c60ddd336a5fa93f1d07eaeef3 "pdflatex"
+  "dev.out" 1608028641 967 dfa72dd73c6c47dc9d2919819a07882b "pdflatex"
+  "dev.tex" 1608028639 11347 f8c0a6776eaefe4c5655d084f06abdde ""
+  "dev.toc" 1608028641 1371 769b6f4a56f71fb6e9c04c31b3dd82ca "pdflatex"
   (generated)
+  "dev.toc"
   "dev.aux"
+  "dev.out"
   "dev.log"
   "dev.pdf"
-  "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.pdf"
-  "dev.out"
-  "/Users/jcoombes/Documents/Source/argon/argon-docs/dev.log"
-  "dev.toc"
