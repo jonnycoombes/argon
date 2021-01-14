@@ -231,6 +231,7 @@ namespace JCS.Argon.Services.Core
             }
             else
             {
+                LogWarning(_log, $"Failed to locate a collection with id \"{collectionId.ToString()}\"");
                 return false;
             }
         }
