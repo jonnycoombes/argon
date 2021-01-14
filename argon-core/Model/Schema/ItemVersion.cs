@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace JCS.Argon.Model.Schema
 {
     
-    [Table("version", Schema = "core")]
+    [Table("itemVersion", Schema = "argon")]
     public class ItemVersion
     {
         /// <summary>

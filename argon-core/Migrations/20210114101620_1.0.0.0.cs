@@ -3,16 +3,36 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JCS.Argon.Migrations
 {
-    public partial class _02 : Migration
+    public partial class _1000 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "core");
+                name: "argon");
+
+            migrationBuilder.CreateTable(
+                name: "cache",
+                schema: "argon",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Partition = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    StringValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LongValue = table.Column<long>(type: "bigint", nullable: false),
+                    IntValue = table.Column<int>(type: "int", nullable: false),
+                    DateTimeValue = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cache", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "constraintGroup",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -25,7 +45,7 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateTable(
                 name: "propertyGroup",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -38,7 +58,7 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateTable(
                 name: "constraint",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -57,7 +77,7 @@ namespace JCS.Argon.Migrations
                     table.ForeignKey(
                         name: "FK_constraint_constraintGroup_ConstraintGroupId",
                         column: x => x.ConstraintGroupId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "constraintGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -65,7 +85,7 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateTable(
                 name: "collection",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -75,7 +95,6 @@ namespace JCS.Argon.Migrations
                     Length = table.Column<long>(type: "bigint", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     ProviderTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PropertyGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ConstraintGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -85,14 +104,14 @@ namespace JCS.Argon.Migrations
                     table.ForeignKey(
                         name: "FK_collection_constraintGroup_ConstraintGroupId",
                         column: x => x.ConstraintGroupId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "constraintGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_collection_propertyGroup_PropertyGroupId",
                         column: x => x.PropertyGroupId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "propertyGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -100,7 +119,7 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateTable(
                 name: "property",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -119,7 +138,7 @@ namespace JCS.Argon.Migrations
                     table.ForeignKey(
                         name: "FK_property_propertyGroup_PropertyGroupId",
                         column: x => x.PropertyGroupId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "propertyGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -127,7 +146,7 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateTable(
                 name: "item",
-                schema: "core",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -135,7 +154,6 @@ namespace JCS.Argon.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CollectionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PropertyGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -145,22 +163,22 @@ namespace JCS.Argon.Migrations
                     table.ForeignKey(
                         name: "FK_item_collection_CollectionId",
                         column: x => x.CollectionId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "collection",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_item_propertyGroup_PropertyGroupId",
                         column: x => x.PropertyGroupId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "propertyGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "version",
-                schema: "core",
+                name: "itemVersion",
+                schema: "argon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -168,19 +186,18 @@ namespace JCS.Argon.Migrations
                     Major = table.Column<int>(type: "int", nullable: false),
                     Minor = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
                     MIMEType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Thumbprint = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    StorageLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_version", x => x.Id);
+                    table.PrimaryKey("PK_itemVersion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_version_item_ItemId",
+                        name: "FK_itemVersion_item_ItemId",
                         column: x => x.ItemId,
-                        principalSchema: "core",
+                        principalSchema: "argon",
                         principalTable: "item",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -188,76 +205,80 @@ namespace JCS.Argon.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_collection_ConstraintGroupId",
-                schema: "core",
+                schema: "argon",
                 table: "collection",
                 column: "ConstraintGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_collection_PropertyGroupId",
-                schema: "core",
+                schema: "argon",
                 table: "collection",
                 column: "PropertyGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_constraint_ConstraintGroupId",
-                schema: "core",
+                schema: "argon",
                 table: "constraint",
                 column: "ConstraintGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_item_CollectionId",
-                schema: "core",
+                schema: "argon",
                 table: "item",
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_item_PropertyGroupId",
-                schema: "core",
+                schema: "argon",
                 table: "item",
                 column: "PropertyGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_property_PropertyGroupId",
-                schema: "core",
-                table: "property",
-                column: "PropertyGroupId");
+                name: "IX_itemVersion_ItemId",
+                schema: "argon",
+                table: "itemVersion",
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_version_ItemId",
-                schema: "core",
-                table: "version",
-                column: "ItemId");
+                name: "IX_property_PropertyGroupId",
+                schema: "argon",
+                table: "property",
+                column: "PropertyGroupId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "cache",
+                schema: "argon");
+
+            migrationBuilder.DropTable(
                 name: "constraint",
-                schema: "core");
+                schema: "argon");
+
+            migrationBuilder.DropTable(
+                name: "itemVersion",
+                schema: "argon");
 
             migrationBuilder.DropTable(
                 name: "property",
-                schema: "core");
-
-            migrationBuilder.DropTable(
-                name: "version",
-                schema: "core");
+                schema: "argon");
 
             migrationBuilder.DropTable(
                 name: "item",
-                schema: "core");
+                schema: "argon");
 
             migrationBuilder.DropTable(
                 name: "collection",
-                schema: "core");
+                schema: "argon");
 
             migrationBuilder.DropTable(
                 name: "constraintGroup",
-                schema: "core");
+                schema: "argon");
 
             migrationBuilder.DropTable(
                 name: "propertyGroup",
-                schema: "core");
+                schema: "argon");
         }
     }
 }

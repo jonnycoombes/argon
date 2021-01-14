@@ -116,7 +116,7 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
-            if (!collection.PropertyGroup.HasProperty("nodeId"))
+            if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
             {
                 throw new OpenTextRestClient.OpenTextRestClientException(StatusCodes.Status400BadRequest,
                     $"Unable to locate cached node id for collection");

@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
-    [Table("collection", Schema = "core")]
+    [Table("collection", Schema = "argon")]
     public class Collection
     {
         public Collection(){}

@@ -20,7 +20,7 @@ namespace JCS.Argon.Model.Schema
     /// <summary>
     /// Class representing a single cache entry
     /// </summary>
-    [Table("cache", Schema = "core")]
+    [Table("cache", Schema = "argon")]
     public class CacheEntry
     {
         /// <summary>

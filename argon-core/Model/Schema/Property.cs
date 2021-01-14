@@ -13,7 +13,7 @@ namespace JCS.Argon.Model.Schema
         Boolean
     }
 
-    [Table("property", Schema = "core")]
+    [Table("property", Schema = "argon")]
     public class Property
     {
         public Property()

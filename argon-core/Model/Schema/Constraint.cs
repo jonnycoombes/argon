@@ -32,7 +32,7 @@ namespace JCS.Argon.Model.Schema
     /// The interpretation of a given constraint may be dependent on the underlying VSP
     /// provider for the collection. 
     /// </summary>
-    [Table("constraint", Schema = "core")]
+    [Table("constraint", Schema = "argon")]
     public class Constraint
     {
         /// <summary>

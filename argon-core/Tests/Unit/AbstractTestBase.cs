@@ -26,7 +26,6 @@ namespace JCS.Argon.Tests.Unit
         /// </summary>
         protected AbstractTestBase()
         {
-            
             ConfigureLogging();
         }
         

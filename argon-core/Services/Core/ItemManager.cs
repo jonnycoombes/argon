@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using JCS.Argon.Model.Schema;
 
 namespace JCS.Argon.Services.Core
 {
