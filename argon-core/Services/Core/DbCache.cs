@@ -26,7 +26,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="options">The current api configuration</param>
         /// <param name="serviceProvider">The current DI <see cref="IServiceProvider"/></param>
-        public DbCache(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider) 
+        public DbCache(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider) 
             : base(options, serviceProvider)
         {
             LogMethodCall(_log);

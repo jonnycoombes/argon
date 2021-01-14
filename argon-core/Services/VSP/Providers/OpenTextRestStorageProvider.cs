@@ -6,12 +6,21 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
     public class OpenTextRestStorageProvider : BaseVirtualStorageProvider
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<OpenTextRestStorageProvider>();
+        
+        /// <summary>
+        /// The constant provider type tag
+        /// </summary>
         public override string ProviderType => "openTextRestful";
 
         /// <summary>
@@ -29,8 +38,9 @@ namespace JCS.Argon.Services.VSP.Providers
         /// this is really just delegated to the base class
         /// </summary>
         /// <param name="log"></param>
-        public OpenTextRestStorageProvider(ILogger log) : base(log)
+        public OpenTextRestStorageProvider() : base()
         {
+            LogMethodCall(_log);
         }
 
         /// <summary>
@@ -39,10 +49,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// </summary>
         public override void AfterBind()
         {
-            _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation, creating new OTCS REST client");
+            LogMethodCall(_log);
             _rootCollectionPath = Binding!.Properties["rootCollectionPath"].ToString()!;
             this.AssertNotNull(_rootCollectionPath, "Root path hasn't been specified!");
-            _log.LogDebug($"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
+            LogDebug(_log,$"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
             _client = CreateRestClient();
         }
 
@@ -53,16 +63,19 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         private string GenerateCollectionPath(Collection collection)
         {
+            LogMethodCall(_log);
             return $"{_rootCollectionPath!}/{collection.Id.ToString()!}";
         }
 
         private string GenerateItemPath(Collection collection, Item item)
         {
+            LogMethodCall(_log);
             return $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
+            LogMethodCall(_log);
             try
             {
                 await _client.Authenticate();
@@ -102,8 +115,9 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         private OpenTextRestClient CreateRestClient()
         {
+            LogMethodCall(_log);
             this.AssertNotNull(_httpClient, "HTTP client has not been injected!");
-            var client = new OpenTextRestClient(_log, _dbCache)
+            var client = new OpenTextRestClient(_dbCache)
             {
                 CachePartition = Binding!.Tag,
                 EndpointAddress = Binding!.Properties["endpoint"].ToString(),
@@ -116,6 +130,7 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
+            LogMethodCall(_log);
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
             {
                 throw new OpenTextRestClient.OpenTextRestClientException(StatusCodes.Status400BadRequest,
@@ -166,6 +181,7 @@ namespace JCS.Argon.Services.VSP.Providers
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
+            LogMethodCall(_log);
             throw new NotImplementedException();
         }
     }

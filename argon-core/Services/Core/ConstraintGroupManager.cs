@@ -22,11 +22,11 @@ namespace JCS.Argon.Services.Core
         private static ILogger _log = Log.ForContext<ConstraintGroupManager>();
         
         /// <summary>
-        /// Default constructor
+        /// 
         /// </summary>
-        /// <param name="log"></param>
-        /// <param name="dbContext"></param>
-        public ConstraintGroupManager(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        /// <param name="options"></param>
+        /// <param name="serviceProvider"></param>
+        public ConstraintGroupManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
         :base(options, serviceProvider)
         {
             LogMethodCall(_log);

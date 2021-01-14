@@ -27,7 +27,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="options">Current configuration</param>
         /// <param name="serviceProvider">Current DI <see cref="IServiceProvider"/></param>
-        public ItemManager(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        public ItemManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
             : base(options, serviceProvider)
         {
             LogMethodCall(_log);
@@ -192,7 +192,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             LogDebug(_log, $"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
-            var provider = VirtualStorageManager.GetProvider(collection.ProviderTag);
+            var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
             var creationResult = await provider.CreateCollectionItemVersionAsync(collection, item, itemVersion, source);
             if (creationResult.Properties != null)
             {
@@ -213,7 +213,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             LogDebug(_log,$"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
-            var provider = VirtualStorageManager.GetProvider(collection.ProviderTag);
+            var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
             var retrievalResult = await provider.ReadCollectionItemVersionAsync(collection, item, itemVersion);
             if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
             {

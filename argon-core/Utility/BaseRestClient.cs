@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Services.VSP.Providers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Utility
 {
     public abstract class BaseRestClient
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<BaseRestClient>();
 
         public sealed class BaseRestClientException : ResponseAwareException
         {
@@ -28,13 +33,17 @@ namespace JCS.Argon.Utility
             }
         }
         
+        /// <summary>
+        /// The wrapped <see cref="HttpClient"/>
+        /// </summary>
         public HttpClient HttpClient { get; set; } = null!;
         
-        protected ILogger _log;
 
-        public BaseRestClient(ILogger log)
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public BaseRestClient()
         {
-            _log = log;
         }
 
         /// <summary>
@@ -43,6 +52,7 @@ namespace JCS.Argon.Utility
         /// <returns></returns>
         protected MultipartFormDataContent CreateMultiPartFormTemplate()
         {
+            LogMethodCall(_log);
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
@@ -57,6 +67,7 @@ namespace JCS.Argon.Utility
         /// <returns></returns>
         protected MultipartFormDataContent CreateMultiPartFormTemplate((string, string)[] fields)
         {
+            LogMethodCall(_log);
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
@@ -75,6 +86,7 @@ namespace JCS.Argon.Utility
         /// <returns></returns>
         protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, (string, string)[] headers, MultipartFormDataContent content, bool checkResponseCodes = true)
         {
+            LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected");
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
             requestMessage.Content = content;
@@ -91,7 +103,7 @@ namespace JCS.Argon.Utility
             }
             catch (JsonReaderException ex)
             {
-                _log.LogWarning($"{this.GetType()}: Invalid JSON returned in response to a request");
+                LogWarning(_log,$"{this.GetType()}: Invalid JSON returned in response to a request");
                 throw new BaseRestClientException(StatusCodes.Status500InternalServerError,
                     $"Invalid JSON response received", ex);
             }
@@ -99,6 +111,7 @@ namespace JCS.Argon.Utility
 
         protected Uri AppendQueryStringParametersToUri(Uri source, (string, string)[] fields)
         {
+            LogMethodCall(_log);
             var sb = new StringBuilder();
             foreach(var field in fields)
             {
@@ -120,6 +133,7 @@ namespace JCS.Argon.Utility
         protected async Task<JObject> GetRequestForJsonAsync(Uri uri, (string, string)[] headers, 
             (string, string)[] queryParams, bool checkResponseCodes = true)
         {
+            LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
             uri = AppendQueryStringParametersToUri(uri, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -136,7 +150,7 @@ namespace JCS.Argon.Utility
             }
             catch (JsonReaderException ex)
             {
-                _log.LogWarning($"{this.GetType()}: Invalid JSON returned in response to a request");
+                LogWarning(_log,$"{this.GetType()}: Invalid JSON returned in response to a request");
                 throw new BaseRestClientException(StatusCodes.Status500InternalServerError,
                     $"Invalid JSON response received", ex);
             }
@@ -150,6 +164,7 @@ namespace JCS.Argon.Utility
         /// <returns></returns>
         protected StringContent CreateStringFormField(string name, string value)
         {
+            LogMethodCall(_log);
             return new(value)
             {
                 Headers =

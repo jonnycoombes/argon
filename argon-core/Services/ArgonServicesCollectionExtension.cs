@@ -77,7 +77,7 @@ namespace JCS.Argon.Extensions
         {
             LogMethodCall(_log);
             services.AddOptions();
-            services.Configure<VirtualStorageConfiguration>(config.GetSection("vsp"));
+            services.Configure<ApiOptions>(config.GetSection(ApiOptions.ConfigurationSection));
             return services;
         }
 

@@ -63,12 +63,12 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// The current system configuration
         /// </summary>
-        private IOptionsMonitor<ApiConfiguration> _options;
+        private IOptionsMonitor<ApiOptions> _options;
 
         /// <summary>
         /// Access without the <see cref="IOptionsMonitor{TOptions}"/> wrapping
         /// </summary>
-        protected ApiConfiguration Configuration => _options.CurrentValue;
+        protected ApiOptions Options => _options.CurrentValue;
 
         /// <summary>
         /// The DI-injected service provider
@@ -87,7 +87,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="options">The current system configuration</param>
         /// <param name="serviceProvider">An active <see cref="IServiceProvider"/> instance</param>
-        protected BaseCoreService(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        protected BaseCoreService(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _options = options;

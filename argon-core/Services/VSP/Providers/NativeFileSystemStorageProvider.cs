@@ -4,15 +4,21 @@ using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
     /// <summary>
     /// VSP provider that maps to an underlying file system structure
     /// </summary>
-    public class NativeFileSystemStorageProvider : BaseVirtualStorageProvider 
+    public class NativeFileSystemStorageProvider : BaseVirtualStorageProvider
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<NativeFileSystemStorageProvider>();
+        
         /// <summary>
         /// The property which contains the root path for the collection
         /// </summary>
@@ -27,9 +33,9 @@ namespace JCS.Argon.Services.VSP.Providers
         /// Default constructor, just calls base
         /// </summary>
         /// <param name="log"></param>
-        public NativeFileSystemStorageProvider(ILogger log) : base(log) 
+        public NativeFileSystemStorageProvider() : base() 
         {
-            
+            LogMethodCall(_log);
         }
 
         public override string ProviderType => "nativeFileSystem";
@@ -41,6 +47,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         protected string GenerateCollectionPath(Collection collection)
         {
+            LogMethodCall(_log);
             return Path.Combine(_rootPathInfo!.FullName, collection.Id.ToString()!);
         }
 
@@ -49,7 +56,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="BaseVirtualStorageProvider.AfterBind"/> 
         public override void AfterBind()
         {
-            _log.LogDebug($"{ProviderType}: AfterBind called - performing initialisation ");
+            LogMethodCall(_log);
             if (!_binding!.Properties.ContainsKey(ROOTPATH_PROPERTY))
             {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
@@ -58,12 +65,12 @@ namespace JCS.Argon.Services.VSP.Providers
             else
             {
                 _rootPathInfo = new DirectoryInfo(@$"{(string)_binding!.Properties[ROOTPATH_PROPERTY]}");
-                _log.LogInformation($"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
+                LogInformation(_log,$"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
                 if (!Directory.Exists(_rootPathInfo.FullName))
                 {
                     try
                     {
-                        _log.LogInformation($"{ProviderType}: Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
+                        LogInformation(_log,$"{ProviderType}: Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
                         _rootPathInfo = Directory.CreateDirectory(_rootPathInfo.FullName);
                     }
                     catch (Exception ex)
@@ -82,6 +89,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         protected string? GetItemPathFromProperties(Item item)
         {
+            LogMethodCall(_log);
             if (item.PropertyGroup.HasProperty(ProviderProperties.Path.ToString()))
             {
                 var prop = item.PropertyGroup.GetPropertyByName(ProviderProperties.Path.ToString());
@@ -89,7 +97,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             else
             {
-                _log.LogWarning($"{ProviderType}: The expected path property wasn't found against item with id {item.Id}");
+                LogWarning(_log,$"{ProviderType}: The expected path property wasn't found against item with id {item.Id}");
                 return null;
             }
         }
@@ -103,6 +111,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         protected string GenerateVersionPath(Collection collection, Item item, ItemVersion itemVersion)
         {
+            LogMethodCall(_log);
             var itemPath = GenerateItemStoragePath(collection, item); 
             return Path.Combine(itemPath, $"{itemVersion.Major}_{itemVersion.Minor}");
         }
@@ -110,6 +119,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
+            LogMethodCall(_log);
             var result = new IVirtualStorageProvider.StorageOperationResult();
             var collectionRootPath = GenerateCollectionPath(collection); 
             if (Directory.Exists(collectionRootPath))
@@ -121,7 +131,7 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 return await Task.Run(() =>
                 {
-                    _log.LogDebug($"{ProviderType}: Creating a new collection storage root at {collectionRootPath}");
+                    LogDebug(_log,$"{ProviderType}: Creating a new collection storage root at {collectionRootPath}");
                     var info = Directory.CreateDirectory(collectionRootPath);
                     result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                     result.Properties = new Dictionary<string, object>()
@@ -143,6 +153,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         protected string GenerateItemStoragePath(Collection collection, Item item)
         {
+            LogMethodCall(_log);
             var collectionRootPath = GenerateCollectionPath(collection);
             return Path.Combine(collectionRootPath, item.Id.ToString()!);
         }
@@ -150,6 +161,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
+            LogMethodCall(_log);
             try
             {
                 var itemStoragePath = GenerateItemStoragePath(collection, item);
@@ -171,16 +183,16 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             catch (Exception ex)
             {
-                _log.LogWarning($"Caught exception whilst attempting to add a new version");
+                LogWarning(_log,$"Caught exception whilst attempting to add a new version");
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"Unable to add new version: {ex.Message}", ex);
             }
 
-            throw new NotImplementedException();
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
+            LogMethodCall(_log);
             var itemStoragePath = GenerateItemStoragePath(collection, item);
             var versionStoragePath = GenerateVersionPath(collection, item, itemVersion);
             if (!File.Exists(versionStoragePath))

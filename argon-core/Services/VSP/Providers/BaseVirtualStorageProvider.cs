@@ -5,7 +5,8 @@ using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
@@ -14,6 +15,12 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
+
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<BaseVirtualStorageProvider>();
+        
         /// <summary>
         /// An enumeration of "stock" provider properties - returned in the property bag for certain operations
         /// </summary>
@@ -32,11 +39,6 @@ namespace JCS.Argon.Services.VSP.Providers
         protected VirtualStorageBinding _binding = null!;
 
         /// <summary>
-        /// The logger
-        /// </summary>
-        protected ILogger _log;
-
-        /// <summary>
         /// An instance of <see cref="HttpClient"/>
         /// </summary>
         protected HttpClient _httpClient= null!;
@@ -49,9 +51,8 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Default constructor required for dynamic instantiation
         /// </summary>
-        protected BaseVirtualStorageProvider(ILogger log)
+        protected BaseVirtualStorageProvider()
         {
-            _log = log;
         }
 
         /// <summary>
@@ -70,10 +71,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <inheritdoc cref="IVirtualStorageProvider.Bind"/> 
         public void Bind(VirtualStorageBinding binding, IDbCache dbCache, HttpClient httpClient)
         {
+            LogMethodCall(_log);
             _binding = binding;
             _dbCache = dbCache;
             _httpClient = httpClient;
-            _log.LogDebug($"Performing VSP bind: {_binding}");
             AfterBind();
         }
 

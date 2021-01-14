@@ -7,12 +7,21 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
     public class OpenTextRestClient : BaseRestClient
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<OpenTextRestClient>();
+
+        /// <summary>
+        /// The expected OT authentication header field
+        /// </summary>
         private const string OtcsticketHeader = "OTCSTicket";
 
         /// <summary>
@@ -30,12 +39,12 @@ namespace JCS.Argon.Services.VSP.Providers
                 Source = nameof(OpenTextRestClient);
             }
         }
-        
+
         /// <summary>
         /// This never changes between CS instances
         /// </summary>
         public const int EnterpriseNodeId = 2000;
-        
+
         /// <summary>
         /// The REST api authentication endpoint suffix
         /// </summary>
@@ -80,15 +89,15 @@ namespace JCS.Argon.Services.VSP.Providers
         /// A partition value to use with the supplied instance of <see cref="IDbCache" />
         /// </summary>
         /// <value></value>
-        public string CachePartition {get; set;} = null!;
+        public string CachePartition { get; set; } = null!;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="log"></param>
         /// <param name="cache"></param>
-        public OpenTextRestClient(ILogger log, IDbCache? cache) : base(log)
+        public OpenTextRestClient(IDbCache? cache) : base()
         {
+            LogMethodCall(_log);
             Cache = cache;
         }
 
@@ -101,8 +110,8 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="endpointAddress"></param>
         /// <param name="userName"></param>
         /// <param name="password"></param>
-        public OpenTextRestClient(ILogger log, IDbCache cache, string cachePartition, 
-            string endpointAddress, string userName, string password) : base(log)
+        public OpenTextRestClient(ILogger log, IDbCache cache, string cachePartition,
+            string endpointAddress, string userName, string password) : base()
         {
             CachePartition = cachePartition;
             Cache = cache;
@@ -119,7 +128,7 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             if (EndpointAddress == null || UserName == null || Password == null)
             {
-                _log.LogWarning($"{this.GetType()}: Failed to validate current configuration");
+                LogWarning(_log,$"{this.GetType()}: Failed to validate current configuration");
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     $"OpenText REST Client is not currently configured correctly");
             }
@@ -131,20 +140,22 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <exception cref="OpenTextRestClientException"></exception>
         public async Task<string> Authenticate()
         {
-            _log.LogDebug($"{this.GetType()}: Attempting authentication");
+            LogDebug(_log,$"{this.GetType()}: Attempting authentication");
             ValidateConfiguration();
-            var content = CreateMultiPartFormTemplate(new (string, string)[]{
+            var content = CreateMultiPartFormTemplate(new (string, string)[]
+            {
                 ("username", UserName!),
                 ("password", Password!)
             });
-            
+
             try
             {
-                var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"), new (string, string)[]{}, content); 
+                var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"),
+                    new (string, string)[] { }, content);
                 if (json.ContainsKey("ticket"))
                 {
-                    AuthenticationToken = (string)json["ticket"]!;
-                    _log.LogDebug($"{this.GetType()}: Authentication successful");
+                    AuthenticationToken = (string) json["ticket"]!;
+                    LogDebug(_log,$"{this.GetType()}: Authentication successful");
                     return AuthenticationToken;
                 }
                 else
@@ -160,9 +171,9 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        public async Task<long> UploadFile(long parentId, string name, string fileName,Stream source)
+        public async Task<long> UploadFile(long parentId, string name, string fileName, Stream source)
         {
-            _log.LogDebug($"{this.GetType()}: Attempting file upload");
+            LogDebug(_log,$"{this.GetType()}: Attempting file upload");
             ValidateConfiguration();
             var content = CreateMultiPartFormTemplate(
                 new (string, string)[]
@@ -170,7 +181,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     ("type", "144"),
                     ("parent_id", parentId.ToString()),
                     ("name", name)
-                }   
+                }
             );
             content.Add(new StreamContent(source), "file", fileName);
             try
@@ -205,9 +216,9 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="name">The name for the folder</param>
         /// <param name="description">An optional description for the folder</param>
         /// <returns></returns>
-        public async Task<long> CreateFolder(long parentId, string name, string description="Automatically generated by Argon")
+        public async Task<long> CreateFolder(long parentId, string name, string description = "Automatically generated by Argon")
         {
-            _log.LogDebug($"{this.GetType()}: Attempting folder creation");
+            LogDebug(_log,$"{this.GetType()}: Attempting folder creation");
             ValidateConfiguration();
             var content = CreateMultiPartFormTemplate(
                 new (string, string)[]
@@ -216,13 +227,13 @@ namespace JCS.Argon.Services.VSP.Providers
                     ("parent_id", parentId.ToString()),
                     ("name", name),
                     ("description", description)
-                }); 
+                });
             try
             {
-                var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{NodesSuffix}"), 
+                var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{NodesSuffix}"),
                     new (string, string)[]
                     {
-                        ("OTCSTicket", AuthenticationToken)  
+                        ("OTCSTicket", AuthenticationToken)
                     },
                     content);
                 if (json.ContainsKey("results"))
@@ -235,13 +246,13 @@ namespace JCS.Argon.Services.VSP.Providers
                     throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                         $"An invalid response was returned by OpenText outcall - results element wasn't found");
                 }
-
             }
             catch (Exception ex)
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     $"An exception was caught during an OpenText outcall: {ex.GetBaseException().Message}", ex);
             }
+
             return 0;
         }
 
@@ -258,7 +269,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         public async Task<long> GetChildFolderId(long parentId, string name)
         {
-            _log.LogDebug($"{this.GetType()}: Attempting folder location");
+            LogDebug(_log,$"{this.GetType()}: Attempting folder location");
             ValidateConfiguration();
             try
             {
@@ -284,7 +295,7 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     $"An exception was caught during an OpenText outcall: {ex.GetBaseException().Message}", ex);
-            } 
+            }
         }
 
         /// <summary>
@@ -305,8 +316,8 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         public async Task<CacheEntry> AddCachedPathId(string path, long id)
         {
-           this.AssertNotNull(Cache, "No cache has been supplied!");
-           return await Cache?.AddOrReplaceLongValueAsync(CachePartition, GeneratePathCacheId(path), id)!;
+            this.AssertNotNull(Cache, "No cache has been supplied!");
+            return await Cache?.AddOrReplaceLongValueAsync(CachePartition, GeneratePathCacheId(path), id)!;
         }
 
         /// <summary>
@@ -344,10 +355,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="cache"></param>
         /// <returns>The node id</returns>
         /// <exception cref="OpenTextRestClient">Thrown if unable to create the path</exception>
-        public async Task<long?> CreatePath(string path, bool cache= true)
+        public async Task<long?> CreatePath(string path, bool cache = true)
         {
             long? id = 0;
-            var cacheId = await GetCachedPathId(path); 
+            var cacheId = await GetCachedPathId(path);
             if (cacheId == 0)
             {
                 long parentId = EnterpriseNodeId;
@@ -367,15 +378,15 @@ namespace JCS.Argon.Services.VSP.Providers
 
                 if (cache)
                 {
-                    await Cache.AddOrReplaceLongValueAsync(CachePartition,GeneratePathCacheId(path), parentId);
+                    await Cache.AddOrReplaceLongValueAsync(CachePartition, GeneratePathCacheId(path), parentId);
                 }
+
                 return parentId;
             }
             else
             {
-                return  cacheId;
+                return cacheId;
             }
-
         }
     }
 }

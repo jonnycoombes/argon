@@ -6,20 +6,21 @@ using JCS.Argon.Utility;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP
 {
     /// <summary>
     /// Default implementation of the VSP registry
     /// </summary>
-    public class VirtualStorageManager  : IVirtualStorageManager
+    public class VirtualStorageManager : IVirtualStorageManager
     {
         /// <summary>
-        /// Logger for logging
+        /// Static logger
         /// </summary>
-        private readonly ILogger<VirtualStorageManager> _log;
+        private static ILogger _log = Log.ForContext<VirtualStorageManager>();
 
         /// <summary>
         /// Internal cache of the types associated with different <see cref="IVirtualStorageProvider"/> implementations
@@ -39,18 +40,16 @@ namespace JCS.Argon.Services.VSP
         /// <summary>
         /// The overall application configuration, used to extract VSP bindings
         /// </summary>
-        private readonly VirtualStorageConfiguration _virtualStorageConfiguration;
+        private readonly VirtualStorageOptions _virtualStorageOptions;
 
-        public VirtualStorageManager(ILogger<VirtualStorageManager> log, 
-            IServiceProvider serviceProvider,
-            HttpClient httpClient,
-            IOptionsMonitor<VirtualStorageConfiguration> vspConfiguration)
+        public VirtualStorageManager(IServiceProvider serviceProvider, 
+            HttpClient httpClient, 
+            IOptionsMonitor<ApiOptions> apiOptions)
         {
-            log.LogDebug("Creating new instance");
-            _virtualStorageConfiguration= vspConfiguration.CurrentValue;
+            LogMethodCall(_log);
+            _virtualStorageOptions = apiOptions.CurrentValue.VirtualStorageOptions;
             _serviceProvider = serviceProvider;
             _httpClient = httpClient;
-            _log = log;
             ResolveProviders();
         }
 
@@ -58,7 +57,8 @@ namespace JCS.Argon.Services.VSP
         /// <inheritdoc cref="IVirtualStorageManager.GetBindings"/>
         public List<VirtualStorageBinding> GetBindings()
         {
-            return _virtualStorageConfiguration.Bindings;
+            LogMethodCall(_log);
+            return _virtualStorageOptions.Bindings;
         }
 
         /// <summary>
@@ -67,9 +67,10 @@ namespace JCS.Argon.Services.VSP
         /// <param name="tag">The tag for the provider</param>
         /// <returns></returns>
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
-        public IVirtualStorageProvider GetProvider(string tag)
+        public IVirtualStorageProvider GetProviderByTag(string tag)
         {
-            _log.LogDebug($"Attempting instantiation of VSP provider with tag [{tag}]");
+            LogMethodCall(_log);
+            LogDebug(_log,$"Attempting instantiation of VSP provider with tag [{tag}]");
             var binding = GetBindingFromTag(tag);
             if (binding == null)
             {
@@ -81,16 +82,16 @@ namespace JCS.Argon.Services.VSP
                 try
                 {
                     var provider = CreateProviderInstance(binding.ProviderType);
-                    provider.Bind(binding, (IDbCache)_serviceProvider.GetService(typeof(IDbCache))!, _httpClient);
+                    provider.Bind(binding, (IDbCache) _serviceProvider.GetService(typeof(IDbCache))!, _httpClient);
                     return provider;
                 }
                 catch (IVirtualStorageProvider.VirtualStorageProviderException ex)
                 {
-                    _log.LogWarning($"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
+                    LogWarning(_log,$"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                         "Failed to instantiate and bind specified provider [{tag}]", ex);
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -100,6 +101,8 @@ namespace JCS.Argon.Services.VSP
         /// <returns></returns>
         protected bool ProviderExists(string providerType)
         {
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Checking for existence of provider with type \"{providerType}\"");
             return _providerTypesMap.ContainsKey(providerType);
         }
 
@@ -110,7 +113,8 @@ namespace JCS.Argon.Services.VSP
         /// <returns></returns>
         protected bool BindingExistsForTag(string tag)
         {
-            return _virtualStorageConfiguration.Bindings.Any(b => b.Tag == tag);
+            LogMethodCall(_log);
+            return _virtualStorageOptions.Bindings.Any(b => b.Tag == tag);
         }
 
         /// <summary>
@@ -122,17 +126,20 @@ namespace JCS.Argon.Services.VSP
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
         protected IVirtualStorageProvider CreateProviderInstance(string providerType)
         {
-            _log.LogDebug($"Instantiating a virtual storage provider of type [{providerType}]");
+            LogMethodCall(_log);
+            LogDebug(_log,$"Instantiating a virtual storage provider of type [{providerType}]");
             if (ProviderExists(providerType))
             {
 #pragma warning disable 8600
-                IVirtualStorageProvider instance =(IVirtualStorageProvider)ReflectionHelper.InstantiateType(_providerTypesMap[providerType], _log); 
+                IVirtualStorageProvider instance =
+                    (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
 #pragma warning restore 8600
                 if (instance == null)
                 {
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                        $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]"); 
+                        $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
                 }
+
                 return instance;
             }
             else
@@ -150,7 +157,8 @@ namespace JCS.Argon.Services.VSP
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
         protected void ResolveProviders()
         {
-            _log.LogInformation("Resolving providers within the current runtime environment");
+            LogMethodCall(_log);
+            LogInformation(_log,"Resolving providers within the current runtime environment");
             try
             {
                 var providerTypes = ReflectionHelper.LocateAllImplementors<IVirtualStorageProvider>()
@@ -158,17 +166,17 @@ namespace JCS.Argon.Services.VSP
                 foreach (var providerType in providerTypes)
                 {
 #pragma warning disable 8600
-                    var instance = (IVirtualStorageProvider)ReflectionHelper.InstantiateType(providerType, _log);
+                    var instance = (IVirtualStorageProvider) ReflectionHelper.InstantiateType(providerType);
 #pragma warning restore 8600
                     if (instance != null)
                     {
-                        _log.LogInformation($"Found VSP provider implementation: ({providerType.FullName},{instance.ProviderType})");
+                        LogInformation(_log,$"Found VSP provider implementation: ({providerType.Name},{instance.ProviderType})");
                         _providerTypesMap[instance.ProviderType] = providerType;
                     }
                     else
                     {
-                        _log.LogWarning($"Failed to instantiate a virtual storage provider of type: [{providerType.FullName}]");
-                        _log.LogWarning($"This will likely be as a result of a problem in the virtual storage provider implementation");
+                        LogWarning(_log,$"Failed to instantiate a virtual storage provider of type: [{providerType.Name}]");
+                        LogWarning(_log,$"This will likely be as a result of a problem in the virtual storage provider implementation");
                     }
                 }
             }
@@ -185,14 +193,16 @@ namespace JCS.Argon.Services.VSP
         /// <returns></returns>
         protected VirtualStorageBinding? GetBindingFromTag(string tag)
         {
-            foreach (var binding in _virtualStorageConfiguration.Bindings)
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Scanning for binding with tag \"{tag}\"");
+            foreach (var binding in _virtualStorageOptions.Bindings)
             {
                 if (binding.Tag == tag)
                 {
                     return binding;
                 }
             }
-
+            LogWarning(_log, $"Couldn't locate a binding with tag \"{tag}\"");
             return null;
         }
     }

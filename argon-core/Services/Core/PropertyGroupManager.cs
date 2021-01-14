@@ -25,7 +25,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceProvider"></param>
-        public PropertyGroupManager(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        public PropertyGroupManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
         :base(options, serviceProvider)
         {
             LogMethodCall(_log);

@@ -22,7 +22,7 @@ namespace JCS.Argon.Services.VSP
         /// <param name="tag">The unique tag for the VSP provider</param>
         /// <returns>An in-scope implementation of the <see cref="IVirtualStorageProvider"/> interface</returns>
         /// <exception></exception>
-        public IVirtualStorageProvider GetProvider(string tag);
+        public IVirtualStorageProvider GetProviderByTag(string tag);
 
         public sealed class VirtualStorageManagerException : ResponseAwareException
         {
