@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
 namespace JCS.Argon
 {
@@ -26,18 +28,18 @@ namespace JCS.Argon
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.WithMachineName()
                 .CreateLogger();
+            var _log = Log.ForContext<Program>();
             try
             {
-                Log.ForContext("SourceContext", "JCS.Argon.Program")
-                    .Information($"Starting Argon Version {new AppVersion().ToString()}");
+                LogInformation(_log,$"Starting Argon Version {GetApplicationAssemblyVersion()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();
             }
             catch (Exception ex)
             {
-                Log.ForContext("SourceContext", "JCS.Argon.Program")
-                    .Fatal("Argon start-up failed", ex);
+                LogExceptionError(_log, ex);
+                LogError(_log, "Argon startup failed");
             }
             finally
             {

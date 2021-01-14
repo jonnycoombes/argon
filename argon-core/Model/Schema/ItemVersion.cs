@@ -7,7 +7,7 @@ namespace JCS.Argon.Model.Schema
 {
     
     [Table("version", Schema = "core")]
-    public class Version
+    public class ItemVersion
     {
         /// <summary>
         /// The primary concurrency token for this entity

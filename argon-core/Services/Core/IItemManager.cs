@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.Core
 {
@@ -36,7 +35,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="item"></param>
         /// <param name="versionId"></param>
         /// <returns></returns>
-        public Task<Version> GetItemVersionAsync(Collection collection, Item item, Guid versionId);
+        public Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId);
 
         /// <summary>
         /// Gets the current version for a specified item
@@ -44,7 +43,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collection"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        public Task<Version> GetCurrentItemVersionAsync(Collection collection, Guid itemId);
+        public Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Guid itemId);
 
         /// <summary>
         /// Gets the current version for a specified item
@@ -52,7 +51,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collection"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public Task<Version> GetCurrentItemVersionAsync(Collection collection, Item item);
+        public Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Item item);
 
 
         /// <summary>
@@ -93,9 +92,9 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="collection"></param>
         /// <param name="item"></param>
-        /// <param name="version"></param>
+        /// <param name="itemVersion"></param>
         /// <returns></returns>
-        public Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, Version version);
+        public Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion);
 
         /// <summary>
         /// Exception type which may be thrown by methods across this interface

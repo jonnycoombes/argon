@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using JCS.Argon.Model.Schema;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Contexts
 {
@@ -28,9 +27,9 @@ namespace JCS.Argon.Contexts
         public DbSet<Item> Items { get; set; } = null!;
 
         /// <summary>
-        /// The set of all <see cref="Model.Schema.Version"/> model elements
+        /// The set of all <see cref="ItemVersion"/> model elements
         /// </summary>
-        public DbSet<Version> Versions { get; set; } = null!;
+        public DbSet<ItemVersion> Versions { get; set; } = null!;
 
         /// <summary>
         /// The set of all <see cref="PropertyGroup"/> model elements

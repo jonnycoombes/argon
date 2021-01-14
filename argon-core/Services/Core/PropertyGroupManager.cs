@@ -1,9 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
+using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.Core
 {
@@ -13,23 +16,29 @@ namespace JCS.Argon.Services.Core
     public class PropertyGroupManager : BaseCoreService, IPropertyGroupManager
     {
         /// <summary>
-        /// Default constructor, parameters are DI'd
+        /// Static logger
         /// </summary>
-        /// <param name="log"></param>
-        /// <param name="dbContext"></param>
-        public PropertyGroupManager(ILogger<IPropertyGroupManager> log, SqlDbContext dbContext)
-        :base(log, dbContext)
+        private static ILogger _log = Log.ForContext<Core.PropertyGroupManager>();
+        
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="serviceProvider"></param>
+        public PropertyGroupManager(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        :base(options, serviceProvider)
         {
-            _log.LogDebug("Creating new instance");
+            LogMethodCall(_log);
         }
 
         /// <inheritdoc cref="IPropertyGroupManager.CreatePropertyGroupAsync"/>
         public async Task<PropertyGroup> CreatePropertyGroupAsync()
         {
+            LogMethodCall(_log);
             try
             {
-                var addOp = await _dbContext.AddAsync(new PropertyGroup());
-                await _dbContext.SaveChangesAsync();
+                var addOp = await DbContext.AddAsync(new PropertyGroup());
+                await DbContext.SaveChangesAsync();
                 return addOp.Entity;
             }
             catch (Exception ex)

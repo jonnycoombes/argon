@@ -6,7 +6,6 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
@@ -82,10 +81,10 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
 
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source);
 
         /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion);
 
         /// <summary>
         /// Called after a bind operation - subclasses should perform initialisation logic in

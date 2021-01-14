@@ -50,7 +50,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The <see cref="System.Version"/> versions for this item
         /// </summary>
-        public List<Version> Versions { get; set; } = null!;
+        public List<ItemVersion> Versions { get; set; } = null!;
 
         /// <summary>
         /// 

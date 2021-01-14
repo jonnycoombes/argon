@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
@@ -10,11 +11,14 @@ namespace JCS.Argon.Controllers
     /// </summary>
     public class BaseApiController : ControllerBase
     {
-        protected ILogger _log;
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<BaseApiController>();
 
-        protected BaseApiController(ILogger log)
+        protected BaseApiController()
         {
-            _log = log;
+            LogMethodCall(_log);
         }
 
         /// <summary>
@@ -23,6 +27,7 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         protected Dictionary<string, object>? ExtractPropertiesFromRequest()
         {
+            LogMethodCall(_log);
             Dictionary<string, object>? properties = null;
             if (Request.Form.ContainsKey("Properties"))
             {

@@ -5,14 +5,20 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Version = System.Version;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
     [Route("/api/v1/Collections")]
     public class ItemsController : BaseApiController
     {
+
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<ItemsController>();
+        
         /// <summary>
         /// The <see cref="CollectionManager"/> instance - DI'd 
         /// </summary>
@@ -23,9 +29,9 @@ namespace JCS.Argon.Controllers
         /// </summary>
         protected readonly IItemManager _itemManager;
 
-        public ItemsController(ILogger<ItemsController> log, ICollectionManager collectionManager, IItemManager itemManager) : base(log)
+        public ItemsController(ICollectionManager collectionManager, IItemManager itemManager) : base()
         {
-            _log.LogInformation("Creating new instance");
+            LogMethodCall(_log);
             _collectionManager = collectionManager;
             _itemManager = itemManager;
         }
@@ -44,7 +50,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Item>> ReadItems(Guid collectionId)
         {
-            _log.LogDebug($"Reading collection items for collection with id: {collectionId}");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var items = await _itemManager.GetItemsForCollectionAsync(collection);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
@@ -66,7 +72,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> ReadItemMeta(Guid collectionId, Guid itemId)
         {
-            _log.LogDebug($"Reading collection item for collection with id: {collectionId}, item id: {itemId}");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var items = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
@@ -90,6 +96,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ReadItemContent(Guid collectionId, Guid itemId)
         {
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             var latestVersion = await _itemManager.GetCurrentItemVersionAsync(collection, item);
@@ -115,6 +122,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ReadVersionContent(Guid collectionId, Guid itemId, Guid versionId)
         {
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             var version = await _itemManager.GetItemVersionAsync(collection, item, versionId);
@@ -151,6 +159,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
         {
+            LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
@@ -184,6 +193,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")] IFormFile file)
         {
+            LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
@@ -206,8 +216,9 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<JCS.Argon.Model.Schema.Version> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
+        public async Task<JCS.Argon.Model.Schema.ItemVersion> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
         {
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             return await _itemManager.GetItemVersionAsync(collection, item, versionId);

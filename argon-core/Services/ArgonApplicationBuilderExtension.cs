@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using static System.DateTime;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace  JCS.Argon.Extensions
 {
     /// <summary>
     /// Class which can be used in order to add middleware etc...

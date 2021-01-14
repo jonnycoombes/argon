@@ -6,7 +6,8 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
@@ -14,6 +15,11 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/[controller]")]
     public class CollectionsController : BaseApiController
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<CollectionsController>();
+        
         /// <summary>
         /// An instance of <see cref="ICollectionManager"/>, used for most of the interactions
         /// with collections
@@ -23,11 +29,10 @@ namespace JCS.Argon.Controllers
         /// <summary>
         /// Default constructor.  Parameters are DI'd at runtime
         /// </summary>
-        /// <param name="log">A logger for logging</param>
         /// <param name="collectionManager">An instance of <see cref="ICollectionManager"/></param>
-        public CollectionsController(ILogger<CollectionsController> log, ICollectionManager collectionManager) : base(log)
+        public CollectionsController(ICollectionManager collectionManager) : base()
         {
-            _log.LogInformation("Creating new instance");
+            LogMethodCall(_log);
             _collectionManager = collectionManager;
         }
 
@@ -45,7 +50,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<List<Collection>> ReadCollections()
         {
-            _log.LogDebug("ReadCollections called");
+            LogMethodCall(_log);
             var t = await _collectionManager.ListCollectionsAsync();
             return t;
         }
@@ -71,12 +76,10 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Collection> CreateCollection([FromBody]CreateCollectionCommand cmd)
         {
-            _log.LogDebug("CreateCollection called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
-            _log.LogDebug($"New collection successfully created {@collection}", collection);
             return collection;
-            
         }
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Collection> ReadCollection(Guid collectionId)
         {
-            _log.LogDebug("ReadCollection called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;
@@ -113,7 +116,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ConstraintGroup?> ReadCollectionConstraints(Guid collectionId)
         {
-            _log.LogDebug("ReadCollectionConstraints called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection.ConstraintGroup;
@@ -132,7 +135,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Constraint?> ReadCollectionConstraints(Guid collectionId, Guid constraintId)
         {
-            _log.LogDebug("ReadCollectionConstraints called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var constraintGroup = collection.ConstraintGroup;
             if (constraintGroup == null)
@@ -175,7 +178,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId, [FromBody]List<CreateOrUpdateConstraintCommand> cmds)
         {
-            _log.LogDebug("UpdateCollectionContraints called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection.ConstraintGroup;
@@ -195,7 +198,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand cmd)
         {
-            _log.LogDebug("UpdateCollection called");
+            LogMethodCall(_log);
             var collection = await _collectionManager.UpdateCollectionAsync(collectionId, cmd);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;

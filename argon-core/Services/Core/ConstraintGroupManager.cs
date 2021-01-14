@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Commands;
+using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 #pragma warning disable 1574
 
@@ -14,22 +17,29 @@ namespace JCS.Argon.Services.Core
     public class ConstraintGroupManager :  BaseCoreService, IConstraintGroupManager
     {
         /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<ConstraintGroupManager>();
+        
+        /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="log"></param>
         /// <param name="dbContext"></param>
-        public ConstraintGroupManager(ILogger<ConstraintGroupManager> log, SqlDbContext dbContext) : base(log, dbContext)
+        public ConstraintGroupManager(IOptionsMonitor<ApiConfiguration> options, IServiceProvider serviceProvider)
+        :base(options, serviceProvider)
         {
-            _log.LogDebug("Creating new instance");
+            LogMethodCall(_log);
         }
 
         /// <inheritdoc></inheritdoc> 
         public async Task<ConstraintGroup> CreateConstraintGroupAsync()
         {
+            LogMethodCall(_log);
             try
             {
-                var addOp = await _dbContext.AddAsync(new ConstraintGroup());
-                await _dbContext.SaveChangesAsync();
+                var addOp = await DbContext.AddAsync(new ConstraintGroup());
+                await DbContext.SaveChangesAsync();
                 return addOp.Entity;
             }
             catch (Exception ex)
@@ -42,6 +52,7 @@ namespace JCS.Argon.Services.Core
         /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync"></inheritdoc> 
         public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> cmds)
         {
+            LogMethodCall(_log);
             try
             {
                 var constraintGroup = new ConstraintGroup();
@@ -52,8 +63,8 @@ namespace JCS.Argon.Services.Core
                     constraintGroup.Constraints.Add(constraint);
                 }
 
-                var addOp= await _dbContext.AddAsync(constraintGroup);
-                await _dbContext.SaveChangesAsync();
+                var addOp= await DbContext.AddAsync(constraintGroup);
+                await DbContext.SaveChangesAsync();
                 return addOp.Entity;
             }
             catch (Exception ex)
@@ -66,6 +77,7 @@ namespace JCS.Argon.Services.Core
         /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintAsync"/>
         public async Task<Constraint> CreateConstraintAsync(CreateOrUpdateConstraintCommand cmd)
         {
+            LogMethodCall(_log);
             try
             {
                 var constraint = new Constraint()
@@ -104,8 +116,8 @@ namespace JCS.Argon.Services.Core
                         break;
                 }
 
-                var awaiter = (await _dbContext.AddAsync(constraint));
-                await _dbContext.SaveChangesAsync();
+                var awaiter = (await DbContext.AddAsync(constraint));
+                await DbContext.SaveChangesAsync();
                 return awaiter.Entity;
             }
             catch (Exception ex)
@@ -118,6 +130,7 @@ namespace JCS.Argon.Services.Core
         /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints"/>
         public async Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties)
         {
+            LogMethodCall(_log);
             throw new NotImplementedException();
         }
     }

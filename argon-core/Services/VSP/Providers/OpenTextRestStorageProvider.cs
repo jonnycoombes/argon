@@ -7,7 +7,6 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
@@ -115,7 +114,7 @@ namespace JCS.Argon.Services.VSP.Providers
             return client;
         }
 
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
             if (!collection.PropertyGroup.HasProperty("nodeId"))
             {
@@ -142,7 +141,7 @@ namespace JCS.Argon.Services.VSP.Providers
                 if (itemNodeId != 0)
                 {
                     item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
-                    var versionNodeId = await _client.CreateFolder(itemNodeId, $"{version.Major}_{version.Minor}", version.Name);
+                    var versionNodeId = await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
                     if (versionNodeId != 0)
                     {
                         var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
@@ -165,7 +164,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
             throw new NotImplementedException();
         }

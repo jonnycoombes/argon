@@ -8,7 +8,6 @@ using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP
 {
@@ -52,24 +51,24 @@ namespace JCS.Argon.Services.VSP
         public Task<StorageOperationResult> CreateCollectionAsync(Collection collection);
 
         /// <summary>
-        /// Given an <see cref="Item"/> and <see cref="Version"/> instance, create a physical representation of a
+        /// Given an <see cref="Item"/> and <see cref="ItemVersion"/> instance, create a physical representation of a
         /// specific version
         /// </summary>
         /// <param name="collection">The parent collection for the version</param>
         /// <param name="item">The item model element</param>
-        /// <param name="version">The version model element</param>
+        /// <param name="itemVersion">The version model element</param>
         /// <param name="source">A filestream containing the source for the version</param>
         /// <returns></returns>
-        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source);
+        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source);
 
         /// <summary>
         /// Reads a specific item version from a collection 
         /// </summary>
         /// <param name="collection">The collection object</param>
         /// <param name="item">The item object</param>
-        /// <param name="version">The version object</param>
+        /// <param name="itemVersion">The version object</param>
         /// <returns></returns>
-        public Task<StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version);
+        public Task<StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion);
 
         public sealed class VirtualStorageProviderException : ResponseAwareException
         {

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Version = JCS.Argon.Model.Schema.Version;
 
 namespace JCS.Argon.Services.VSP.Providers
 {
@@ -96,16 +95,16 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Tries to determine the path of a given <see cref="Model.Schema.Version"/> object
+        /// Tries to determine the path of a given <see cref="ItemVersion"/> object
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="version"></param>
+        /// <param name="itemVersion"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        protected string GenerateVersionPath(Collection collection, Item item, Version version)
+        protected string GenerateVersionPath(Collection collection, Item item, ItemVersion itemVersion)
         {
             var itemPath = GenerateItemStoragePath(collection, item); 
-            return Path.Combine(itemPath, $"{version.Major}_{version.Minor}");
+            return Path.Combine(itemPath, $"{itemVersion.Major}_{itemVersion.Minor}");
         }
 
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
@@ -149,12 +148,12 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, Version version, IFormFile source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
             try
             {
                 var itemStoragePath = GenerateItemStoragePath(collection, item);
-                var versionPath = GenerateVersionPath(collection, item, version);
+                var versionPath = GenerateVersionPath(collection, item, itemVersion);
                 Directory.CreateDirectory(itemStoragePath);
                 using var target = File.Create(versionPath);
                 await source.CopyToAsync(target);
@@ -180,10 +179,10 @@ namespace JCS.Argon.Services.VSP.Providers
             throw new NotImplementedException();
         }
 
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, Version version)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
             var itemStoragePath = GenerateItemStoragePath(collection, item);
-            var versionStoragePath = GenerateVersionPath(collection, item, version);
+            var versionStoragePath = GenerateVersionPath(collection, item, itemVersion);
             if (!File.Exists(versionStoragePath))
             {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,

@@ -1,4 +1,5 @@
 using System;
+using JCS.Argon.Extensions;
 using JCS.Argon.Contexts;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Builder;
@@ -15,62 +16,29 @@ namespace JCS.Argon
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             Environment = env;
         }
 
+        /// <summary>
+        /// Current <see cref="IWebHostEnvironment"/>
+        /// </summary>
         private IWebHostEnvironment Environment {get;}
 
-        public IConfiguration Configuration { get; }
-
         /// <summary>
-        /// Register the db context, optional branching here to allow for different connection strings based on the
-        /// currently configured environment
+        /// Current total <see cref="IConfiguration"/>
         /// </summary>
-        /// <param name="services"></param>
-        private void RegisterDbContext(IServiceCollection services)
-        {
-            Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                .Information("Registering Db context");
-            try
-            {
-                if (Environment.IsDevelopment() || Environment.IsEnvironment("WinDevelopment"))
-                {
-                    Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                        .Information("In development so using default connection string");
-                    services.AddDbContext<SqlDbContext>(options =>
-                    {
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
-                            sqlServerOptionsAction: sqlOptions =>
-                        {
-                        });
-                        options.EnableDetailedErrors();
-                        
-                    });
-                }
-                else
-                {
-                    services.AddDbContext<SqlDbContext>(options =>
-                        options
-                            .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ForContext("SourceContext", "JCS.Argon.Startup")
-                    .Fatal("Caught an exception whilst attempting to register Db context", ex);
-            }
-        }
-
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             Log.ForContext("SourceContext", "JCS.Argon.Startup")
                 .Information("Configuring services");
-            RegisterDbContext(services);
+            services.RegisterDbContext(Configuration, Environment);
             services.RegisterArgonConfig(Configuration);
             services.RegisterArgonServices(Configuration);
             Log.Information("Service configuration and registration completed");

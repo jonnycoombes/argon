@@ -5,7 +5,9 @@ using JCS.Argon.Model.Responses;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
 namespace JCS.Argon.Controllers
 {
@@ -13,11 +15,19 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/[controller]")]
     public class ConfigurationController : BaseApiController
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<ConfigurationController>();
+        
+        /// <summary>
+        /// The current <see cref="ICollectionManager"/>
+        /// </summary>
         protected ICollectionManager _collectionManager;
 
-        public ConfigurationController(ILogger<ConfigurationController> log, ICollectionManager collectionManager ) : base(log)
+        public ConfigurationController(ICollectionManager collectionManager ) : base()
         {
-            _log.LogDebug("Creating new instance");
+            LogMethodCall(_log);
             _collectionManager = collectionManager;
         }
 
@@ -37,12 +47,13 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ConfigurationResponse> Get()
         {
+            LogMethodCall(_log);
             return new ConfigurationResponse
             {
                 HostName = Dns.GetHostName(),
                 Endpoint = HttpHelper.BuildEndpointFromContext(HttpContext).Replace("/Configuration", ""),
-                Version = new AppVersion().ToString(),
-                SchemaVersion = new AppVersion().ToStringSchema(),
+                Version = GetApplicationAssemblyVersion(),
+                SchemaVersion = GetApplicationAssemblyVersion(),
                 Bindings = _collectionManager.GetStorageBindings(),
                 Metrics = new Metrics
                 {

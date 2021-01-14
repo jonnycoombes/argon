@@ -2,28 +2,71 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using JCS.Argon;
+using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
-using Microsoft.OpenApi.Models;
-using Polly;
-using Serilog;
-using Polly.Extensions.Http;
-using Microsoft.Extensions.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace JCS.Argon.Extensions
 {
     public static class ArgonServicesCollectionExtension
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext(typeof(ArgonServicesCollectionExtension));
+
+        /// <summary>
+        /// Register the db context, optional branching here to allow for different connection strings based on the
+        /// currently configured environment
+        /// </summary>
+        /// <param name="services"></param>
+        public static IServiceCollection RegisterDbContext(this IServiceCollection services, IConfiguration config,
+            IWebHostEnvironment hostEnvironment)
+        {
+            LogMethodCall(_log);
+            try
+            {
+                if (hostEnvironment.IsDevelopment() || hostEnvironment.IsEnvironment("WinDevelopment"))
+                {
+                    LogInformation(_log, "In development so using default connection string");
+                    services.AddDbContext<SqlDbContext>(options =>
+                    {
+                        options.UseSqlServer(config.GetConnectionString("DefaultConnection"),
+                            sqlServerOptionsAction: sqlOptions => { });
+                        options.EnableDetailedErrors();
+                    });
+                }
+                else
+                {
+                    services.AddDbContext<SqlDbContext>(options =>
+                        options
+                            .UseSqlServer(config.GetConnectionString("DefaultConnection")));
+                }
+            }
+            catch (Exception ex)
+            {
+                LogExceptionError(_log, ex);
+                LogError(_log, "Caught an exception whilst attempting to register Db context");
+            }
+
+            return services;
+        }
+
         /// <summary>
         /// Adds any argon-specific configuration elements into the IoC container
         /// </summary>
@@ -32,8 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection RegisterArgonConfig(this IServiceCollection services, IConfiguration config)
         {
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Injecting Argon configuration options");
+            LogMethodCall(_log);
             services.AddOptions();
             services.Configure<VirtualStorageConfiguration>(config.GetSection("vsp"));
             return services;
@@ -41,21 +83,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void ConfigureResponseCompression(IServiceCollection services)
         {
-            services.AddResponseCompression(options => {
-                options.EnableForHttps= true;
+            LogMethodCall(_log);
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
                 options.Providers.Add<GzipCompressionProvider>();
                 options.Providers.Add<BrotliCompressionProvider>();
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] {"application/pdf"});
-                });
-            services.Configure<GzipCompressionProviderOptions>(options =>
-            {
-                options.Level = CompressionLevel.Fastest;
             });
-            services.Configure<BrotliCompressionProviderOptions>(options =>
-            {
-                options.Level = CompressionLevel.Fastest;
-            });
+            services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
+            services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
         }
 
         /// <summary>
@@ -66,8 +104,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection RegisterArgonServices(this IServiceCollection services, IConfiguration config)
         {
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering Argon services");
+            LogMethodCall(_log);
             RegisterApiServices(services, config);
             RegisterCoreServices(services, config);
             RegisterHttpClientServices(services, config);
@@ -82,10 +119,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="config"></param>
         private static void RegisterHttpClientServices(IServiceCollection services, IConfiguration config)
         {
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering generic HTTP client for re-use");
+            LogMethodCall(_log);
             services.AddHttpClient<IVirtualStorageManager, VirtualStorageManager>();
-
         }
 
         /// <summary>
@@ -98,8 +133,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="config"></param>
         private static void RegisterApiServices(IServiceCollection services, IConfiguration config)
         {
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Configuring controllers and Swagger components");
+            LogMethodCall(_log);
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
@@ -107,10 +141,11 @@ namespace Microsoft.Extensions.DependencyInjection
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Argon - Content Service Layer", 
-                    Version = $"v1 ({new AppVersion().ToString()})",
-                    Description = $"Argon. (Build Version: {new AppVersion().ToString()})",
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Argon - Content Service Layer",
+                    Version = $"v1 ({GetApplicationAssemblyVersion()})",
+                    Description = $"Argon. (Build Version: {GetApplicationAssemblyVersion()})",
                     Contact = new OpenApiContact
                     {
                         Name = "Jonny Coombes",
@@ -120,8 +155,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            }); 
-            
+            });
         }
 
         /// <summary>
@@ -133,28 +167,20 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="config"></param>
         private static void RegisterCoreServices(IServiceCollection services, IConfiguration config)
         {
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Configuring core API services");
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering a scoped VSP factory");
+            LogMethodCall(_log);
+            LogInformation(_log, "Registering a scoped VSP factory");
             services.AddSingleton<IVirtualStorageManager, VirtualStorageManager>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering a scoped property group manager");
+            LogInformation(_log, "Registering a scoped property group manager");
             services.AddScoped<IPropertyGroupManager, PropertyGroupManager>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering a scoped constraint group manager");
+            LogInformation(_log, "Registering a scoped constraint group manager");
             services.AddScoped<IConstraintGroupManager, ConstraintGroupManager>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering a scoped item manager");
+            LogInformation(_log, "Registering a scoped item manager");
             services.AddScoped<IItemManager, ItemManager>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering a scoped collection manager");
+            LogInformation(_log, "Registering a scoped collection manager");
             services.AddScoped<ICollectionManager, CollectionManager>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering db cache");
+            LogInformation(_log, "Registering db cache");
             services.AddScoped<IDbCache, DbCache>();
-            Log.ForContext("SourceContext", "JCS.Argon")
-                .Information("Registering global response exception handler");
+            LogInformation(_log, "Registering global response exception handler");
             services.AddSingleton<IResponseExceptionHandler, ResponseExceptionHandler>();
         }
     }
