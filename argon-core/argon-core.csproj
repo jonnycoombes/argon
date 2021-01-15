@@ -9,6 +9,12 @@
     <OutputType>Exe</OutputType>
     <GenerateProgramFile>false</GenerateProgramFile>
     <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AssemblyName>Argon-Core</AssemblyName>
+    <Company>JCS Software Ltd</Company>
+    <Product>Argon Core</Product>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
+    <NeutralLanguage>en-GB</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

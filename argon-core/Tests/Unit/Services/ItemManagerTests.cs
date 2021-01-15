@@ -50,13 +50,13 @@ namespace JCS.Argon.Tests.Unit.Services
         [InlineData(150000)]
         [InlineData(644440)]
         [InlineData(33333333)]
-        public async void CreateCollectionItems(int size)
+        public async void CreateCollectionItems(int sizeInBytes)
         {
             LogMethodCall(_log);
             var cmd = new CreateCollectionCommand("Test Collection", "Test FS", null);
             var randomContents = PassphraseHelpers.GenerateRandomPassphrase(builder =>
             {
-                builder.SetRequiredLength(size);
+                builder.SetRequiredLength(sizeInBytes);
                 builder.SetBase64Encoding(true);
             });
             var formFile = CreateTestFormFile("test", randomContents);
