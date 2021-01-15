@@ -92,5 +92,32 @@ namespace JCS.Argon.Services.VSP.Providers
         /// here
         /// </summary>
         public abstract void AfterBind();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        protected static string DetermineContentType(IFormFile source)
+        {
+            LogMethodCall(_log);
+            string contentType;
+            if (source.Headers == null)
+            {
+                LogWarning(_log, "Source has no headers - using default content type");
+                contentType = "text/plain";
+            }
+            else if (source.ContentType == null)
+            {
+                LogWarning(_log, "Source doesn't appear to have a content type - using default");
+                contentType = "text/plain";
+            }
+            else
+            {
+                contentType = source.ContentType;
+            }
+
+            return contentType;
+        }
     }
 }

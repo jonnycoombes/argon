@@ -131,7 +131,8 @@ namespace JCS.Argon.Services.Core
             catch (Exception ex)
             {
                 // roll back the entity changes
-                LogWarning(_log, $"Caught general exception whilst attempting item physical operation");
+                LogWarning(_log, $"Caught general exception whilst attempting item physical operation \"{ex.Message}\"");
+                LogExceptionError(_log, ex);
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
@@ -247,7 +248,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        /// Creates a new version template
+        /// Creates a new version template (TODO - additional validation of inbound form file structure)
         /// </summary>
         /// <param name="source">The source object</param>
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
@@ -255,12 +256,14 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         protected Task<JCS.Argon.Model.Schema.ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1, int minorVersion = 0)
         {
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Handling form file [{source.Name}, {source.Length}, {source.FileName}]");
             return Task.Run(() =>
             {
                 var version = new ItemVersion()
                 {
                     Name = source.FileName,
-                    MIMEType = source.ContentType,
+                    MIMEType = source.Headers == null ? "text/plain" : source.ContentType,
                     Size = source.Length,
                     Major = majorVersion,
                     Minor = minorVersion

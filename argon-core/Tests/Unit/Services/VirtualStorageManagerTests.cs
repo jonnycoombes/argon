@@ -24,7 +24,6 @@ namespace JCS.Argon.Tests.Unit.Services
         public void VerifyBindingCounts()
         {
             LogMethodCall(_log);
-            LogInformation(_log, "[TEST ENTRY] - SampleTest");
             var bindings= _virtualStorageManager.GetBindings();
             var bindingCount = bindings.Count;
             LogVerbose(_log, $"Current binding count is \"{bindingCount}\"");

@@ -1,14 +1,17 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using NSubstitute;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
@@ -178,7 +181,27 @@ namespace JCS.Argon.Tests.Unit
             _options = Substitute.For<IOptionsMonitor<ApiOptions>>();
             _options.CurrentValue.Returns(options);
         }
-
+        
+        /// <summary>
+        /// Helper function for creating a test instance of <see cref="IFormFile"/>
+        /// </summary>
+        /// <param name="name">The name to set against the form file</param>
+        /// <param name="content">The string content</param>
+        /// <returns></returns>
+        protected IFormFile CreateTestFormFile(string name, string content, string contentType = "text/plain")
+        {
+            LogMethodCall(_log);
+            byte[] bytes = Encoding.UTF8.GetBytes(content);
+            var file= new FormFile(
+                baseStream: new MemoryStream(bytes),
+                baseStreamOffset: 0,
+                length: bytes.Length,
+                name: "Content",
+                fileName: name
+            );
+            return file;
+        }
+        
         public void Dispose()
         {
             LogMethodCall(_log);

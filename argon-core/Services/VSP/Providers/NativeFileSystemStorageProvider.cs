@@ -177,7 +177,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     {$"{ProviderProperties.CreateDate}", DateTime.Now},
                     {$"{ProviderProperties.LastAccessed}", DateTime.Now},
                     {$"{ProviderProperties.Length}", source.Length},
-                    {$"{ProviderProperties.ContentType}", source.ContentType},
+                    {$"{ProviderProperties.ContentType}", DetermineContentType(source)},
                 };
                 return result;
             }
