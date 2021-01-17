@@ -225,8 +225,6 @@ namespace JCS.Argon.Services.VSP.Providers
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"Unable to retrieve item version");
             }
-
-            throw new NotImplementedException();
         }
     }
 }
