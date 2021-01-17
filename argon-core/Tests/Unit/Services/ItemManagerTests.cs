@@ -30,7 +30,7 @@ namespace JCS.Argon.Tests.Unit.Services
         public async void CountCollectionItems()
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand("Test Collection", "Test FS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             var count = await _itemManager.CountItemsAsync(collection);
             Assert.Equal(0, count);
@@ -53,7 +53,7 @@ namespace JCS.Argon.Tests.Unit.Services
         public async void CreateCollectionItems(int sizeInBytes)
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand("Test Collection", "Test FS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
             var randomContents = PassphraseHelpers.GenerateRandomPassphrase(builder =>
             {
                 builder.SetRequiredLength(sizeInBytes);

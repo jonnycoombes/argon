@@ -72,7 +72,7 @@ namespace JCS.Argon.Tests.Unit.Services
             {
                 Name = name,
                 Description = "Test description",
-                ProviderTag = "Test FS"
+                ProviderTag = "TestFS"
             };
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
@@ -89,7 +89,7 @@ namespace JCS.Argon.Tests.Unit.Services
             {
                 Name = name,
                 Description = "Duplicate collection",
-                ProviderTag = "Test FS"
+                ProviderTag = "TestFS"
             };
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
@@ -107,16 +107,16 @@ namespace JCS.Argon.Tests.Unit.Services
         {
             var cmds = new CreateCollectionCommand[]
             {
-                new CreateCollectionCommand("Collection 1", "Test FS", ""),
-                new CreateCollectionCommand("Collection 2", "Test FS", ""),
-                new CreateCollectionCommand("Collection 3", "Test FS", ""),
-                new CreateCollectionCommand("Collection 4", "Test FS", ""),
-                new CreateCollectionCommand("Collection 5", "Test FS", ""),
-                new CreateCollectionCommand("Collection 6", "Test FS", ""),
-                new CreateCollectionCommand("Collection 7", "Test FS", ""),
-                new CreateCollectionCommand("Collection 8", "Test FS", ""),
-                new CreateCollectionCommand("Collection 9", "Test FS", ""),
-                new CreateCollectionCommand("Collection 10", "Test FS", ""),
+                new CreateCollectionCommand("Collection 1", "TestFS", ""),
+                new CreateCollectionCommand("Collection 2", "TestFS", ""),
+                new CreateCollectionCommand("Collection 3", "TestFS", ""),
+                new CreateCollectionCommand("Collection 4", "TestFS", ""),
+                new CreateCollectionCommand("Collection 5", "TestFS", ""),
+                new CreateCollectionCommand("Collection 6", "TestFS", ""),
+                new CreateCollectionCommand("Collection 7", "TestFS", ""),
+                new CreateCollectionCommand("Collection 8", "TestFS", ""),
+                new CreateCollectionCommand("Collection 9", "TestFS", ""),
+                new CreateCollectionCommand("Collection 10", "TestFS", ""),
             };
             foreach (var cmd in cmds)
             {
@@ -134,11 +134,11 @@ namespace JCS.Argon.Tests.Unit.Services
         {
             var cmds = new CreateCollectionCommand[]
             {
-                new CreateCollectionCommand("Collection 1", "Test FS", ""),
-                new CreateCollectionCommand("Collection 2", "Test FS", ""),
-                new CreateCollectionCommand("Collection 3", "Test FS", ""),
-                new CreateCollectionCommand("Collection 4", "Test FS", ""),
-                new CreateCollectionCommand("Collection 5", "Test FS", "")
+                new CreateCollectionCommand("Collection 1", "TestFS", ""),
+                new CreateCollectionCommand("Collection 2", "TestFS", ""),
+                new CreateCollectionCommand("Collection 3", "TestFS", ""),
+                new CreateCollectionCommand("Collection 4", "TestFS", ""),
+                new CreateCollectionCommand("Collection 5", "TestFS", "")
             };
             foreach (var cmd in cmds)
             {
@@ -161,7 +161,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [Trait("Target Service", "CollectionManager")]
         public async void RetrieveCollection()
         {
-            var cmd = new CreateCollectionCommand("Test Collection", "Test FS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.NotNull(collection);
             var id = collection.Id.Value;
