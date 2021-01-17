@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
 namespace JCS.Argon.Services.VSP
 {
@@ -121,7 +122,7 @@ namespace JCS.Argon.Services.VSP
         /// Create an instance of a <see cref="IVirtualStorageProvider"/> based on the short
         /// providerType value
         /// </summary>
-        /// <param name="providerType"></param>
+        /// <param name="providerType"></param>a
         /// <returns></returns>
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
         protected IVirtualStorageProvider CreateProviderInstance(string providerType)
@@ -131,16 +132,14 @@ namespace JCS.Argon.Services.VSP
             if (ProviderExists(providerType))
             {
 #pragma warning disable 8600
-                IVirtualStorageProvider instance =
-                    (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
+                var providerOption = CreateAndCastInstance<IVirtualStorageProvider>(_providerTypesMap[providerType]);
 #pragma warning restore 8600
-                if (instance == null)
+                if (!providerOption.IsSome(out var provider))
                 {
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                         $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
                 }
-
-                return instance;
+                return provider;
             }
             else
             {
@@ -161,17 +160,17 @@ namespace JCS.Argon.Services.VSP
             LogInformation(_log,"Resolving providers within the current runtime environment");
             try
             {
-                var providerTypes = ReflectionHelper.LocateAllImplementors<IVirtualStorageProvider>()
+                var providerTypes = LocateAllImplementors<IVirtualStorageProvider>()
                     .Where(t => !t.IsAbstract && !t.IsInterface);
                 foreach (var providerType in providerTypes)
                 {
 #pragma warning disable 8600
-                    var instance = (IVirtualStorageProvider) ReflectionHelper.InstantiateType(providerType);
+                    var providerOption = CreateAndCastInstance<IVirtualStorageProvider>(providerType);
 #pragma warning restore 8600
-                    if (instance != null)
+                    if (providerOption.IsSome(out var provider))
                     {
-                        LogInformation(_log,$"Found VSP provider implementation: ({providerType.Name},{instance.ProviderType})");
-                        _providerTypesMap[instance.ProviderType] = providerType;
+                        LogInformation(_log,$"Found VSP provider implementation: ({providerType.Name},{provider.ProviderType})");
+                        _providerTypesMap[provider.ProviderType] = providerType;
                     }
                     else
                     {

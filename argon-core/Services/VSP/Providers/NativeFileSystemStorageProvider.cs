@@ -32,7 +32,6 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// Default constructor, just calls base
         /// </summary>
-        /// <param name="log"></param>
         public NativeFileSystemStorageProvider() : base() 
         {
             LogMethodCall(_log);

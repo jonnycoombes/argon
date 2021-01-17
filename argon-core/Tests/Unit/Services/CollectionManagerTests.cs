@@ -31,7 +31,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [Fact(DisplayName = "Must not be able to retrieve a collection from an empty database")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        public async void AttemptRetrievalFromEmptyDatabase()
+        public void AttemptRetrievalFromEmptyDatabase()
         {
             LogMethodCall(_log);
             Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
@@ -48,7 +48,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [InlineData("f7e87df8-18ba-436b-9891-ae13714cbac4")]
         [InlineData("1583490d-2531-48c9-b62b-691a56d67ea4")]
         [InlineData("36b0b63a-925d-4def-95ca-8dae0e98d042")]
-        public async void RetrieveBogusCollection(string collectionId)
+        public  void RetrieveBogusCollection(string collectionId)
         {
             LogMethodCall(_log);
             Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>

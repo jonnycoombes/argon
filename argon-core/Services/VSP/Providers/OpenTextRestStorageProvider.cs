@@ -37,7 +37,6 @@ namespace JCS.Argon.Services.VSP.Providers
         /// Default constructor - since providers are loaded dynamically at run time,
         /// this is really just delegated to the base class
         /// </summary>
-        /// <param name="log"></param>
         public OpenTextRestStorageProvider() : base()
         {
             LogMethodCall(_log);

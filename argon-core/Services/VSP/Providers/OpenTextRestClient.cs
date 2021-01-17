@@ -202,7 +202,7 @@ namespace JCS.Argon.Services.VSP.Providers
                         $"An invalid response was returned by OpenText outcall - results element wasn't found");
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     $"An invalid response was returned by OpenText outcall - results element wasn't found");
@@ -253,7 +253,6 @@ namespace JCS.Argon.Services.VSP.Providers
                     $"An exception was caught during an OpenText outcall: {ex.GetBaseException().Message}", ex);
             }
 
-            return 0;
         }
 
         public async Task<bool> HasChildFolder(long parentId, string name)
