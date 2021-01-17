@@ -94,7 +94,7 @@ namespace JCS.Argon.Tests.Unit.Services
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
             Assert.Equal(0, collection.Length);
-            Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
+            await Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
             {
                 var duplicate = await _collectionManager.CreateCollectionAsync(cmd);
             });

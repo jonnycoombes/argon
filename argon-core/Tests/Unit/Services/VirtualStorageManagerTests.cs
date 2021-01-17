@@ -6,7 +6,7 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 namespace JCS.Argon.Tests.Unit.Services
 {
     /// <summary>
-    /// Test suite for <see cref="IVirtualStorageManager"/> instances
+    /// Test suite for <see cref="JCS.Argon.Services.VSP.IVirtualStorageManager"/> instances
     /// </summary>
     [Collection("Units")]
     [Trait("Test Type", "Unit")]
@@ -33,7 +33,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [Theory(DisplayName = "Must be able to retrieve providers by their respective tags")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "VirtualStorageManager")]
-        [InlineData("Test FS")]    
+        [InlineData("TestFS")]    
         [InlineData("TestOTCSCollection")]    
         public void GetProviderByName(string name)
         {

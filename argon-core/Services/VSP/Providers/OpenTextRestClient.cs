@@ -356,7 +356,6 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <exception cref="OpenTextRestClient">Thrown if unable to create the path</exception>
         public async Task<long?> CreatePath(string path, bool cache = true)
         {
-            long? id = 0;
             var cacheId = await GetCachedPathId(path);
             if (cacheId == 0)
             {

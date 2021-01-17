@@ -187,7 +187,7 @@ namespace JCS.Argon.Tests.Unit
         /// </summary>
         /// <param name="name">The name to set against the form file</param>
         /// <param name="content">The string content</param>
-        /// <<param name="contentType"></param>
+        /// <param name="contentType"></param>
         /// <returns></returns>
         protected IFormFile CreateTestFormFile(string name, string content, string contentType = "text/plain")
         {

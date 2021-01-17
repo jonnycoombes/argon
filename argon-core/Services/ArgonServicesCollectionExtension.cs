@@ -35,8 +35,8 @@ namespace JCS.Argon.Extensions
         /// currently configured environment
         /// </summary>
         /// <param name="services"></param>
-        /// <<param name="config"></param>
-        /// <<param name="hostEnvironment"></param>
+        /// <param name="config"></param>
+        /// <param name="hostEnvironment"></param>
         public static IServiceCollection RegisterDbContext(this IServiceCollection services, IConfiguration config,
             IWebHostEnvironment hostEnvironment)
         {

@@ -81,6 +81,7 @@ namespace JCS.Argon.Utility
         /// Convenience wrapper around async multi-part POST requests
         /// </summary>
         /// <param name="uri"></param>
+        /// <param name="headers"></param>
         /// <param name="content"></param>
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
