@@ -52,13 +52,13 @@ namespace JCS.Argon.Services.VSP.Providers
             _rootCollectionPath = Binding!.Properties["rootCollectionPath"].ToString()!;
             this.AssertNotNull(_rootCollectionPath, "Root path hasn't been specified!");
             LogDebug(_log,$"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
-            _client = CreateRestClient();
+            _client = CreateOTCSRestClient();
         }
 
         /// <summary>
-        /// 
+        /// Generates the path within the CS repository for a new collection 
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection">The <see cref="Collection"/></param>
         /// <returns></returns>
         private string GenerateCollectionPath(Collection collection)
         {
@@ -66,12 +66,31 @@ namespace JCS.Argon.Services.VSP.Providers
             return $"{_rootCollectionPath!}/{collection.Id.ToString()!}";
         }
 
+        /// <summary>
+        /// Generates the path within the CS repository for a new collection item
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection"/></param>
+        /// <param name="item">The <see cref="Item"/></param>
+        /// <returns></returns>
         private string GenerateItemPath(Collection collection, Item item)
         {
             LogMethodCall(_log);
             return $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
         }
 
+        /// <summary>
+        /// Generates the path for a given version of an item
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection"/></param>
+        /// <param name="item">The parent <see cref="Item"/></param>
+        /// <param name="itemVersion">The <see cref="ItemVersion"/> in question</param>
+        /// <returns></returns>
+        private string GenerateItemVersionPath(Collection collection, Item item, ItemVersion itemVersion)
+        {
+            return $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}/{itemVersion.Major}_{itemVersion.Minor}/{item.Name}";
+        }
+        
+        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
             LogMethodCall(_log);
@@ -112,7 +131,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// Creates a new OpenText rest client
         /// </summary>
         /// <returns></returns>
-        private OpenTextRestClient CreateRestClient()
+        private OpenTextRestClient CreateOTCSRestClient()
         {
             LogMethodCall(_log);
             this.AssertNotNull(_httpClient, "HTTP client has not been injected!");
@@ -126,7 +145,8 @@ namespace JCS.Argon.Services.VSP.Providers
             };
             return client;
         }
-
+            
+        /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
         {
             LogMethodCall(_log);
@@ -137,21 +157,23 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             else
             {
-                long itemNodeId;
                 await _client.Authenticate();
+                
+                long itemNodeId;
                 var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
                 if (item.PropertyGroup.HasProperty("nodeId"))
                 {
-                    itemNodeId = (long)item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                    itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
                 }
                 else if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
                 {
-                    itemNodeId= await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
+                    itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
                 }
                 else
                 {
-                    itemNodeId= await _client.GetChildFolderId(collectionNodeId, item.Id.ToString());
+                    itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
                 }
+
                 if (itemNodeId != 0)
                 {
                     item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
@@ -159,10 +181,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     if (versionNodeId != 0)
                     {
                         var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
-                        return new IVirtualStorageProvider.StorageOperationResult()
-                        {
-                            Status = IVirtualStorageProvider.StorageOperationStatus.Ok
-                        };
+                        var result = new IVirtualStorageProvider.StorageOperationResult();
+                        result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
+                        return result;
                     }
                     else
                     {
@@ -177,10 +198,30 @@ namespace JCS.Argon.Services.VSP.Providers
                 }
             }
         }
-
+        
+        /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
             LogMethodCall(_log);
+            try
+            {
+                await _client.Authenticate();
+                var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                var versionFolderName = $"{itemVersion.Major}_{itemVersion.Minor}";
+                var versionFolderId = await _client.GetChildId(itemNodeId, versionFolderName);
+                var versionId = await _client.GetChildId(versionFolderId, itemVersion.Name);
+                var stream = await _client.GetNodeVersionContent(versionId);
+                var result = new IVirtualStorageProvider.StorageOperationResult();
+                result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
+                result.Stream = stream;
+                return result;
+            }
+            catch
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError, 
+                    $"Unable to retrieve item version"); 
+            }
+
             throw new NotImplementedException();
         }
     }

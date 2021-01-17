@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Exceptions;
 using JCS.Argon.Services.VSP.Providers;
+using JCS.Neon.Glow.Types;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -91,10 +94,7 @@ namespace JCS.Argon.Utility
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected");
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
             requestMessage.Content = content;
-            foreach (var header in headers)
-            {
-                requestMessage.Headers.Add(header.Item1, header.Item2);
-            }
+            MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -110,16 +110,29 @@ namespace JCS.Argon.Utility
             }
         }
 
+        /// <summary>
+        /// Appends a series of query string parameters to a <see cref="Uri"/>
+        /// </summary>
+        /// <param name="source">The original Uri</param>
+        /// <param name="fields">A series of string pairs</param>
+        /// <returns></returns>
         protected Uri AppendQueryStringParametersToUri(Uri source, (string, string)[] fields)
         {
             LogMethodCall(_log);
-            var sb = new StringBuilder();
-            foreach(var field in fields)
+            if (fields != null)
             {
-                sb.Append($"{field.Item1}={field.Item2}&");
+                var sb = new StringBuilder();
+                foreach (var field in fields)
+                {
+                    sb.Append($"{field.Item1}={field.Item2}&");
+                }
+                var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
+                return new Uri($"{source.ToString()}?{queryString}");
             }
-            var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
-            return new Uri($"{source.ToString()}?{queryString}");
+            else
+            {
+                return source;
+            }
         }
         
         /// <summary>
@@ -135,15 +148,7 @@ namespace JCS.Argon.Utility
             (string, string)[] queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
-            this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
-            uri = AppendQueryStringParametersToUri(uri, queryParams);
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-            foreach (var header in headers)
-            {
-                requestMessage.Headers.Add(header.Item1, header.Item2);
-            }
-            var response = await HttpClient.SendAsync(requestMessage);
-            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            var response = await GetRequest(uri, headers, queryParams, checkResponseCodes); 
             var json = await response.Content.ReadAsStringAsync();
             try
             {
@@ -156,6 +161,59 @@ namespace JCS.Argon.Utility
                     $"Invalid JSON response received", ex);
             }
         }
+        
+        /// <summary>
+        /// Generic method for issuing a GET request with headers and query parameters
+        /// </summary>
+        /// <param name="uri">The Uri to issue the GEt request against</param>
+        /// <param name="headers">A series of string pairs which are converted to headers</param>
+        /// <param name="queryParams">A series of query string parameters which are appended to the source uri</param>
+        /// <param name="checkResponseCodes">If true, then response codes are checked and optional exceptions are thrown</param>
+        /// <returns></returns>
+        protected async Task<HttpResponseMessage> GetRequest(Uri uri, (string, string)[] headers,
+            (string, string)[] queryParams, bool checkResponseCodes = true)
+        {
+            LogMethodCall(_log);
+            HttpResponseMessage response;
+            LogMethodCall(_log);
+            this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
+            uri = AppendQueryStringParametersToUri(uri, queryParams);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            MergeHeaders(requestMessage, headers);
+            response= await HttpClient.SendAsync(requestMessage);
+            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            return response;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="headers"></param>
+        /// <param name="queryParams"></param>
+        /// <param name="checkResponseCodes"></param>
+        /// <returns></returns>
+        protected async Task<Pair<string, Stream>> GetRequestForContentStream(Uri uri, (string, string)[] headers,
+            (string, string)[] queryParams, bool checkResponseCodes = true)
+        {
+            LogMethodCall(_log);
+            var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
+            return new Pair<string, Stream>(response.Content.Headers.ContentType.ToString(),
+                 response.Content.ReadAsStream());
+        }
+
+        /// <summary>
+        /// Merges a list of header pairs into the set of headers for a given request
+        /// </summary>
+        /// <param name="message">The <see cref="HttpRequestMessage"/></param>
+        /// <param name="headers">An array of string pairs</param>
+        private void MergeHeaders(HttpRequestMessage message, (string, string)[] headers)
+        {
+            foreach (var header in headers)
+            {
+                message.Headers.Add(header.Item1, header.Item2);
+            }
+        }
 
         /// <summary>
         /// Convenience method for creating string form fields
@@ -166,7 +224,7 @@ namespace JCS.Argon.Utility
         protected StringContent CreateStringFormField(string name, string value)
         {
             LogMethodCall(_log);
-            return new(value)
+            return new StringContent(value)
             {
                 Headers =
                 {
