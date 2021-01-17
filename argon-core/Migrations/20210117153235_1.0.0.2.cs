@@ -25,10 +25,7 @@ namespace JCS.Argon.Migrations
                     IntValue = table.Column<int>(type: "int", nullable: true),
                     DateTimeValue = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_cache", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_cache", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "constraintGroup",
@@ -38,10 +35,7 @@ namespace JCS.Argon.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_constraintGroup", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_constraintGroup", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "propertyGroup",
@@ -51,10 +45,7 @@ namespace JCS.Argon.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_propertyGroup", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_propertyGroup", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "constraint",

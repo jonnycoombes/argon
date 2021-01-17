@@ -13,7 +13,6 @@ namespace JCS.Argon.Contexts
     {
         public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
-            
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace JCS.Argon.Contexts
                 .Property(c => c.AllowableValues)
                 .HasConversion(v => string.Join(',', v ?? Array.Empty<string>()),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

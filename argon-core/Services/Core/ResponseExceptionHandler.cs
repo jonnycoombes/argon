@@ -41,7 +41,7 @@ namespace JCS.Argon.Services.Core
                             HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
                             Message = e.Message,
                             Source = e.Source
-                        }; 
+                        };
                     }
                     case IPropertyGroupManager.PropertyGroupManagerException e:
                     {
@@ -50,7 +50,7 @@ namespace JCS.Argon.Services.Core
                             HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
                             Message = e.Message,
                             Source = e.Source
-                        }; 
+                        };
                     }
                     default:
                     {

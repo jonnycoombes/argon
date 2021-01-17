@@ -13,6 +13,7 @@ namespace JCS.Argon.Utility
             {
                 sb.Append($"{s}{Environment.NewLine}");
             }
+
             return sb.ToString();
         }
     }

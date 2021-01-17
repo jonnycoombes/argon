@@ -15,18 +15,17 @@ namespace JCS.Argon.Services.Core
 {
     public class DbCache : BaseCoreService, IDbCache
     {
-
         /// <summary>
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<DbCache>();
-        
+
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="options">The current api configuration</param>
         /// <param name="serviceProvider">The current DI <see cref="IServiceProvider"/></param>
-        public DbCache(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider) 
+        public DbCache(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
             : base(options, serviceProvider)
         {
             LogMethodCall(_log);

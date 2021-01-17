@@ -13,7 +13,7 @@ namespace JCS.Argon.Model.Exceptions
         /// <param name="statusHint"></param>
         /// <param name="message"></param>
         protected ResponseAwareException(int? statusHint, string? message)
-        :base(message)
+            : base(message)
         {
             ResponseCodeHint = statusHint;
         }
@@ -25,9 +25,9 @@ namespace JCS.Argon.Model.Exceptions
         /// <param name="message"></param>
         /// <param name="inner"></param>
         protected ResponseAwareException(int? statusHint, string? message, Exception? inner)
-        :base(message, inner)
+            : base(message, inner)
         {
-           ResponseCodeHint = statusHint;
+            ResponseCodeHint = statusHint;
         }
 
         /// <summary>

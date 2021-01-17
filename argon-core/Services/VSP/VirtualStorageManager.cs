@@ -43,8 +43,8 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         private readonly VirtualStorageOptions _virtualStorageOptions;
 
-        public VirtualStorageManager(IServiceProvider serviceProvider, 
-            HttpClient httpClient, 
+        public VirtualStorageManager(IServiceProvider serviceProvider,
+            HttpClient httpClient,
             IOptionsMonitor<ApiOptions> apiOptions)
         {
             LogMethodCall(_log);
@@ -71,7 +71,7 @@ namespace JCS.Argon.Services.VSP
         public IVirtualStorageProvider GetProviderByTag(string tag)
         {
             LogMethodCall(_log);
-            LogDebug(_log,$"Attempting instantiation of VSP provider with tag [{tag}]");
+            LogDebug(_log, $"Attempting instantiation of VSP provider with tag [{tag}]");
             var binding = GetBindingFromTag(tag);
             if (binding == null)
             {
@@ -88,7 +88,7 @@ namespace JCS.Argon.Services.VSP
                 }
                 catch (IVirtualStorageProvider.VirtualStorageProviderException ex)
                 {
-                    LogWarning(_log,$"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
+                    LogWarning(_log, $"Failed to instantiate and then bind to a provider with tag [{tag}]: {ex.Message}");
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                         "Failed to instantiate and bind specified provider [{tag}]", ex);
                 }
@@ -128,7 +128,7 @@ namespace JCS.Argon.Services.VSP
         protected IVirtualStorageProvider CreateProviderInstance(string providerType)
         {
             LogMethodCall(_log);
-            LogDebug(_log,$"Instantiating a virtual storage provider of type [{providerType}]");
+            LogDebug(_log, $"Instantiating a virtual storage provider of type [{providerType}]");
             if (ProviderExists(providerType))
             {
 #pragma warning disable 8600
@@ -139,6 +139,7 @@ namespace JCS.Argon.Services.VSP
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                         $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
                 }
+
                 return provider;
             }
             else
@@ -157,7 +158,7 @@ namespace JCS.Argon.Services.VSP
         protected void ResolveProviders()
         {
             LogMethodCall(_log);
-            LogInformation(_log,"Resolving providers within the current runtime environment");
+            LogInformation(_log, "Resolving providers within the current runtime environment");
             try
             {
                 var providerTypes = LocateAllImplementors<IVirtualStorageProvider>()
@@ -169,13 +170,13 @@ namespace JCS.Argon.Services.VSP
 #pragma warning restore 8600
                     if (providerOption.IsSome(out var provider))
                     {
-                        LogInformation(_log,$"Found VSP provider implementation: ({providerType.Name},{provider.ProviderType})");
+                        LogInformation(_log, $"Found VSP provider implementation: ({providerType.Name},{provider.ProviderType})");
                         _providerTypesMap[provider.ProviderType] = providerType;
                     }
                     else
                     {
-                        LogWarning(_log,$"Failed to instantiate a virtual storage provider of type: [{providerType.Name}]");
-                        LogWarning(_log,$"This will likely be as a result of a problem in the virtual storage provider implementation");
+                        LogWarning(_log, $"Failed to instantiate a virtual storage provider of type: [{providerType.Name}]");
+                        LogWarning(_log, $"This will likely be as a result of a problem in the virtual storage provider implementation");
                     }
                 }
             }
@@ -201,6 +202,7 @@ namespace JCS.Argon.Services.VSP
                     return binding;
                 }
             }
+
             LogWarning(_log, $"Couldn't locate a binding with tag \"{tag}\"");
             return null;
         }

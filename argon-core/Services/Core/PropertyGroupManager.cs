@@ -19,14 +19,14 @@ namespace JCS.Argon.Services.Core
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<Core.PropertyGroupManager>();
-        
+
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceProvider"></param>
         public PropertyGroupManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
-        :base(options, serviceProvider)
+            : base(options, serviceProvider)
         {
             LogMethodCall(_log);
         }

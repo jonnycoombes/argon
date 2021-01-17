@@ -16,7 +16,7 @@ namespace JCS.Argon.Model.Schema
         Integer,
         DateTime
     }
-    
+
     /// <summary>
     /// Class representing a single cache entry
     /// </summary>
@@ -75,5 +75,4 @@ namespace JCS.Argon.Model.Schema
         /// </summary>
         public DateTime? DateTimeValue { get; set; }
     }
-    
 }

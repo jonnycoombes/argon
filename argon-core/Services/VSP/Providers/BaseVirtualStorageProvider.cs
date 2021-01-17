@@ -15,16 +15,15 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
-
         /// <summary>
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<BaseVirtualStorageProvider>();
-        
+
         /// <summary>
         /// An enumeration of "stock" provider properties - returned in the property bag for certain operations
         /// </summary>
-        public enum ProviderProperties 
+        public enum ProviderProperties
         {
             Path,
             CreateDate,
@@ -41,7 +40,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// An instance of <see cref="HttpClient"/>
         /// </summary>
-        protected HttpClient _httpClient= null!;
+        protected HttpClient _httpClient = null!;
 
         /// <summary>
         /// An instance of <see cref="IDbCache"/>
@@ -82,10 +81,12 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection);
 
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection,
+            Item item, ItemVersion itemVersion, IFormFile source);
 
         /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync"/>
-        public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion);
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
+            Item item, ItemVersion itemVersion);
 
         /// <summary>
         /// Called after a bind operation - subclasses should perform initialisation logic in

@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
-    [Table(name:"propertyGroup", Schema = "argon")]
+    [Table(name: "propertyGroup", Schema = "argon")]
     public class PropertyGroup
     {
         /// <summary>
@@ -48,11 +48,11 @@ namespace JCS.Argon.Model.Schema
                         prop.ClearValue();
                         prop.Type = type;
                     }
-                    
+
                     switch (type)
                     {
                         case PropertyType.Boolean:
-                            prop.BooleanValue = (bool)value;
+                            prop.BooleanValue = (bool) value;
                             break;
                         case PropertyType.Number:
                             prop.NumberValue = (double) Convert.ToDouble(value);
@@ -72,14 +72,15 @@ namespace JCS.Argon.Model.Schema
                 {
                     Properties = new List<Property>();
                 }
+
                 switch (type)
                 {
                     case PropertyType.Boolean:
                         Properties.Add(new Property()
                         {
-                            Name= name,
+                            Name = name,
                             Type = type,
-                            BooleanValue = (bool)value
+                            BooleanValue = (bool) value
                         });
                         break;
                     case PropertyType.Number:
@@ -93,16 +94,16 @@ namespace JCS.Argon.Model.Schema
                     case PropertyType.DateTime:
                         Properties.Add(new Property()
                         {
-                            Name= name,
-                            Type= PropertyType.DateTime,
-                            DateTimeValue = (DateTime)value
+                            Name = name,
+                            Type = PropertyType.DateTime,
+                            DateTimeValue = (DateTime) value
                         });
                         break;
                     default:
                         Properties.Add(new Property()
                         {
                             Name = name,
-                            Type= PropertyType.String,
+                            Type = PropertyType.String,
                             StringValue = value.ToString()
                         });
                         break;

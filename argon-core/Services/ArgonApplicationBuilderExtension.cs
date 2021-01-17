@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using static System.DateTime;
 
-namespace  JCS.Argon.Extensions
+namespace JCS.Argon.Extensions
 {
     /// <summary>
     /// Class which can be used in order to add middleware etc...
@@ -15,7 +15,7 @@ namespace  JCS.Argon.Extensions
 
         public static IApplicationBuilder UseArgonTelemetry(this IApplicationBuilder app)
         {
-            app.Use(async (context,next) =>
+            app.Use(async (context, next) =>
             {
                 var timer = new Stopwatch();
                 timer.Start();

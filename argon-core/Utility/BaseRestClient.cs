@@ -35,12 +35,12 @@ namespace JCS.Argon.Utility
                 Source = nameof(BaseRestClient);
             }
         }
-        
+
         /// <summary>
         /// The wrapped <see cref="HttpClient"/>
         /// </summary>
         public HttpClient HttpClient { get; set; } = null!;
-        
+
 
         /// <summary>
         /// Default constructor
@@ -74,9 +74,11 @@ namespace JCS.Argon.Utility
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
-            foreach(var field in fields){
+            foreach (var field in fields)
+            {
                 template.Add(CreateStringFormField(field.Item1, field.Item2));
             }
+
             return template;
         }
 
@@ -88,7 +90,8 @@ namespace JCS.Argon.Utility
         /// <param name="content"></param>
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
-        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, (string, string)[] headers, MultipartFormDataContent content, bool checkResponseCodes = true)
+        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, (string, string)[] headers,
+            MultipartFormDataContent content, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected");
@@ -104,7 +107,7 @@ namespace JCS.Argon.Utility
             }
             catch (JsonReaderException ex)
             {
-                LogWarning(_log,$"{this.GetType()}: Invalid JSON returned in response to a request");
+                LogWarning(_log, $"{this.GetType()}: Invalid JSON returned in response to a request");
                 throw new BaseRestClientException(StatusCodes.Status500InternalServerError,
                     $"Invalid JSON response received", ex);
             }
@@ -126,6 +129,7 @@ namespace JCS.Argon.Utility
                 {
                     sb.Append($"{field.Item1}={field.Item2}&");
                 }
+
                 var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
                 return new Uri($"{source.ToString()}?{queryString}");
             }
@@ -134,7 +138,7 @@ namespace JCS.Argon.Utility
                 return source;
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -144,11 +148,11 @@ namespace JCS.Argon.Utility
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
         /// <exception cref="BaseRestClientException"></exception>
-        protected async Task<JObject> GetRequestForJsonAsync(Uri uri, (string, string)[] headers, 
+        protected async Task<JObject> GetRequestForJsonAsync(Uri uri, (string, string)[] headers,
             (string, string)[] queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
-            var response = await GetRequest(uri, headers, queryParams, checkResponseCodes); 
+            var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
             var json = await response.Content.ReadAsStringAsync();
             try
             {
@@ -156,12 +160,12 @@ namespace JCS.Argon.Utility
             }
             catch (JsonReaderException ex)
             {
-                LogWarning(_log,$"{this.GetType()}: Invalid JSON returned in response to a request");
+                LogWarning(_log, $"{this.GetType()}: Invalid JSON returned in response to a request");
                 throw new BaseRestClientException(StatusCodes.Status500InternalServerError,
                     $"Invalid JSON response received", ex);
             }
         }
-        
+
         /// <summary>
         /// Generic method for issuing a GET request with headers and query parameters
         /// </summary>
@@ -180,7 +184,7 @@ namespace JCS.Argon.Utility
             uri = AppendQueryStringParametersToUri(uri, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
             MergeHeaders(requestMessage, headers);
-            response= await HttpClient.SendAsync(requestMessage);
+            response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
             return response;
         }
@@ -199,7 +203,7 @@ namespace JCS.Argon.Utility
             LogMethodCall(_log);
             var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
             return new Pair<string, Stream>(response.Content.Headers.ContentType.ToString(),
-                 response.Content.ReadAsStream());
+                response.Content.ReadAsStream());
         }
 
         /// <summary>

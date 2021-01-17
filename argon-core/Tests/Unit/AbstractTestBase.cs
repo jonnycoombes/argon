@@ -59,7 +59,7 @@ namespace JCS.Argon.Tests.Unit
         /// The <see cref="ICollectionManager"/> instance for testing
         /// </summary>
         protected ICollectionManager _collectionManager;
-        
+
         /// <summary>
         /// The <see cref="IItemManager"/> instance for testing
         /// </summary>
@@ -123,7 +123,7 @@ namespace JCS.Argon.Tests.Unit
         private void MockServices()
         {
             LogMethodCall(_log);
-            
+
             // sub in a service provider
             _serviceProvider = Substitute.For<IServiceProvider>();
 
@@ -141,7 +141,7 @@ namespace JCS.Argon.Tests.Unit
             _virtualStorageManager = new VirtualStorageManager(_serviceProvider, new HttpClient(), _options);
             _serviceProvider.GetService(typeof(IVirtualStorageManager))
                 .Returns(_virtualStorageManager);
-            
+
             // note that we have to substitute for the 'GetService' type as opposed to the 
             // generic variants, because they ain't a working with NSubstitute...
             _dbCache = new DbCache(_options, _serviceProvider);
@@ -159,7 +159,6 @@ namespace JCS.Argon.Tests.Unit
             _propertyGroupManager = new PropertyGroupManager(_options, _serviceProvider);
             _serviceProvider.GetService(typeof(IPropertyGroupManager))
                 .Returns(_propertyGroupManager);
-
         }
 
         /// <summary>
@@ -189,7 +188,7 @@ namespace JCS.Argon.Tests.Unit
             _options = Substitute.For<IOptionsMonitor<ApiOptions>>();
             _options.CurrentValue.Returns(options);
         }
-        
+
         /// <summary>
         /// Helper function for creating a test instance of <see cref="IFormFile"/>
         /// </summary>
@@ -201,7 +200,7 @@ namespace JCS.Argon.Tests.Unit
         {
             LogMethodCall(_log);
             byte[] bytes = Encoding.UTF8.GetBytes(content);
-            var file= new FormFile(
+            var file = new FormFile(
                 baseStream: new MemoryStream(bytes),
                 baseStreamOffset: 0,
                 length: bytes.Length,
@@ -210,7 +209,7 @@ namespace JCS.Argon.Tests.Unit
             );
             return file;
         }
-        
+
         public void Dispose()
         {
             LogMethodCall(_log);

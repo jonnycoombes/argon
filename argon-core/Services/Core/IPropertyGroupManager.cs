@@ -24,7 +24,7 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// Thrown in the event of a failure within the constraint group manager
         /// </summary>
-        public sealed class PropertyGroupManagerException: ResponseAwareException
+        public sealed class PropertyGroupManagerException : ResponseAwareException
         {
             public PropertyGroupManagerException(int? statusHint, string? message) : base(statusHint, message)
             {
@@ -33,7 +33,7 @@ namespace JCS.Argon.Services.Core
 
             public PropertyGroupManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(IPropertyGroupManager); 
+                Source = nameof(IPropertyGroupManager);
             }
         }
     }

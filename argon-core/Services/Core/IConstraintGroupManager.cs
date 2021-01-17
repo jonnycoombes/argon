@@ -50,7 +50,7 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// Thrown in the event of a failure within the constraint group manager
         /// </summary>
-        public sealed class ConstraintGroupManagerException: ResponseAwareException
+        public sealed class ConstraintGroupManagerException : ResponseAwareException
         {
             public ConstraintGroupManagerException(int? statusHint, string? message) : base(statusHint, message)
             {
@@ -59,7 +59,7 @@ namespace JCS.Argon.Services.Core
 
             public ConstraintGroupManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(ICollectionManager); 
+                Source = nameof(ICollectionManager);
             }
         }
     }

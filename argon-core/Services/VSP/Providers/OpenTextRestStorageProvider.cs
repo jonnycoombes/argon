@@ -17,7 +17,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<OpenTextRestStorageProvider>();
-        
+
         /// <summary>
         /// The constant provider type tag
         /// </summary>
@@ -26,13 +26,13 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         /// An internal instance of <see cref="OpenTextRestClient"/>
         /// </summary>
-        private OpenTextRestClient _client= null!;
+        private OpenTextRestClient _client = null!;
 
         /// <summary>
         /// The root storage path, relative to the Enterprise workspace
         /// </summary>
-        private string? _rootCollectionPath; 
-        
+        private string? _rootCollectionPath;
+
         /// <summary>
         /// Default constructor - since providers are loaded dynamically at run time,
         /// this is really just delegated to the base class
@@ -51,7 +51,7 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             _rootCollectionPath = Binding!.Properties["rootCollectionPath"].ToString()!;
             this.AssertNotNull(_rootCollectionPath, "Root path hasn't been specified!");
-            LogDebug(_log,$"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
+            LogDebug(_log, $"{ProviderType}: rootCollectionPath set to {_rootCollectionPath}");
             _client = CreateOTCSRestClient();
         }
 
@@ -87,9 +87,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns></returns>
         private string GenerateItemVersionPath(Collection collection, Item item, ItemVersion itemVersion)
         {
-            return $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}/{itemVersion.Major}_{itemVersion.Minor}/{item.Name}";
+            return
+                $"{_rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}/{itemVersion.Major}_{itemVersion.Minor}/{item.Name}";
         }
-        
+
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionAsync"/>
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
@@ -98,7 +99,7 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 await _client.Authenticate();
                 var collectionRootPath = GenerateCollectionPath(collection);
-                var nodeId= await _client.CreatePath(GenerateCollectionPath(collection));
+                var nodeId = await _client.CreatePath(GenerateCollectionPath(collection));
                 if (nodeId == null)
                 {
                     return new IVirtualStorageProvider.StorageOperationResult()
@@ -145,9 +146,10 @@ namespace JCS.Argon.Services.VSP.Providers
             };
             return client;
         }
-            
+
         /// <inheritdoc cref="IVirtualStorageProvider.CreateCollectionItemVersionAsync"/>
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection,
+            Item item, ItemVersion itemVersion, IFormFile source)
         {
             LogMethodCall(_log);
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
@@ -158,7 +160,7 @@ namespace JCS.Argon.Services.VSP.Providers
             else
             {
                 await _client.Authenticate();
-                
+
                 long itemNodeId;
                 var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
                 if (item.PropertyGroup.HasProperty("nodeId"))
@@ -177,7 +179,8 @@ namespace JCS.Argon.Services.VSP.Providers
                 if (itemNodeId != 0)
                 {
                     item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
-                    var versionNodeId = await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
+                    var versionNodeId =
+                        await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
                     if (versionNodeId != 0)
                     {
                         var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
@@ -187,20 +190,21 @@ namespace JCS.Argon.Services.VSP.Providers
                     }
                     else
                     {
-                        throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest, 
+                        throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                             $"Unable to create/locate node id");
                     }
                 }
                 else
                 {
-                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest, 
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                         $"Unable to create/locate node id");
                 }
             }
         }
-        
+
         /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync"/>
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
+            Item item, ItemVersion itemVersion)
         {
             LogMethodCall(_log);
             try
@@ -218,8 +222,8 @@ namespace JCS.Argon.Services.VSP.Providers
             }
             catch
             {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError, 
-                    $"Unable to retrieve item version"); 
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"Unable to retrieve item version");
             }
 
             throw new NotImplementedException();

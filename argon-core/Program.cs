@@ -31,7 +31,7 @@ namespace JCS.Argon
             var _log = Log.ForContext<Program>();
             try
             {
-                LogInformation(_log,$"Starting Argon Version {GetApplicationAssemblyVersion()}");
+                LogInformation(_log, $"Starting Argon Version {GetApplicationAssemblyVersion()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();
@@ -49,14 +49,8 @@ namespace JCS.Argon
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((context, builder) =>
-                {
-                    builder.ClearProviders();
-                })
+                .ConfigureLogging((context, builder) => { builder.ClearProviders(); })
                 .UseSerilog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

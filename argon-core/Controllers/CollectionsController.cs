@@ -19,7 +19,7 @@ namespace JCS.Argon.Controllers
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<CollectionsController>();
-        
+
         /// <summary>
         /// An instance of <see cref="ICollectionManager"/>, used for most of the interactions
         /// with collections
@@ -74,7 +74,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Collection> CreateCollection([FromBody]CreateCollectionCommand cmd)
+        public async Task<Collection> CreateCollection([FromBody] CreateCollectionCommand cmd)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
@@ -176,7 +176,8 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId, [FromBody]List<CreateOrUpdateConstraintCommand> cmds)
+        public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId,
+            [FromBody] List<CreateOrUpdateConstraintCommand> cmds)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);

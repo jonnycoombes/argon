@@ -23,13 +23,13 @@ namespace JCS.Argon.Services.Core
         /// Static logging instance
         /// </summary>
         private static ILogger _log = Log.ForContext<CollectionManager>();
-        
+
         /// <summary>
         /// Default constructor, parameters are DI'd by the IoC layer
         /// </summary>
         /// <param name="options">The current system configuration</param>
         /// <param name="serviceProvider">The current DI <see cref="IServiceProvider"/></param>
-        public CollectionManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider) 
+        public CollectionManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
             : base(options, serviceProvider)
         {
             LogMethodCall(_log);

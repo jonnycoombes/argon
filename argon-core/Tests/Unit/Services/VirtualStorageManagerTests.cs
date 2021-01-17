@@ -24,7 +24,7 @@ namespace JCS.Argon.Tests.Unit.Services
         public void VerifyBindingCounts()
         {
             LogMethodCall(_log);
-            var bindings= _virtualStorageManager.GetBindings();
+            var bindings = _virtualStorageManager.GetBindings();
             var bindingCount = bindings.Count;
             LogVerbose(_log, $"Current binding count is \"{bindingCount}\"");
             Assert.True(bindingCount > 1);
@@ -33,14 +33,13 @@ namespace JCS.Argon.Tests.Unit.Services
         [Theory(DisplayName = "Must be able to retrieve providers by their respective tags")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "VirtualStorageManager")]
-        [InlineData("TestFS")]    
-        [InlineData("TestOTCSCollection")]    
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
         public void GetProviderByName(string name)
         {
             LogMethodCall(_log);
-            var provider= _virtualStorageManager.GetProviderByTag(name);
+            var provider = _virtualStorageManager.GetProviderByTag(name);
             Assert.NotNull(provider);
         }
-        
     }
 }

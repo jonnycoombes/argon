@@ -8,15 +8,13 @@ namespace JCS.Argon.Model.Commands
     /// </summary>
     public class CreateCollectionCommand
     {
-
         /// <summary>
         /// Default constructor
         /// </summary>
         public CreateCollectionCommand()
         {
-            
         }
-        
+
         public CreateCollectionCommand(string name, string providerTag, string? description)
         {
             Name = name;

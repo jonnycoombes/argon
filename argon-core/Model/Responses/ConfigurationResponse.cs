@@ -23,6 +23,7 @@ namespace JCS.Argon.Model.Responses
         /// </summary>
         public int TotalVersions { get; set; } = 0;
     }
+
     public class ConfigurationResponse
     {
         /// <summary>

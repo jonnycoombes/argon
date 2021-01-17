@@ -73,7 +73,7 @@ namespace JCS.Argon.Services.Core
 
             public CollectionManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(ICollectionManager); 
+                Source = nameof(ICollectionManager);
             }
         }
     }

@@ -108,7 +108,7 @@ namespace JCS.Argon.Services.Core
 
             public ItemManagerException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
-                Source = nameof(IItemManager); 
+                Source = nameof(IItemManager);
             }
         }
     }

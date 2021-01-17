@@ -13,12 +13,11 @@ namespace JCS.Argon.Controllers
     [Route("/api/v1/Collections")]
     public class ItemsController : BaseApiController
     {
-
         /// <summary>
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<ItemsController>();
-        
+
         /// <summary>
         /// The <see cref="CollectionManager"/> instance - DI'd 
         /// </summary>
@@ -131,7 +130,6 @@ namespace JCS.Argon.Controllers
             {
                 FileDownloadName = version.Name
             };
-            
         }
 
         /// <summary>
@@ -162,7 +160,7 @@ namespace JCS.Argon.Controllers
             LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
-            var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file); 
+            var item = await _itemManager.AddItemToCollectionAsync(collection, properties, file);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return item;
         }

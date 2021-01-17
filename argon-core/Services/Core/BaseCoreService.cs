@@ -19,7 +19,7 @@ namespace JCS.Argon.Services.Core
         /// Access through resolution
         /// </summary>
         protected SqlDbContext DbContext => ResolveDbContext();
-        
+
         /// <summary>
         /// The current scoped <see cref="IConstraintGroupManager"/> instance
         /// </summary>
@@ -33,23 +33,23 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         /// The currently scoped <see cref="IItemManager"/> instance
         /// </summary>
-        private  IItemManager _itemManager;
+        private IItemManager _itemManager;
 
         /// <summary>
         /// Access through resolution
         /// </summary>
         protected IItemManager ItemManager => ResolveItemManager();
-        
+
         /// <summary>
         /// The currently scoped <see cref="IPropertyGroupManager"/> instance
         /// </summary>
-        private  IPropertyGroupManager _propertyGroupManager;
+        private IPropertyGroupManager _propertyGroupManager;
 
         /// <summary>
         /// Access through resolution
         /// </summary>
         protected IPropertyGroupManager PropertyGroupManager => ResolvePropertyGroupManager();
-        
+
         /// <summary>
         /// The currently configured <see cref="IVirtualStorageManager"/> instance
         /// </summary>
@@ -59,7 +59,7 @@ namespace JCS.Argon.Services.Core
         /// Access through resolution
         /// </summary>
         protected IVirtualStorageManager VirtualStorageManager => ResolveVirtualStorageManager();
-        
+
         /// <summary>
         /// The current system configuration
         /// </summary>
@@ -101,8 +101,9 @@ namespace JCS.Argon.Services.Core
         {
             if (_dbContext == null)
             {
-                _dbContext= _serviceProvider.GetRequiredService<SqlDbContext>();
+                _dbContext = _serviceProvider.GetRequiredService<SqlDbContext>();
             }
+
             return _dbContext;
         }
 
@@ -114,8 +115,9 @@ namespace JCS.Argon.Services.Core
         {
             if (_constraintGroupManager == null)
             {
-                _constraintGroupManager= _serviceProvider.GetRequiredService<IConstraintGroupManager>();
+                _constraintGroupManager = _serviceProvider.GetRequiredService<IConstraintGroupManager>();
             }
+
             return _constraintGroupManager;
         }
 
@@ -127,8 +129,9 @@ namespace JCS.Argon.Services.Core
         {
             if (_itemManager == null)
             {
-                _itemManager= _serviceProvider.GetRequiredService<IItemManager>();
+                _itemManager = _serviceProvider.GetRequiredService<IItemManager>();
             }
+
             return _itemManager;
         }
 
@@ -140,8 +143,9 @@ namespace JCS.Argon.Services.Core
         {
             if (_propertyGroupManager == null)
             {
-                _propertyGroupManager= _serviceProvider.GetRequiredService<IPropertyGroupManager>();
+                _propertyGroupManager = _serviceProvider.GetRequiredService<IPropertyGroupManager>();
             }
+
             return _propertyGroupManager;
         }
 
@@ -153,8 +157,9 @@ namespace JCS.Argon.Services.Core
         {
             if (_virtualStorageManager == null)
             {
-               _virtualStorageManager=  _serviceProvider.GetRequiredService<IVirtualStorageManager>();
+                _virtualStorageManager = _serviceProvider.GetRequiredService<IVirtualStorageManager>();
             }
+
             return _virtualStorageManager;
         }
     }

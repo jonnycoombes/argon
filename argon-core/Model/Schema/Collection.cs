@@ -11,7 +11,9 @@ namespace JCS.Argon.Model.Schema
     [Table("collection", Schema = "argon")]
     public class Collection
     {
-        public Collection(){}
+        public Collection()
+        {
+        }
 
         /// <summary>
         /// The primary concurrency token for this entity

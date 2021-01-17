@@ -59,7 +59,8 @@ namespace JCS.Argon.Services.VSP
         /// <param name="itemVersion">The version model element</param>
         /// <param name="source">A filestream containing the source for the version</param>
         /// <returns></returns>
-        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion, IFormFile source);
+        public Task<StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection, Item item, ItemVersion itemVersion,
+            IFormFile source);
 
         /// <summary>
         /// Reads a specific item version from a collection 
@@ -93,7 +94,6 @@ namespace JCS.Argon.Services.VSP
             /// </summary>
             public StorageOperationResult()
             {
-                
             }
 
             /// <summary>

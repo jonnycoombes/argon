@@ -8,10 +8,9 @@ namespace JCS.Argon.Utility
         {
             public NullAssertionException(string message) : base(message)
             {
-                
             }
         }
-        
+
         public static void AssertNotNull(this Object obj, object? target, string message)
         {
             if (target == null)

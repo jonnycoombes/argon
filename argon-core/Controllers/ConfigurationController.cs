@@ -19,13 +19,13 @@ namespace JCS.Argon.Controllers
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<ConfigurationController>();
-        
+
         /// <summary>
         /// The current <see cref="ICollectionManager"/>
         /// </summary>
         protected ICollectionManager _collectionManager;
 
-        public ConfigurationController(ICollectionManager collectionManager ) : base()
+        public ConfigurationController(ICollectionManager collectionManager) : base()
         {
             LogMethodCall(_log);
             _collectionManager = collectionManager;

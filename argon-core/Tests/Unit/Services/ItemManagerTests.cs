@@ -119,7 +119,7 @@ namespace JCS.Argon.Tests.Unit.Services
             var item = await _itemManager.AddItemToCollectionAsync(collection, properties, formFile);
             Assert.NotNull(item);
             var versionId = item.Versions.First().Id.Value;
-            var itemVersion=  await _itemManager.GetItemVersionAsync(collection, item, versionId);
+            var itemVersion = await _itemManager.GetItemVersionAsync(collection, item, versionId);
             Assert.NotNull(itemVersion);
             var stream = await _itemManager.GetStreamForVersionAsync(collection, item, itemVersion);
             Assert.NotNull(stream);

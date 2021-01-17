@@ -18,7 +18,6 @@ namespace JCS.Argon.Model.Schema
     {
         public Property()
         {
-            
         }
 
         /// <summary>

@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 namespace JCS.Argon.Model.Configuration
 {
-    public class VirtualStorageOptions 
+    public class VirtualStorageOptions
     {
         /// <summary>
         /// Section of the configuration file to which these options may be bound
         /// </summary>
         public const string ConfigurationSection = "vsp";
-            
-        public VirtualStorageOptions() 
+
+        public VirtualStorageOptions()
         {
         }
 
-        public List<VirtualStorageBinding> Bindings { get; set;}
+        public List<VirtualStorageBinding> Bindings { get; set; }
     }
 }

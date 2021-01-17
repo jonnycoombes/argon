@@ -14,20 +14,20 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.Core
 {
-    public class ConstraintGroupManager :  BaseCoreService, IConstraintGroupManager
+    public class ConstraintGroupManager : BaseCoreService, IConstraintGroupManager
     {
         /// <summary>
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext<ConstraintGroupManager>();
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceProvider"></param>
         public ConstraintGroupManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
-        :base(options, serviceProvider)
+            : base(options, serviceProvider)
         {
             LogMethodCall(_log);
         }
@@ -56,14 +56,14 @@ namespace JCS.Argon.Services.Core
             try
             {
                 var constraintGroup = new ConstraintGroup();
-                foreach(var cmd in cmds)
+                foreach (var cmd in cmds)
                 {
                     constraintGroup.Constraints = new List<Constraint>();
                     var constraint = await CreateConstraintAsync(cmd);
                     constraintGroup.Constraints.Add(constraint);
                 }
 
-                var addOp= await DbContext.AddAsync(constraintGroup);
+                var addOp = await DbContext.AddAsync(constraintGroup);
                 await DbContext.SaveChangesAsync();
                 return addOp.Entity;
             }

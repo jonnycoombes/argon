@@ -31,7 +31,7 @@ namespace JCS.Argon.Model.Commands
         /// <summary>
         /// The property that the constraint applies to
         /// </summary>
-        [Required] 
+        [Required]
         public string SourceProperty { get; set; } = null!;
 
         /// <summary>

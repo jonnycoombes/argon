@@ -26,7 +26,7 @@ namespace JCS.Argon.Model.Schema
         DateTime,
         Boolean
     }
-    
+
     /// <summary>
     /// Defines an individual constraint that can be imposed upon items within a collection.
     /// The interpretation of a given constraint may be dependent on the underlying VSP
@@ -53,7 +53,7 @@ namespace JCS.Argon.Model.Schema
         /// The required name for the constraint.  The name of a given constraint
         /// does not necessarily need to be unique
         /// </summary>
-        [Required] 
+        [Required]
         public string Name { get; set; } = null!;
 
         /// <summary>

@@ -172,7 +172,6 @@ namespace JCS.Argon.Services.Core
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
-
         }
 
         /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync"/>
@@ -213,7 +212,7 @@ namespace JCS.Argon.Services.Core
         private async Task<Stream> PerformProviderVersionRetrievalActions(Collection collection, Item item, ItemVersion itemVersion)
         {
             LogMethodCall(_log);
-            LogDebug(_log,$"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
+            LogDebug(_log, $"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
             var retrievalResult = await provider.ReadCollectionItemVersionAsync(collection, item, itemVersion);
             if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
@@ -254,7 +253,8 @@ namespace JCS.Argon.Services.Core
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
         /// <param name="minorVersion">Optional minor version (default to 0)</param>
         /// <returns></returns>
-        protected Task<JCS.Argon.Model.Schema.ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1, int minorVersion = 0)
+        protected Task<JCS.Argon.Model.Schema.ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1,
+            int minorVersion = 0)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Handling form file [{source.Name}, {source.Length}, {source.FileName}]");
