@@ -28,14 +28,14 @@ namespace JCS.Argon.Migrations
                     b.Property<DateTime?>("DateTimeValue")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IntValue")
+                    b.Property<int?>("IntValue")
                         .HasColumnType("int");
 
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("LongValue")
+                    b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Partition")
@@ -43,7 +43,6 @@ namespace JCS.Argon.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StringValue")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Timestamp")

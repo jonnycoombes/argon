@@ -331,9 +331,9 @@ namespace JCS.Argon.Services.VSP.Providers
             if (await Cache.HasEntry(CachePartition, key))
             {
                 var entry = await Cache.LookupEntry(CachePartition, key);
-                if (entry != null)
+                if (entry != null && entry.LongValue != null)
                 {
-                    return entry.LongValue;
+                    return entry.LongValue.Value;
                 }
                 else
                 {

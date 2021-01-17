@@ -81,6 +81,11 @@ namespace JCS.Argon.Tests.Unit
         protected IVirtualStorageManager _virtualStorageManager;
 
         /// <summary>
+        /// The <see cref="IDbCache"/> instance for testing
+        /// </summary>
+        protected IDbCache _dbCache;
+
+        /// <summary>
         /// Constructor which just sets up a bunch of things 
         /// </summary>
         protected AbstractTestBase()
@@ -139,6 +144,9 @@ namespace JCS.Argon.Tests.Unit
             
             // note that we have to substitute for the 'GetService' type as opposed to the 
             // generic variants, because they ain't a working with NSubstitute...
+            _dbCache = new DbCache(_options, _serviceProvider);
+            _serviceProvider.GetService(typeof(IDbCache))
+                .Returns(_dbCache);
             _collectionManager = new CollectionManager(_options, _serviceProvider);
             _serviceProvider.GetService(typeof(ICollectionManager))
                 .Returns(_collectionManager);

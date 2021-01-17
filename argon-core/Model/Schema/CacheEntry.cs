@@ -58,17 +58,17 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// Optional string value
         /// </summary>
-        public string StringValue { get; set; } = null!;
+        public string? StringValue { get; set; } = null!;
 
         /// <summary>
         /// Optional long value
         /// </summary>
-        public long LongValue { get; set; }
+        public long? LongValue { get; set; }
 
         /// <summary>
         /// Optional int value
         /// </summary>
-        public int IntValue { get; set; }
+        public int? IntValue { get; set; }
 
         /// <summary>
         /// Optional datetime value
