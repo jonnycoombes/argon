@@ -48,7 +48,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [InlineData("f7e87df8-18ba-436b-9891-ae13714cbac4")]
         [InlineData("1583490d-2531-48c9-b62b-691a56d67ea4")]
         [InlineData("36b0b63a-925d-4def-95ca-8dae0e98d042")]
-        public  void RetrieveBogusCollection(string collectionId)
+        public void RetrieveBogusCollection(string collectionId)
         {
             LogMethodCall(_log);
             Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
@@ -60,36 +60,43 @@ namespace JCS.Argon.Tests.Unit.Services
         [Theory(DisplayName = "Must be able to create new collections")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        [InlineData("Test Collection 1")]
-        [InlineData("Test Collection 2")]
-        [InlineData("Test Collection 3")]
-        [InlineData("Test Collection 4")]
-        [InlineData("Test Collection 5")]
-        public async void CreateCollection(string name)
+        [InlineData("Test Collection 1", "TestFS")]
+        [InlineData("Test Collection 2", "TestFS")]
+        [InlineData("Test Collection 3", "TestFS")]
+        [InlineData("Test Collection 4", "TestFS")]
+        [InlineData("Test Collection 5", "TestFS")]
+        [InlineData("Test Collection 1", "TestOTCSCollection")]
+        [InlineData("Test Collection 2", "TestOTCSCollection")]
+        [InlineData("Test Collection 3", "TestOTCSCollection")]
+        [InlineData("Test Collection 4", "TestOTCSCollection")]
+        [InlineData("Test Collection 5", "TestOTCSCollection")]
+        public async void CreateCollection(string name, string providerTag)
         {
             LogMethodCall(_log);
             var cmd = new CreateCollectionCommand()
             {
                 Name = name,
                 Description = "Test description",
-                ProviderTag = "TestFS"
+                ProviderTag = providerTag
             };
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
             Assert.Equal(0, collection.Length);
         }
 
-        [Fact(DisplayName = "Must not be able to create collections with a duplicate name")]
+        [Theory(DisplayName = "Must not be able to create collections with a duplicate name")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        public async void AttemptCreationWithDuplicateName()
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
+        public async void AttemptCreationWithDuplicateName(string providerTag)
         {
             var name = "Test Duplicate Collection";
             var cmd = new CreateCollectionCommand()
             {
                 Name = name,
                 Description = "Duplicate collection",
-                ProviderTag = "TestFS"
+                ProviderTag = providerTag
             };
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
@@ -100,23 +107,25 @@ namespace JCS.Argon.Tests.Unit.Services
             });
         }
 
-        [Fact(DisplayName = "Must be able to count collections")]
+        [Theory(DisplayName = "Must be able to count collections")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        public async void CountCollections()
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
+        public async void CountCollections(string providerTag)
         {
             var cmds = new CreateCollectionCommand[]
             {
-                new CreateCollectionCommand("Collection 1", "TestFS", ""),
-                new CreateCollectionCommand("Collection 2", "TestFS", ""),
-                new CreateCollectionCommand("Collection 3", "TestFS", ""),
-                new CreateCollectionCommand("Collection 4", "TestFS", ""),
-                new CreateCollectionCommand("Collection 5", "TestFS", ""),
-                new CreateCollectionCommand("Collection 6", "TestFS", ""),
-                new CreateCollectionCommand("Collection 7", "TestFS", ""),
-                new CreateCollectionCommand("Collection 8", "TestFS", ""),
-                new CreateCollectionCommand("Collection 9", "TestFS", ""),
-                new CreateCollectionCommand("Collection 10", "TestFS", ""),
+                new CreateCollectionCommand("Collection 1", providerTag, ""),
+                new CreateCollectionCommand("Collection 2", providerTag, ""),
+                new CreateCollectionCommand("Collection 3", providerTag, ""),
+                new CreateCollectionCommand("Collection 4", providerTag, ""),
+                new CreateCollectionCommand("Collection 5", providerTag, ""),
+                new CreateCollectionCommand("Collection 6", providerTag, ""),
+                new CreateCollectionCommand("Collection 7", providerTag, ""),
+                new CreateCollectionCommand("Collection 8", providerTag, ""),
+                new CreateCollectionCommand("Collection 9", providerTag, ""),
+                new CreateCollectionCommand("Collection 10", providerTag, ""),
             };
             foreach (var cmd in cmds)
             {
@@ -127,18 +136,20 @@ namespace JCS.Argon.Tests.Unit.Services
             Assert.Equal(10, collectionCount);
         }
 
-        [Fact(DisplayName = "Must be able to list collections")]
+        [Theory(DisplayName = "Must be able to list collections")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        public async void ListCollections()
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
+        public async void ListCollections(string providerTag)
         {
             var cmds = new CreateCollectionCommand[]
             {
-                new CreateCollectionCommand("Collection 1", "TestFS", ""),
-                new CreateCollectionCommand("Collection 2", "TestFS", ""),
-                new CreateCollectionCommand("Collection 3", "TestFS", ""),
-                new CreateCollectionCommand("Collection 4", "TestFS", ""),
-                new CreateCollectionCommand("Collection 5", "TestFS", "")
+                new CreateCollectionCommand("Collection 1", providerTag, ""),
+                new CreateCollectionCommand("Collection 2", providerTag, ""),
+                new CreateCollectionCommand("Collection 3", providerTag, ""),
+                new CreateCollectionCommand("Collection 4", providerTag, ""),
+                new CreateCollectionCommand("Collection 5", providerTag, "")
             };
             foreach (var cmd in cmds)
             {
@@ -156,12 +167,14 @@ namespace JCS.Argon.Tests.Unit.Services
             );
         }
 
-        [Fact(DisplayName = "Must be able to retrieve a single collection by id")]
+        [Theory(DisplayName = "Must be able to retrieve a single collection by id")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "CollectionManager")]
-        public async void RetrieveCollection()
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
+        public async void RetrieveCollection(string providerTag)
         {
-            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.NotNull(collection);
             var id = collection.Id.Value;

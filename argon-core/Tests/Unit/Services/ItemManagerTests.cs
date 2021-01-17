@@ -24,13 +24,15 @@ namespace JCS.Argon.Tests.Unit.Services
         /// </summary>
         private static ILogger _log = Log.ForContext<CollectionManagerTests>();
 
-        [Fact(DisplayName = "Must be able to count the items in a collection")]
+        [Theory(DisplayName = "Must be able to count the items in a collection")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "ItemManager")]
-        public async void CountCollectionItems()
+        [InlineData("TestFS")]
+        [InlineData("TestOTCSCollection")]
+        public async void CountCollectionItems(string providerTag)
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             var count = await _itemManager.CountItemsAsync(collection);
             Assert.Equal(0, count);
@@ -40,20 +42,30 @@ namespace JCS.Argon.Tests.Unit.Services
         [Trait("Test Type", "Unit")]
         [Trait("Target Service", "ItemManager")]
         [Trait("Category", "ItemManager")]
-        [InlineData(1024)]
-        [InlineData(12024)]
-        [InlineData(4096)]
-        [InlineData(8192)]
-        [InlineData(10)]
-        [InlineData(65536)]
-        [InlineData(100000)]
-        [InlineData(150000)]
-        [InlineData(644440)]
-        [InlineData(33333333)]
-        public async void CreateCollectionItems(int sizeInBytes)
+        [InlineData(1024,"TestFS")]
+        [InlineData(12024,"TestFS")]
+        [InlineData(4096,"TestFS")]
+        [InlineData(8192,"TestFS")]
+        [InlineData(10,"TestFS")]
+        [InlineData(65536,"TestFS")]
+        [InlineData(100000,"TestFS")]
+        [InlineData(150000,"TestFS")]
+        [InlineData(644440,"TestFS")]
+        [InlineData(33333333,"TestFS")]
+        [InlineData(1024,"TestOTCSCollection")]
+        [InlineData(12024,"TestOTCSCollection")]
+        [InlineData(4096,"TestOTCSCollection")]
+        [InlineData(8192,"TestOTCSCollection")]
+        [InlineData(10,"TestOTCSCollection")]
+        [InlineData(65536,"TestOTCSCollection")]
+        [InlineData(100000,"TestOTCSCollection")]
+        [InlineData(150000,"TestOTCSCollection")]
+        [InlineData(644440,"TestOTCSCollection")]
+        [InlineData(33333333,"TestOTCSCollection")]
+        public async void CreateCollectionItems(int sizeInBytes, string providerTag)
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand("Test Collection", "TestFS", null);
+            var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);
             var randomContents = PassphraseHelpers.GenerateRandomPassphrase(builder =>
             {
                 builder.SetRequiredLength(sizeInBytes);
