@@ -30,31 +30,31 @@ namespace JCS.Argon.Model.Responses
         /// The current hostname
         /// </summary>
         [Required]
-        public string HostName { get; init; }
+        public string HostName { get; set; }
 
         /// <summary>
         /// The current root endpoint for the API
         /// </summary>
         [Required]
-        public string Endpoint { get; init; }
+        public string Endpoint { get; set; }
 
         /// <summary>
         /// The internal version of the API
         /// </summary>
         [Required]
-        public string Version { get; init; }
+        public string Version { get; set; }
 
         /// <summary>
         /// The internal schema version of the API
         /// </summary>
         [Required]
-        public string SchemaVersion { get; init; }
+        public string SchemaVersion { get; set; }
 
         /// <summary>
         /// A list of the currently configured VSP bindings 
         /// </summary>
         [Required]
-        public List<VirtualStorageBinding> Bindings { get; init; }
+        public List<VirtualStorageBinding> Bindings { get; set; }
 
         /// <summary>
         /// The current metrics for the instance
