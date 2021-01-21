@@ -202,8 +202,8 @@ namespace JCS.Argon.Utility
         {
             LogMethodCall(_log);
             var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
-            return new Pair<string, Stream>(response.Content.Headers.ContentType.ToString(),
-                response.Content.ReadAsStream());
+            var stream = await response.Content.ReadAsStreamAsync();
+            return new Pair<string, Stream>(response.Content.Headers.ContentType.ToString(), stream);
         }
 
         /// <summary>
