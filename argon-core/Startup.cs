@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using JCS.Argon.Extensions;
 using JCS.Argon.Contexts;
 using JCS.Argon.Services.Core;
@@ -74,7 +75,7 @@ namespace JCS.Argon
                         context.Response.Headers.Clear();
                         context.Response.StatusCode = ((int) payload.HttpResponseCode)!;
                         context.Response.ContentType = "application/json; utf-8";
-                        await context.Response.WriteAsJsonAsync(payload);
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
                         await context.Response.CompleteAsync();
                     }
                     else
