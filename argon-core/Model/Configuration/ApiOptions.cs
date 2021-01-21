@@ -4,6 +4,6 @@ namespace JCS.Argon.Model.Configuration
     {
         public const string ConfigurationSection = "argon";
 
-        public VirtualStorageOptions VirtualStorageOptions { get; init; } = null!;
+        public VirtualStorageOptions VirtualStorageOptions { get;  } = null!;
     }
 }
