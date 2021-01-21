@@ -295,7 +295,7 @@ namespace JCS.Argon.Services.VSP.Providers
                         ("OTCSTicket", AuthenticationToken)
                     },
                     null);
-                return response.Content.ReadAsStream();
+                return await response.Content.ReadAsStreamAsync();
             }
             catch (Exception ex)
             {
