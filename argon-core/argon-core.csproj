@@ -11,8 +11,8 @@
     <AssemblyName>Argon-Core</AssemblyName>
     <Company>JCS Software Ltd</Company>
     <Product>Argon Core</Product>
-    <AssemblyVersion>1.0.0.3-net3.1</AssemblyVersion>
-    <FileVersion>1.0.0.3-net3.1</FileVersion>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>1.0.0.3</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>9</LangVersion>
