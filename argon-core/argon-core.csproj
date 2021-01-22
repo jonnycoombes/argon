@@ -15,7 +15,7 @@
     <FileVersion>1.0.0.3</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
     <PackageVersion>1.0.0.3</PackageVersion>
   </PropertyGroup>
 
