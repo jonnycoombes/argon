@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/bin/zsh
 echo 'Argon Test Helper'
 echo 'Creating required docker test support images (MSSQL)'
 
