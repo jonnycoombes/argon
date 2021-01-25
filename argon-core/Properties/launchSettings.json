@@ -25,7 +25,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://*:8443;http://*:8080",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "WinDevelopment"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "argon_core_osx": {

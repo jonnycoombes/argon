@@ -43,7 +43,7 @@ namespace JCS.Argon.Extensions
             LogMethodCall(_log);
             try
             {
-                if (hostEnvironment.IsDevelopment() || hostEnvironment.IsEnvironment("WinDevelopment"))
+                if (hostEnvironment.IsDevelopment())
                 {
                     LogInformation(_log, "In development so using default connection string");
                     services.AddDbContext<SqlDbContext>(options =>

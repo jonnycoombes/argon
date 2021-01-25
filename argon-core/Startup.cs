@@ -93,14 +93,9 @@ namespace JCS.Argon
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             LogMethodCall(_log);
-            if (env.IsDevelopment() || Environment.IsEnvironment("WinDevelopment"))
+            if (env.IsDevelopment())
             {
                 LogInformation(_log, "Starting within a development environment");
-                if (Environment.IsEnvironment("WinDevelopment")) LogDebug(_log, "Currently running on a Windows development platform");
-                //app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
-                LogInformation(_log, "Enabling request logging...for development purposes");
             }
             else
             {
@@ -108,6 +103,8 @@ namespace JCS.Argon
             }
 
             ConfigureGlobalExceptionHandling(app);
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
             app.UseSerilogRequestLogging();
             app.UseResponseCompression();
             app.UseArgonTelemetry();
