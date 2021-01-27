@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using JCS.Argon.Extensions;
 using JCS.Argon.Contexts;
+using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,12 +55,20 @@ namespace JCS.Argon
             LogInformation(_log, "Service configuration and registration completed");
         }
 
+        /// <summary>
+        /// This is a NO-OP at the moment
+        /// </summary>
+        /// <param name="app">The current <see cref="IApplicationBuilder"/></param>
         protected void EnsureDatabaseIsCreated(IApplicationBuilder app)
         {
             LogMethodCall(_log);
             Log.Information("Checking and ensuring the that target database exists");
         }
 
+        /// <summary>
+        /// Configure a centralised last-resort exception handler
+        /// </summary>
+        /// <param name="app">The current <see cref="IApplicationBuilder"/></param>
         protected void ConfigureGlobalExceptionHandling(IApplicationBuilder app)
         {
             LogMethodCall(_log);
@@ -104,7 +113,17 @@ namespace JCS.Argon
 
             ConfigureGlobalExceptionHandling(app);
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("./swagger/v1/swagger.json", "Argon v1"));
+            var apiOptions = new ApiOptions();
+            Configuration.GetSection(ApiOptions.ConfigurationSection).Bind(apiOptions);
+            if (apiOptions.ExternallyHosted)
+            {
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("./swagger/v1/swagger.json", "Argon v1"));
+            }
+            else
+            {
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
+            }
+
             app.UseSerilogRequestLogging();
             app.UseResponseCompression();
             app.UseArgonTelemetry();
