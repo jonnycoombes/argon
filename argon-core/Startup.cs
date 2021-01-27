@@ -104,7 +104,7 @@ namespace JCS.Argon
 
             ConfigureGlobalExceptionHandling(app);
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("./swagger/v1/swagger.json", "Argon v1"));
             app.UseSerilogRequestLogging();
             app.UseResponseCompression();
             app.UseArgonTelemetry();
