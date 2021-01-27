@@ -15,30 +15,9 @@ namespace JCS.Argon.Services.VSP.Providers
     public class OpenTextRestClient : BaseRestClient
     {
         /// <summary>
-        /// Static logger
-        /// </summary>
-        private static ILogger _log = Log.ForContext<OpenTextRestClient>();
-
-        /// <summary>
         /// The expected OT authentication header field
         /// </summary>
         private const string OtcsticketHeader = "OTCSTicket";
-
-        /// <summary>
-        /// Thrown if operations within the client fail
-        /// </summary>
-        public sealed class OpenTextRestClientException : ResponseAwareException
-        {
-            public OpenTextRestClientException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(OpenTextRestClient);
-            }
-
-            public OpenTextRestClientException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(OpenTextRestClient);
-            }
-        }
 
         /// <summary>
         /// This never changes between CS instances
@@ -59,6 +38,41 @@ namespace JCS.Argon.Services.VSP.Providers
         /// The v1 nodes api suffix
         /// </summary>
         public const string NodesV1Suffix = "v1/nodes";
+
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<OpenTextRestClient>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cache"></param>
+        public OpenTextRestClient(IDbCache? cache) : base()
+        {
+            LogMethodCall(_log);
+            Cache = cache;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="cache"></param>
+        /// <param name="cachePartition"></param>
+        /// <param name="endpointAddress"></param>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        public OpenTextRestClient(ILogger log, IDbCache cache, string cachePartition,
+            string endpointAddress, string userName, string password) : base()
+        {
+            LogMethodCall(_log);
+            CachePartition = cachePartition;
+            Cache = cache;
+            EndpointAddress = endpointAddress.EndsWith('/') ? endpointAddress : $"{endpointAddress}/";
+            UserName = userName;
+            Password = password;
+        }
 
         /// <summary>
         /// An optional instance of <see cref="IDbCache" /> which may be used for stashing
@@ -95,36 +109,6 @@ namespace JCS.Argon.Services.VSP.Providers
         /// </summary>
         /// <value></value>
         public string CachePartition { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cache"></param>
-        public OpenTextRestClient(IDbCache? cache) : base()
-        {
-            LogMethodCall(_log);
-            Cache = cache;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="log"></param>
-        /// <param name="cache"></param>
-        /// <param name="cachePartition"></param>
-        /// <param name="endpointAddress"></param>
-        /// <param name="userName"></param>
-        /// <param name="password"></param>
-        public OpenTextRestClient(ILogger log, IDbCache cache, string cachePartition,
-            string endpointAddress, string userName, string password) : base()
-        {
-            LogMethodCall(_log);
-            CachePartition = cachePartition;
-            Cache = cache;
-            EndpointAddress = endpointAddress.EndsWith('/') ? endpointAddress : $"{endpointAddress}/";
-            UserName = userName;
-            Password = password;
-        }
 
         /// <summary>
         /// Just check the current configuration
@@ -421,6 +405,22 @@ namespace JCS.Argon.Services.VSP.Providers
             else
             {
                 return cacheId;
+            }
+        }
+
+        /// <summary>
+        /// Thrown if operations within the client fail
+        /// </summary>
+        public sealed class OpenTextRestClientException : ResponseAwareException
+        {
+            public OpenTextRestClientException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(OpenTextRestClient);
+            }
+
+            public OpenTextRestClientException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(OpenTextRestClient);
             }
         }
     }

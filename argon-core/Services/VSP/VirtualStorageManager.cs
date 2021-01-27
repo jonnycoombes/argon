@@ -24,6 +24,11 @@ namespace JCS.Argon.Services.VSP
         private static ILogger _log = Log.ForContext<VirtualStorageManager>();
 
         /// <summary>
+        /// An injected, pre-configured instance of <see cref="HttpClient"/>
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
         /// Internal cache of the types associated with different <see cref="IVirtualStorageProvider"/> implementations
         /// </summary>
         private readonly Dictionary<string, Type> _providerTypesMap = new Dictionary<string, Type>();
@@ -32,11 +37,6 @@ namespace JCS.Argon.Services.VSP
         /// The current IoC <see cref="IServiceProvider"/>
         /// </summary>
         private readonly IServiceProvider _serviceProvider;
-
-        /// <summary>
-        /// An injected, pre-configured instance of <see cref="HttpClient"/>
-        /// </summary>
-        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// The overall application configuration, used to extract VSP bindings

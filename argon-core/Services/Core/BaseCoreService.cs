@@ -11,24 +11,14 @@ namespace JCS.Argon.Services.Core
     public abstract class BaseCoreService
     {
         /// <summary>
-        /// An underlying DB context
-        /// </summary>
-        private SqlDbContext _dbContext;
-
-        /// <summary>
-        /// Access through resolution
-        /// </summary>
-        protected SqlDbContext DbContext => ResolveDbContext();
-
-        /// <summary>
         /// The current scoped <see cref="IConstraintGroupManager"/> instance
         /// </summary>
         private IConstraintGroupManager _constraintGroupManager;
 
         /// <summary>
-        /// Access through resolution
+        /// An underlying DB context
         /// </summary>
-        protected IConstraintGroupManager ConstraintGroupManager => ResolveConstraintGroupManager();
+        private SqlDbContext _dbContext;
 
         /// <summary>
         /// The currently scoped <see cref="IItemManager"/> instance
@@ -36,9 +26,9 @@ namespace JCS.Argon.Services.Core
         private IItemManager _itemManager;
 
         /// <summary>
-        /// Access through resolution
+        /// The current system configuration
         /// </summary>
-        protected IItemManager ItemManager => ResolveItemManager();
+        private IOptionsMonitor<ApiOptions> _options;
 
         /// <summary>
         /// The currently scoped <see cref="IPropertyGroupManager"/> instance
@@ -46,40 +36,14 @@ namespace JCS.Argon.Services.Core
         private IPropertyGroupManager _propertyGroupManager;
 
         /// <summary>
-        /// Access through resolution
-        /// </summary>
-        protected IPropertyGroupManager PropertyGroupManager => ResolvePropertyGroupManager();
-
-        /// <summary>
-        /// The currently configured <see cref="IVirtualStorageManager"/> instance
-        /// </summary>
-        private IVirtualStorageManager _virtualStorageManager;
-
-        /// <summary>
-        /// Access through resolution
-        /// </summary>
-        protected IVirtualStorageManager VirtualStorageManager => ResolveVirtualStorageManager();
-
-        /// <summary>
-        /// The current system configuration
-        /// </summary>
-        private IOptionsMonitor<ApiOptions> _options;
-
-        /// <summary>
-        /// Access without the <see cref="IOptionsMonitor{TOptions}"/> wrapping
-        /// </summary>
-        protected ApiOptions Options => _options.CurrentValue;
-
-        /// <summary>
         /// The DI-injected service provider
         /// </summary>
         private IServiceProvider _serviceProvider;
 
         /// <summary>
-        /// Access through resolution - a different <see cref="IServiceProvider"/> could be
-        /// supplanted if required
+        /// The currently configured <see cref="IVirtualStorageManager"/> instance
         /// </summary>
-        protected IServiceProvider ServiceProvider => _serviceProvider;
+        private IVirtualStorageManager _virtualStorageManager;
 
         /// <summary>
         /// Default constructor - just takes current system configuration along with
@@ -92,6 +56,42 @@ namespace JCS.Argon.Services.Core
             _serviceProvider = serviceProvider;
             _options = options;
         }
+
+        /// <summary>
+        /// Access through resolution
+        /// </summary>
+        protected SqlDbContext DbContext => ResolveDbContext();
+
+        /// <summary>
+        /// Access through resolution
+        /// </summary>
+        protected IConstraintGroupManager ConstraintGroupManager => ResolveConstraintGroupManager();
+
+        /// <summary>
+        /// Access through resolution
+        /// </summary>
+        protected IItemManager ItemManager => ResolveItemManager();
+
+        /// <summary>
+        /// Access through resolution
+        /// </summary>
+        protected IPropertyGroupManager PropertyGroupManager => ResolvePropertyGroupManager();
+
+        /// <summary>
+        /// Access through resolution
+        /// </summary>
+        protected IVirtualStorageManager VirtualStorageManager => ResolveVirtualStorageManager();
+
+        /// <summary>
+        /// Access without the <see cref="IOptionsMonitor{TOptions}"/> wrapping
+        /// </summary>
+        protected ApiOptions Options => _options.CurrentValue;
+
+        /// <summary>
+        /// Access through resolution - a different <see cref="IServiceProvider"/> could be
+        /// supplanted if required
+        /// </summary>
+        protected IServiceProvider ServiceProvider => _serviceProvider;
 
         /// <summary>
         /// Accessor for the current <see cref="SqlDbContext"/> instance

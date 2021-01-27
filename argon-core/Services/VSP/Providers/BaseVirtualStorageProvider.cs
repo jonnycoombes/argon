@@ -16,11 +16,6 @@ namespace JCS.Argon.Services.VSP.Providers
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
         /// <summary>
-        /// Static logger
-        /// </summary>
-        private static ILogger _log = Log.ForContext<BaseVirtualStorageProvider>();
-
-        /// <summary>
         /// An enumeration of "stock" provider properties - returned in the property bag for certain operations
         /// </summary>
         public enum ProviderProperties
@@ -33,19 +28,24 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext<BaseVirtualStorageProvider>();
+
+        /// <summary>
         /// Copy of the current binding
         /// </summary>
         protected VirtualStorageBinding _binding = null!;
 
         /// <summary>
-        /// An instance of <see cref="HttpClient"/>
-        /// </summary>
-        protected HttpClient _httpClient = null!;
-
-        /// <summary>
         /// An instance of <see cref="IDbCache"/>
         /// </summary>
         protected IDbCache _dbCache = null!;
+
+        /// <summary>
+        /// An instance of <see cref="HttpClient"/>
+        /// </summary>
+        protected HttpClient _httpClient = null!;
 
         /// <summary>
         /// Default constructor required for dynamic instantiation

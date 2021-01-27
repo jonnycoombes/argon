@@ -19,11 +19,6 @@ namespace JCS.Argon.Services.VSP.Providers
         private static ILogger _log = Log.ForContext<OpenTextRestStorageProvider>();
 
         /// <summary>
-        /// The constant provider type tag
-        /// </summary>
-        public override string ProviderType => "openTextRestful";
-
-        /// <summary>
         /// An internal instance of <see cref="OpenTextRestClient"/>
         /// </summary>
         private OpenTextRestClient _client = null!;
@@ -41,6 +36,11 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
         }
+
+        /// <summary>
+        /// The constant provider type tag
+        /// </summary>
+        public override string ProviderType => "openTextRestful";
 
         /// <summary>
         /// Called after an instance of this provider has been bound, so in here we create a new instance

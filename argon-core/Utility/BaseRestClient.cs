@@ -23,24 +23,6 @@ namespace JCS.Argon.Utility
         /// </summary>
         private static ILogger _log = Log.ForContext<BaseRestClient>();
 
-        public sealed class BaseRestClientException : ResponseAwareException
-        {
-            public BaseRestClientException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(BaseRestClient);
-            }
-
-            public BaseRestClientException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
-            {
-                Source = nameof(BaseRestClient);
-            }
-        }
-
-        /// <summary>
-        /// The wrapped <see cref="HttpClient"/>
-        /// </summary>
-        public HttpClient HttpClient { get; set; } = null!;
-
 
         /// <summary>
         /// Default constructor
@@ -48,6 +30,11 @@ namespace JCS.Argon.Utility
         public BaseRestClient()
         {
         }
+
+        /// <summary>
+        /// The wrapped <see cref="HttpClient"/>
+        /// </summary>
+        public HttpClient HttpClient { get; set; } = null!;
 
         /// <summary>
         /// Creates a multi-part form body, with a guid-based boundary
@@ -238,6 +225,19 @@ namespace JCS.Argon.Utility
                     }
                 }
             };
+        }
+
+        public sealed class BaseRestClientException : ResponseAwareException
+        {
+            public BaseRestClientException(int? statusHint, string? message) : base(statusHint, message)
+            {
+                Source = nameof(BaseRestClient);
+            }
+
+            public BaseRestClientException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
+            {
+                Source = nameof(BaseRestClient);
+            }
         }
     }
 }
