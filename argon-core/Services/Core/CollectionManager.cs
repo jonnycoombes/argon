@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Utility;
@@ -58,6 +59,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             return await DbContext.Collections
+                .OrderBy(c => c.Name)
                 .Include(c => c.ConstraintGroup)
                 .Include(c => c.ConstraintGroup!.Constraints)
                 .Include(c => c.PropertyGroup)
