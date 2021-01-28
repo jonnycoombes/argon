@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -7,6 +8,7 @@ using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -115,10 +117,24 @@ namespace JCS.Argon.Tests.Unit
         private void CreateContextOptions()
         {
             LogMethodCall(_log);
+#if __SQLSERVER_TESTS__
             _contextOptions = new DbContextOptionsBuilder<SqlDbContext>()
-                .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"),
-                    sqlServerOptionsAction: sqlOptions => { })
-                .EnableDetailedErrors().Options;
+                            .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"),
+                                sqlServerOptionsAction: sqlOptions => { })
+                            .EnableDetailedErrors().Options;
+#else
+            _contextOptions = new DbContextOptionsBuilder<SqlDbContext>()
+                .UseSqlite(CreateInMemoryDatabase())
+                .EnableSensitiveDataLogging()
+                .Options;
+#endif
+        }
+
+        protected static DbConnection CreateInMemoryDatabase()
+        {
+            var connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+            return connection;
         }
 
         protected void MigrateDatabase()
