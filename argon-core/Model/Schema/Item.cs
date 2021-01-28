@@ -27,6 +27,7 @@ namespace JCS.Argon.Model.Schema
         /// The name of the item
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Name { get; set; } = null!;
 
         /// <summary>

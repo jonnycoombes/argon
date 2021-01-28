@@ -36,6 +36,7 @@ namespace JCS.Argon.Model.Schema
         /// The name of the version
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Name { get; set; } = null!;
 
         /// <summary>
@@ -46,11 +47,13 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The MIME type for the version
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string? MIMEType { get; set; }
 
         /// <summary>
         /// The unique thumbrpint for this version
         /// </summary>
+        [Column(TypeName = "varbinary(1024)")]
         public byte[]? Thumbprint { get; set; }
 
         /// <summary>

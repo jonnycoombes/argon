@@ -38,6 +38,7 @@ namespace JCS.Argon.Model.Schema
         /// The name of the property
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Name { get; set; } = null!;
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// Optional string value for the property
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string? StringValue { get; set; }
 
         /// <summary>

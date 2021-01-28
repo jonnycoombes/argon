@@ -54,6 +54,7 @@ namespace JCS.Argon.Model.Schema
         /// does not necessarily need to be unique
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Name { get; set; } = null!;
 
         /// <summary>
@@ -66,11 +67,13 @@ namespace JCS.Argon.Model.Schema
         /// The source property for the constraint
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string SourceProperty { get; set; } = null!;
 
         /// <summary>
         /// The target property for the constaint.  Only applicable if the constaint is of "mapping" type
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string? TargetProperty { get; set; }
 
         /// <summary>
@@ -81,6 +84,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// An optional list of allowable values for the property guarded by the constraint
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string[]? AllowableValues { get; set; }
     }
 }

@@ -33,11 +33,13 @@ namespace JCS.Argon.Model.Schema
         /// The name of the collection
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// The description for the collection (optional)
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string? Description { get; set; }
 
         /// <summary>
@@ -53,6 +55,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// The tag associated with the VSP provider for this collection
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string ProviderTag { get; set; }
 
         /// <summary>

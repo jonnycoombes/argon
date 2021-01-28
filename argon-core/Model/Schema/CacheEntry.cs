@@ -41,12 +41,14 @@ namespace JCS.Argon.Model.Schema
         /// A partition identiier, allows for the grouping and subsetting of cache entries
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Partition { get; set; } = null!;
 
         /// <summary>
         /// The name of the property
         /// </summary>
         [Required]
+        [Column(TypeName = "varchar(512)")]
         public string Key { get; set; } = null!;
 
         /// <summary>
@@ -58,6 +60,7 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// Optional string value
         /// </summary>
+        [Column(TypeName = "varchar(512)")]
         public string? StringValue { get; set; } = null!;
 
         /// <summary>
