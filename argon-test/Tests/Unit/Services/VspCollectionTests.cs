@@ -93,7 +93,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         [InlineData("TestOTCSCollection")]
         public async void AttemptCreationWithDuplicateName(string providerTag)
         {
-            var name = "Test Duplicate Collection";
+            const string name = "Test Duplicate Collection";
             var cmd = new CreateCollectionCommand
             {
                 Name = name,
@@ -105,7 +105,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             Assert.Equal(0, collection.Length);
             await Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
             {
-                var duplicate = await _collectionManager.CreateCollectionAsync(cmd);
+                await _collectionManager.CreateCollectionAsync(cmd);
             });
         }
 
@@ -128,10 +128,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 new CreateCollectionCommand("Collection 9", providerTag, ""),
                 new CreateCollectionCommand("Collection 10", providerTag, "")
             };
-            foreach (var cmd in cmds)
-            {
-                var collection = await _collectionManager.CreateCollectionAsync(cmd);
-            }
+            foreach (var cmd in cmds) await _collectionManager.CreateCollectionAsync(cmd);
 
             var collectionCount = await _collectionManager.CountCollectionsAsync();
             Assert.Equal(10, collectionCount);
@@ -151,10 +148,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 new CreateCollectionCommand("Collection 4", providerTag, ""),
                 new CreateCollectionCommand("Collection 5", providerTag, "")
             };
-            foreach (var cmd in cmds)
-            {
-                var collection = await _collectionManager.CreateCollectionAsync(cmd);
-            }
+            foreach (var cmd in cmds) await _collectionManager.CreateCollectionAsync(cmd);
 
             var collections = await _collectionManager.ListCollectionsAsync();
             Assert.Equal(5, collections.Count);
