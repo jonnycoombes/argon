@@ -33,6 +33,7 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
         }
 
+        /// <inheritdoc cref="IDbCache.AddOrReplaceStringValueAsync" />
         public async Task<CacheEntry> AddOrReplaceStringValueAsync(string partition, string key, string value)
         {
             LogMethodCall(_log);
@@ -47,6 +48,7 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
+        /// <inheritdoc cref="IDbCache.AddOrReplaceLongValueAsync" />
         public async Task<CacheEntry> AddOrReplaceLongValueAsync(string partition, string key, long value)
         {
             LogMethodCall(_log);
@@ -61,6 +63,7 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
+        /// <inheritdoc cref="IDbCache.AddOrReplaceIntValueAsync" />
         public async Task<CacheEntry> AddOrReplaceIntValueAsync(string partition, string key, int value)
         {
             LogMethodCall(_log);
@@ -75,6 +78,7 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
+        /// <inheritdoc cref="IDbCache.AddOrReplaceJsonValueAsync" />
         public async Task<CacheEntry> AddOrReplaceJsonValueAsync(string key, JsonDocument value, string partition)
         {
             LogMethodCall(_log);
@@ -89,6 +93,7 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
+        /// <inheritdoc cref="IDbCache.AddOrReplaceDatetimeValueAsync" />
         public async Task<CacheEntry> AddOrReplaceDatetimeValueAsync(string partition, string key, DateTime value)
         {
             LogMethodCall(_log);
@@ -103,6 +108,7 @@ namespace JCS.Argon.Services.Core
             return addOp.Entity;
         }
 
+        /// <inheritdoc cref="IDbCache.HasEntry" />
         public async Task<bool> HasEntry(string partition, string key)
         {
             LogMethodCall(_log);
@@ -110,12 +116,14 @@ namespace JCS.Argon.Services.Core
             return entry != null;
         }
 
+        /// <inheritdoc cref="IDbCache.LookupEntry" />
         public async Task<CacheEntry?> LookupEntry(string partition, string key)
         {
             LogMethodCall(_log);
             return await DbContext.CacheEntries.FirstOrDefaultAsync(e => e.Partition == partition && e.Key == key);
         }
 
+        /// <inheritdoc cref="IDbCache.DeleteEntry" />
         public async Task<bool> DeleteEntry(string partition, string key)
         {
             LogMethodCall(_log);
