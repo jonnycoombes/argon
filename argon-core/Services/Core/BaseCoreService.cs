@@ -1,56 +1,68 @@
+#region
+
 using System;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.VSP;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+#endregion
 
 namespace JCS.Argon.Services.Core
 {
+    /// <summary>
+    ///     Base class for services within Argon.  Uses the <see cref="IServiceProvider" /> resolution "anti-pattern" for the
+    ///     resolution of
+    ///     service properties further down the heirarchy.  This keeps hard dependencies to a minimum and also allows for
+    ///     remote/proxy injection
+    ///     of services at a later date if required.  Also, through the service properties exposed - it is possible to reflect
+    ///     on the potential
+    ///     set of dependencies within a derived class.
+    /// </summary>
     public abstract class BaseCoreService
     {
         /// <summary>
-        /// The current scoped <see cref="IConstraintGroupManager"/> instance
+        ///     The current system configuration
         /// </summary>
-        private IConstraintGroupManager _constraintGroupManager;
+        private readonly IOptionsMonitor<ApiOptions> _options;
 
         /// <summary>
-        /// An underlying DB context
+        ///     The DI-injected service provider
         /// </summary>
-        private SqlDbContext _dbContext;
+        private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
-        /// The currently scoped <see cref="IItemManager"/> instance
+        ///     The current scoped <see cref="IConstraintGroupManager" /> instance
         /// </summary>
-        private IItemManager _itemManager;
+        private IConstraintGroupManager? _constraintGroupManager;
 
         /// <summary>
-        /// The current system configuration
+        ///     An underlying DB context
         /// </summary>
-        private IOptionsMonitor<ApiOptions> _options;
+        private SqlDbContext? _dbContext;
 
         /// <summary>
-        /// The currently scoped <see cref="IPropertyGroupManager"/> instance
+        ///     The currently scoped <see cref="IItemManager" /> instance
         /// </summary>
-        private IPropertyGroupManager _propertyGroupManager;
+        private IItemManager? _itemManager;
 
         /// <summary>
-        /// The DI-injected service provider
+        ///     The currently scoped <see cref="IPropertyGroupManager" /> instance
         /// </summary>
-        private IServiceProvider _serviceProvider;
+        private IPropertyGroupManager? _propertyGroupManager;
 
         /// <summary>
-        /// The currently configured <see cref="IVirtualStorageManager"/> instance
+        ///     The currently configured <see cref="IVirtualStorageManager" /> instance
         /// </summary>
-        private IVirtualStorageManager _virtualStorageManager;
+        private IVirtualStorageManager? _virtualStorageManager;
 
         /// <summary>
-        /// Default constructor - just takes current system configuration along with
-        /// the DI <see cref="IServiceProvider"/>.  (Reduces the explicit injected constructor params in sub-classes)
+        ///     Default constructor - just takes current system configuration along with
+        ///     the DI <see cref="IServiceProvider" />.  (Reduces the explicit injected constructor params in sub-classes)
         /// </summary>
         /// <param name="options">The current system configuration</param>
-        /// <param name="serviceProvider">An active <see cref="IServiceProvider"/> instance</param>
+        /// <param name="serviceProvider">An active <see cref="IServiceProvider" /> instance</param>
         protected BaseCoreService(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -58,109 +70,84 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        /// Access through resolution
+        ///     Access through resolution
         /// </summary>
         protected SqlDbContext DbContext => ResolveDbContext();
 
         /// <summary>
-        /// Access through resolution
+        ///     Access through resolution
         /// </summary>
         protected IConstraintGroupManager ConstraintGroupManager => ResolveConstraintGroupManager();
 
         /// <summary>
-        /// Access through resolution
+        ///     Access through resolution
         /// </summary>
         protected IItemManager ItemManager => ResolveItemManager();
 
         /// <summary>
-        /// Access through resolution
+        ///     Access through resolution
         /// </summary>
         protected IPropertyGroupManager PropertyGroupManager => ResolvePropertyGroupManager();
 
         /// <summary>
-        /// Access through resolution
+        ///     Access through resolution
         /// </summary>
         protected IVirtualStorageManager VirtualStorageManager => ResolveVirtualStorageManager();
 
         /// <summary>
-        /// Access without the <see cref="IOptionsMonitor{TOptions}"/> wrapping
+        ///     Access without the <see cref="IOptionsMonitor{TOptions}" /> wrapping
         /// </summary>
         protected ApiOptions Options => _options.CurrentValue;
 
         /// <summary>
-        /// Access through resolution - a different <see cref="IServiceProvider"/> could be
-        /// supplanted if required
+        ///     Access through resolution - a different <see cref="IServiceProvider" /> could be
+        ///     supplanted if required
         /// </summary>
         protected IServiceProvider ServiceProvider => _serviceProvider;
 
         /// <summary>
-        /// Accessor for the current <see cref="SqlDbContext"/> instance
+        ///     Accessor for the current <see cref="SqlDbContext" /> instance
         /// </summary>
         /// <returns></returns>
         private SqlDbContext ResolveDbContext()
         {
-            if (_dbContext == null)
-            {
-                _dbContext = _serviceProvider.GetRequiredService<SqlDbContext>();
-            }
-
-            return _dbContext;
+            return _dbContext ??= _serviceProvider.GetRequiredService<SqlDbContext>();
         }
 
         /// <summary>
-        /// Accessor for the current <see cref="IConstraintGroupManager"/> instance 
+        ///     Accessor for the current <see cref="IConstraintGroupManager" /> instance
         /// </summary>
         /// <returns></returns>
         private IConstraintGroupManager ResolveConstraintGroupManager()
         {
-            if (_constraintGroupManager == null)
-            {
-                _constraintGroupManager = _serviceProvider.GetRequiredService<IConstraintGroupManager>();
-            }
-
-            return _constraintGroupManager;
+            return _constraintGroupManager ??= _serviceProvider.GetRequiredService<IConstraintGroupManager>();
         }
 
         /// <summary>
-        /// Accessor for the current <see cref="IItemManager"/> instance
+        ///     Accessor for the current <see cref="IItemManager" /> instance
         /// </summary>
         /// <returns></returns>
         private IItemManager ResolveItemManager()
         {
-            if (_itemManager == null)
-            {
-                _itemManager = _serviceProvider.GetRequiredService<IItemManager>();
-            }
-
-            return _itemManager;
+            return _itemManager ??= _serviceProvider.GetRequiredService<IItemManager>();
         }
 
         /// <summary>
-        /// Accessor for the current <see cref="IPropertyGroupManager"/> instance
+        ///     Accessor for the current <see cref="IPropertyGroupManager" /> instance
         /// </summary>
         /// <returns></returns>
         private IPropertyGroupManager ResolvePropertyGroupManager()
         {
-            if (_propertyGroupManager == null)
-            {
-                _propertyGroupManager = _serviceProvider.GetRequiredService<IPropertyGroupManager>();
-            }
-
-            return _propertyGroupManager;
+            return _propertyGroupManager ??= _serviceProvider.GetRequiredService<IPropertyGroupManager>();
         }
 
         /// <summary>
-        /// Accessor for the current <see cref="IVirtualStorageManager"/> instance
+        ///     Accessor for the current <see cref="IVirtualStorageManager" /> instance
         /// </summary>
         /// <returns></returns>
         private IVirtualStorageManager ResolveVirtualStorageManager()
         {
-            if (_virtualStorageManager == null)
-            {
-                _virtualStorageManager = _serviceProvider.GetRequiredService<IVirtualStorageManager>();
-            }
-
-            return _virtualStorageManager;
+            return _virtualStorageManager ??= _serviceProvider.GetRequiredService<IVirtualStorageManager>();
         }
     }
 }
