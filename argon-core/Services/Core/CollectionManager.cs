@@ -39,18 +39,21 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
         }
 
+        /// <inheritdoc cref="IDbCache.CountCollectionsAsync" />
         public async Task<int> CountCollectionsAsync()
         {
             LogMethodCall(_log);
             return await DbContext.Collections.CountAsync();
         }
 
+        /// <inheritdoc cref="IDbCache.CountTotalItemsAsync" />
         public async Task<int> CountTotalItemsAsync()
         {
             LogMethodCall(_log);
             return await DbContext.Items.CountAsync();
         }
 
+        /// <inheritdoc cref="IDbCache.CountTotalVersionsAsync" />
         public async Task<int> CountTotalVersionsAsync()
         {
             LogMethodCall(_log);
@@ -75,59 +78,56 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var exists = await CollectionExistsAsync(cmd.Name);
-            if (!exists)
+            if (exists)
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
+                    "A collection with that name already exists");
+            // create the necessary entities first
+            ConstraintGroup? constraintGroup;
+            if (cmd.Constraints != null)
+                constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
+            else
+                constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync();
+
+            var propertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
+            var addOp = await DbContext.Collections.AddAsync(new Collection
             {
-                // create the necessary entities first
-                ConstraintGroup? constraintGroup;
-                if (cmd.Constraints != null)
-                    constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
-                else
-                    constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync();
+                Name = cmd.Name,
+                Description = cmd.Description,
+                ProviderTag = cmd.ProviderTag,
+                ConstraintGroup = constraintGroup,
+                PropertyGroup = propertyGroup
+            });
 
-                var propertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
-                var addOp = await DbContext.Collections.AddAsync(new Collection
-                {
-                    Name = cmd.Name,
-                    Description = cmd.Description,
-                    ProviderTag = cmd.ProviderTag,
-                    ConstraintGroup = constraintGroup,
-                    PropertyGroup = propertyGroup
-                });
+            await DbContext.SaveChangesAsync();
+            var collection = addOp.Entity;
 
+            // grab the provider and then ask for the physical operations to be performed
+            try
+            {
+                collection = await PerformProviderCollectionCreationActions(cmd, collection);
+                DbContext.Update(collection);
                 await DbContext.SaveChangesAsync();
-                var collection = addOp.Entity;
-
-                // grab the provider and then ask for the physical operations to be performed
-                try
-                {
-                    collection = await PerformProviderCollectionCreationActions(cmd, collection);
-                    DbContext.Update(collection);
-                    await DbContext.SaveChangesAsync();
-                }
-                catch (IVirtualStorageManager.VirtualStorageManagerException ex)
-                {
-                    // roll back the entity changes
-                    LogWarning(_log, "Caught storage exception whilst attempting collection physical operation - rolling back db changes");
-                    DbContext.Collections.Remove(collection);
-                    await DbContext.SaveChangesAsync();
-                    throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
-                        ex.Message, ex);
-                }
-                catch (Exception ex)
-                {
-                    // roll back the entity changes
-                    LogWarning(_log, "Caught general exception whilst attempting collection physical operation - rolling back db changes");
-                    DbContext.Collections.Remove(collection);
-                    await DbContext.SaveChangesAsync();
-                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
-                        ex.Message, ex);
-                }
-
-                return collection;
+            }
+            catch (IVirtualStorageManager.VirtualStorageManagerException ex)
+            {
+                // roll back the entity changes
+                LogWarning(_log, "Caught storage exception whilst attempting collection physical operation - rolling back db changes");
+                DbContext.Collections.Remove(collection);
+                await DbContext.SaveChangesAsync();
+                throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                    ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                // roll back the entity changes
+                LogWarning(_log, "Caught general exception whilst attempting collection physical operation - rolling back db changes");
+                DbContext.Collections.Remove(collection);
+                await DbContext.SaveChangesAsync();
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    ex.Message, ex);
             }
 
-            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
-                "A collection with that name already exists");
+            return collection;
         }
 
 
@@ -136,14 +136,12 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             if (await CollectionExistsAsync(collectionId))
-            {
                 return await DbContext.Collections
                     .Include(c => c.ConstraintGroup)
                     .Include(c => c.ConstraintGroup!.Constraints)
                     .Include(c => c.PropertyGroup)
                     .Include(c => c.PropertyGroup!.Properties)
                     .FirstAsync(c => c.Id == collectionId);
-            }
 
             throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                 "The specified collection does not exist");
@@ -155,25 +153,22 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             if (!await CollectionExistsAsync(collectionId))
                 throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
-            var collection = await DbContext.Collections.FirstAsync(c => c.Id == collectionId);
-            if (collection != null)
-            {
-                var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
-                if (validationErrors.Count == 0)
-                {
-                    collection.Name = cmd.Name ?? collection.Name;
-                    collection.Description = cmd.Description ?? collection.Description;
-                    DbContext.Collections.Update(collection);
-                    await DbContext.SaveChangesAsync();
-                    return collection;
-                }
 
+            var collection = await DbContext.Collections.FirstAsync(c => c.Id == collectionId);
+            if (collection == null)
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "Collection has moved or cannot be found - shouldn't happen");
+
+            var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
+            if (validationErrors.Count != 0)
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
                     $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
-            }
 
-            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                "Collection has moved or cannot be found - shouldn't happen");
+            collection.Name = cmd.Name ?? collection.Name;
+            collection.Description = cmd.Description ?? collection.Description;
+            DbContext.Collections.Update(collection);
+            await DbContext.SaveChangesAsync();
+            return collection;
         }
 
         /// <summary>
@@ -191,25 +186,21 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="name"></param>
         /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
-        protected async Task<bool> CollectionExistsAsync(string name)
+        private async Task<bool> CollectionExistsAsync(string name)
         {
             LogMethodCall(_log);
-            if (await DbContext.Collections.AnyAsync())
-            {
-                var existing = await DbContext.Collections
-                    .FirstOrDefaultAsync(c => c.Name.Equals(name));
-                return !(existing is null);
-            }
-
-            return false;
+            if (!await DbContext.Collections.AnyAsync()) return false;
+            var existing = await DbContext.Collections
+                .FirstOrDefaultAsync(c => c.Name.Equals(name));
+            return !(existing is null);
         }
 
         /// <summary>
         ///     Checks whether a given collection already exists within the database
         /// </summary>
         /// <param name="collectionId">The unique GUID for the collection</param>
-        /// <returns><code>true</code>if it exists, <code>false</code> otherwise</returns>
-        protected async Task<bool> CollectionExistsAsync(Guid collectionId)
+        /// <returns>true if it exists, false otherwise</returns>
+        private async Task<bool> CollectionExistsAsync(Guid collectionId)
         {
             LogMethodCall(_log);
             if (await DbContext.Collections.AnyAsync())
@@ -228,21 +219,20 @@ namespace JCS.Argon.Services.Core
         /// <param name="cmd"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        /// <exception cref="ICollectionManager.CollectionManagerException"></exception>
+        /// <exception cref="ICollectionManager.CollectionManagerException">Thrown if <see cref="IVirtualStorageProvider" /> throws an error</exception>
         private async Task<Collection> PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
         {
             LogDebug(_log, $"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");
             var provider = VirtualStorageManager.GetProviderByTag(cmd.ProviderTag);
             var creationResult = await provider.CreateCollectionAsync(collection);
-            if (creationResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok)
-            {
-                if (creationResult.Properties != null) collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
 
-                return collection;
-            }
+            if (creationResult.Status != IVirtualStorageProvider.StorageOperationStatus.Ok)
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
 
-            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
-                $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
+            if (creationResult.Properties != null) collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
+
+            return collection;
         }
 
         /// <summary>
@@ -251,19 +241,14 @@ namespace JCS.Argon.Services.Core
         /// <param name="target">The collection against which the validation is performed</param>
         /// <param name="cmd">A <see cref="PatchCollectionCommand" /> instance</param>
         /// <returns>A list of validation errors if any occur, otherwise an empty list</returns>
-        protected async Task<List<string>> ValidateCollectionUpdateAsync(Collection target, PatchCollectionCommand cmd)
+        private async Task<List<string>> ValidateCollectionUpdateAsync(Collection target, PatchCollectionCommand cmd)
         {
             LogMethodCall(_log);
             var validationErrors = new List<string>();
-            if (cmd.Name != null)
-            {
-                if (target.Name != cmd.Name)
-                {
-                    var exists = await CollectionExistsAsync(cmd.Name);
-                    if (exists) validationErrors.Add("A collection with the supplied name already exists");
-                }
-            }
-
+            if (cmd.Name == null) return validationErrors;
+            if (target.Name == cmd.Name) return validationErrors;
+            var exists = await CollectionExistsAsync(cmd.Name);
+            if (exists) validationErrors.Add("A collection with the supplied name already exists");
             return validationErrors;
         }
     }

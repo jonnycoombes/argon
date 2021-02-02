@@ -17,17 +17,25 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         ///     Retrieves a list of all current collections
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of <see cref="Collection" /> objects</returns>
         public Task<List<Collection>> ListCollectionsAsync();
 
         /// <summary>
         ///     Return a count of all currently known collections
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An integer count of the collections</returns>
         public Task<int> CountCollectionsAsync();
 
+        /// <summary>
+        ///     Count the overall total number of items stored within this instance of Argon
+        /// </summary>
+        /// <returns>An integer count</returns>
         public Task<int> CountTotalItemsAsync();
 
+        /// <summary>
+        ///     Count the overall number of versions stored within this instance of Argon
+        /// </summary>
+        /// <returns>An integer count</returns>
         public Task<int> CountTotalVersionsAsync();
 
         /// <summary>
@@ -36,15 +44,17 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="cmd"></param>
-        /// <returns></returns>
+        /// <param name="cmd">The <see cref="CreateCollectionCommand" /> containing the parameters for the new collection</param>
+        /// <returns>A new <see cref="Collection" /> instance</returns>
+        /// <exception cref="CollectionManagerException">In the event of something going wrong during the creation process</exception>
         public Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd);
 
         /// <summary>
         ///     Reads a specific collection from the underlying store, based on a supplied collection identifier
         /// </summary>
         /// <param name="collectionId">The unique GUID associated with the collection</param>
-        /// <returns></returns>
+        /// <returns>A <see cref="Collection" /> instance</returns>
+        /// <exception cref="CollectionManagerException">In the event of something going wrong during the retrieval process</exception>
         public Task<Collection> GetCollectionAsync(Guid collectionId);
 
         /// <summary>
@@ -55,13 +65,14 @@ namespace JCS.Argon.Services.Core
         /// </remarks>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="cmd">The things to change</param>
-        /// <returns></returns>
+        /// <returns>The updated <see cref="Collection" /></returns>
+        /// <exception cref="CollectionManagerException">In the event of something going wrong during the update process</exception>
         public Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd);
 
         /// <summary>
         ///     Retrieves a list of currently configured <see cref="VirtualStorageBinding" /> instances
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of <see cref="VirtualStorageBinding" /> instances.  These are basically taken from the current system configuration</returns>
         public List<VirtualStorageBinding> GetStorageBindings();
 
         /// <summary>
