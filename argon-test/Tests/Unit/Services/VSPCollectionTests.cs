@@ -11,14 +11,18 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Tests.Unit.Services
 {
+    /// <summary>
+    ///     Test suite for <see cref="ICollectionManager" /> against a self-contained VSP provider
+    /// </summary>
     [Collection("Units")]
     [Trait("Category", "Unit")]
-    public class CollectionManagerTests : AbstractTestBase
+    [Trait("Provider", "VSP")]
+    public class VSPCollectionTests : AbstractTestBase
     {
         /// <summary>
         ///     Static logger for this test suite
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<CollectionManagerTests>();
+        private static readonly ILogger _log = Log.ForContext<VSPCollectionTests>();
 
         [Fact(DisplayName = "An empty database must contain no collections")]
         [Trait("Category", "Unit")]

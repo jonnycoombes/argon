@@ -18,12 +18,13 @@ namespace JCS.Argon.Tests.Unit.Services
     /// </summary>
     [Collection("Units")]
     [Trait("Category", "Unit")]
-    public class ItemManagerTests : AbstractTestBase
+    [Trait("Provider", "VSP")]
+    public class VSPItemTests : AbstractTestBase
     {
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<CollectionManagerTests>();
+        private static readonly ILogger _log = Log.ForContext<VSPCollectionTests>();
 
         [Theory(DisplayName = "Must be able to count the items in a collection")]
         [Trait("Category", "Unit")]
