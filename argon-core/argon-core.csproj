@@ -11,12 +11,12 @@
     <AssemblyName>Argon-Core</AssemblyName>
     <Company>JCS Software Ltd</Company>
     <Product>Argon Core</Product>
-    <AssemblyVersion>1.0.0.7</AssemblyVersion>
-    <FileVersion>1.0.0.7</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>1.0.0.5</PackageVersion>
+    <PackageVersion>1.0.1.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
