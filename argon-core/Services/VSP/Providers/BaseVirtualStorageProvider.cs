@@ -20,18 +20,6 @@ namespace JCS.Argon.Services.VSP.Providers
     public abstract class BaseVirtualStorageProvider : IVirtualStorageProvider, IDisposable
     {
         /// <summary>
-        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
-        /// </summary>
-        public enum ProviderProperties
-        {
-            Path,
-            CreateDate,
-            LastAccessed,
-            Length,
-            ContentType
-        }
-
-        /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<BaseVirtualStorageProvider>();
@@ -115,6 +103,18 @@ namespace JCS.Argon.Services.VSP.Providers
             }
 
             return contentType;
+        }
+
+        /// <summary>
+        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
+        /// </summary>
+        protected enum ProviderProperties
+        {
+            Path,
+            CreateDate,
+            LastAccessed,
+            Length,
+            ContentType
         }
     }
 }

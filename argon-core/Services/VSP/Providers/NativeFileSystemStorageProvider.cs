@@ -19,18 +19,18 @@ namespace JCS.Argon.Services.VSP.Providers
     public class NativeFileSystemStorageProvider : BaseVirtualStorageProvider
     {
         /// <summary>
+        ///     The property which contains the root path for the collection
+        /// </summary>
+        private const string RootpathProperty = "rootPath";
+
+        /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<NativeFileSystemStorageProvider>();
 
         /// <summary>
-        ///     The property which contains the root path for the collection
         /// </summary>
-        protected static string ROOTPATH_PROPERTY = "rootPath";
-
-        /// <summary>
-        /// </summary>
-        protected DirectoryInfo? _rootPathInfo;
+        private DirectoryInfo? _rootPathInfo;
 
         /// <summary>
         ///     Default constructor, just calls base
@@ -47,7 +47,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// </summary>
         /// <param name="collection"></param>
         /// <returns></returns>
-        protected string GenerateCollectionPath(Collection collection)
+        private string GenerateCollectionPath(Collection collection)
         {
             LogMethodCall(_log);
             return Path.Combine(_rootPathInfo!.FullName, collection.Id.ToString()!);
@@ -60,24 +60,24 @@ namespace JCS.Argon.Services.VSP.Providers
         public override void AfterBind()
         {
             LogMethodCall(_log);
-            if (!_binding!.Properties.ContainsKey(ROOTPATH_PROPERTY))
+            if (!_binding!.Properties.ContainsKey(RootpathProperty))
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                    $"{ROOTPATH_PROPERTY} not found in binding configuration for this provider");
+                    $"{RootpathProperty} not found in binding configuration for this provider");
 
-            _rootPathInfo = new DirectoryInfo(@$"{(string) _binding!.Properties[ROOTPATH_PROPERTY]}");
+            _rootPathInfo = new DirectoryInfo(@$"{(string) _binding!.Properties[RootpathProperty]}");
             LogInformation(_log, $"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
-            if (!Directory.Exists(_rootPathInfo.FullName))
-                try
-                {
-                    LogInformation(_log,
-                        $"{ProviderType}: Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
-                    _rootPathInfo = Directory.CreateDirectory(_rootPathInfo.FullName);
-                }
-                catch (Exception ex)
-                {
-                    throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                        $"Unable to create new root location for collections at {_rootPathInfo.FullName}: {ex.Message}", ex);
-                }
+            if (Directory.Exists(_rootPathInfo.FullName)) return;
+            try
+            {
+                LogInformation(_log,
+                    $"{ProviderType}: Current root storage location of {_rootPathInfo.FullName} doesn't exist - trying to create it");
+                _rootPathInfo = Directory.CreateDirectory(_rootPathInfo.FullName);
+            }
+            catch (Exception ex)
+            {
+                throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                    $"Unable to create new root location for collections at {_rootPathInfo.FullName}: {ex.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="itemVersion"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        protected string GenerateVersionPath(Collection collection, Item item, ItemVersion itemVersion)
+        private string GenerateVersionPath(Collection collection, Item item, ItemVersion itemVersion)
         {
             LogMethodCall(_log);
             var itemPath = GenerateItemStoragePath(collection, item);
@@ -143,7 +143,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="collection"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        protected string GenerateItemStoragePath(Collection collection, Item item)
+        private string GenerateItemStoragePath(Collection collection, Item item)
         {
             LogMethodCall(_log);
             var collectionRootPath = GenerateCollectionPath(collection);
@@ -160,17 +160,19 @@ namespace JCS.Argon.Services.VSP.Providers
                 var itemStoragePath = GenerateItemStoragePath(collection, item);
                 var versionPath = GenerateVersionPath(collection, item, itemVersion);
                 Directory.CreateDirectory(itemStoragePath);
-                using var target = File.Create(versionPath);
+                await using var target = File.Create(versionPath);
                 await source.CopyToAsync(target);
-                var result = new IVirtualStorageProvider.StorageOperationResult();
-                result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
-                result.Properties = new Dictionary<string, object>
+                var result = new IVirtualStorageProvider.StorageOperationResult
                 {
-                    {$"{ProviderProperties.Path}", itemStoragePath},
-                    {$"{ProviderProperties.CreateDate}", DateTime.Now},
-                    {$"{ProviderProperties.LastAccessed}", DateTime.Now},
-                    {$"{ProviderProperties.Length}", source.Length},
-                    {$"{ProviderProperties.ContentType}", DetermineContentType(source)}
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                    Properties = new Dictionary<string, object>
+                    {
+                        {$"{ProviderProperties.Path}", itemStoragePath},
+                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
+                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                        {$"{ProviderProperties.Length}", source.Length},
+                        {$"{ProviderProperties.ContentType}", DetermineContentType(source)}
+                    }
                 };
                 return result;
             }
@@ -193,13 +195,10 @@ namespace JCS.Argon.Services.VSP.Providers
                     $"The specified version storage location doesn't exist, when it should: {versionStoragePath}");
 
             var stream = new FileStream(versionStoragePath, FileMode.Open);
-            return await Task.Run(() =>
+            return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
             {
-                return new IVirtualStorageProvider.StorageOperationResult
-                {
-                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
-                    Stream = stream
-                };
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                Stream = stream
             });
         }
     }

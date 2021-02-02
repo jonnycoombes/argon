@@ -108,14 +108,16 @@ namespace JCS.Argon.Services.VSP.Providers
                         Status = IVirtualStorageProvider.StorageOperationStatus.Failed
                     };
 
-                var result = new IVirtualStorageProvider.StorageOperationResult();
-                result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
-                result.Properties = new Dictionary<string, object>
+                var result = new IVirtualStorageProvider.StorageOperationResult
                 {
-                    {$"{ProviderProperties.Path}", collectionRootPath},
-                    {$"{ProviderProperties.CreateDate}", DateTime.Now},
-                    {$"{ProviderProperties.LastAccessed}", DateTime.Now},
-                    {"nodeId", nodeId}
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                    Properties = new Dictionary<string, object>
+                    {
+                        {$"{ProviderProperties.Path}", collectionRootPath},
+                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
+                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                        {"nodeId", nodeId}
+                    }
                 };
                 return result;
             }
@@ -165,25 +167,21 @@ namespace JCS.Argon.Services.VSP.Providers
             else
                 itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
 
-            if (itemNodeId != 0)
-            {
-                item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
-                var versionNodeId =
-                    await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
-                if (versionNodeId != 0)
-                {
-                    var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
-                    var result = new IVirtualStorageProvider.StorageOperationResult();
-                    result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
-                    return result;
-                }
-
+            if (itemNodeId == 0)
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                     "Unable to create/locate node id");
-            }
-
-            throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
-                "Unable to create/locate node id");
+            item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
+            var versionNodeId =
+                await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
+            if (versionNodeId == 0)
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
+                    "Unable to create/locate node id");
+            var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
+            var result = new IVirtualStorageProvider.StorageOperationResult
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+            };
+            return result;
         }
 
         /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync" />
@@ -199,9 +197,10 @@ namespace JCS.Argon.Services.VSP.Providers
                 var versionFolderId = await _client.GetChildId(itemNodeId, versionFolderName);
                 var versionId = await _client.GetChildId(versionFolderId, itemVersion.Name);
                 var stream = await _client.GetNodeVersionContent(versionId);
-                var result = new IVirtualStorageProvider.StorageOperationResult();
-                result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
-                result.Stream = stream;
+                var result = new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok, Stream = stream
+                };
                 return result;
             }
             catch

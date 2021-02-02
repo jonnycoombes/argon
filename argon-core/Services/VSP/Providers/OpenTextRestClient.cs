@@ -26,22 +26,22 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     This never changes between CS instances
         /// </summary>
-        public const int EnterpriseNodeId = 2000;
+        private const int EnterpriseNodeId = 2000;
 
         /// <summary>
         ///     The REST api authentication endpoint suffix
         /// </summary>
-        public const string AuthEndpointSuffix = "v1/auth";
+        private const string AuthEndpointSuffix = "v1/auth";
 
         /// <summary>
         ///     The v2 nodes api suffix
         /// </summary>
-        public const string NodesV2Suffix = "v2/nodes";
+        private const string NodesV2Suffix = "v2/nodes";
 
         /// <summary>
         ///     The v1 nodes api suffix
         /// </summary>
-        public const string NodesV1Suffix = "v1/nodes";
+        private const string NodesV1Suffix = "v1/nodes";
 
         /// <summary>
         ///     Static logger
@@ -104,7 +104,7 @@ namespace JCS.Argon.Services.VSP.Providers
         ///     The current authentication token
         /// </summary>
         /// <value></value>
-        public string? AuthenticationToken { get; set; }
+        private string? AuthenticationToken { get; set; }
 
         /// <summary>
         ///     A partition value to use with the supplied instance of <see cref="IDbCache" />
@@ -116,15 +116,13 @@ namespace JCS.Argon.Services.VSP.Providers
         ///     Just check the current configuration
         /// </summary>
         /// <exception cref="OpenTextRestClientException"></exception>
-        protected void ValidateConfiguration()
+        private void ValidateConfiguration()
         {
             LogMethodCall(_log);
-            if (EndpointAddress == null || UserName == null || Password == null)
-            {
-                LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
-                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    "OpenText REST Client is not currently configured correctly");
-            }
+            if (EndpointAddress != null && UserName != null && Password != null) return;
+            LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
+            throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                "OpenText REST Client is not currently configured correctly");
         }
 
         /// <summary>
@@ -225,14 +223,11 @@ namespace JCS.Argon.Services.VSP.Providers
                         ("OTCSTicket", AuthenticationToken)
                     },
                     content);
-                if (json.ContainsKey("results"))
-                {
-                    var raw = json["results"]["data"]["properties"]["id"].ToString();
-                    return long.Parse(raw);
-                }
-
-                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    "An invalid response was returned by OpenText outcall - results element wasn't found");
+                if (!json.ContainsKey("results"))
+                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                        "An invalid response was returned by OpenText outcall - results element wasn't found");
+                var raw = json["results"]["data"]["properties"]["id"].ToString();
+                return long.Parse(raw);
             }
             catch (Exception ex)
             {
@@ -257,12 +252,10 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             ValidateConfiguration();
-            Uri uri;
 
-            if (versionId == -1)
-                uri = new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/content");
-            else
-                uri = new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/versions/{versionId}/content");
+            var uri = versionId == -1
+                ? new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/content")
+                : new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/versions/{versionId}/content");
 
             try
             {
@@ -300,13 +293,9 @@ namespace JCS.Argon.Services.VSP.Providers
                 {
                     ("where_name", name)
                 });
-                if (json.ContainsKey("results") && json["results"].HasValues)
-                {
-                    var node = json["results"][0];
-                    return long.Parse(node["data"]["properties"]["id"].ToString());
-                }
-
-                return 0;
+                if (!json.ContainsKey("results") || !json["results"].HasValues) return 0;
+                var node = json["results"][0];
+                return long.Parse(node["data"]["properties"]["id"].ToString());
             }
             catch (Exception ex)
             {
@@ -320,7 +309,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private string GeneratePathCacheId(string path)
+        private static string GeneratePathCacheId(string path)
         {
             LogMethodCall(_log);
             return $"path:{path}";
@@ -349,15 +338,9 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             if (Cache == null) return 0;
             var key = GeneratePathCacheId(path);
-            if (await Cache.HasEntry(CachePartition, key))
-            {
-                var entry = await Cache.LookupEntry(CachePartition, key);
-                if (entry != null && entry.LongValue != null)
-                    return entry.LongValue.Value;
-                return 0;
-            }
-
-            return 0;
+            if (!await Cache.HasEntry(CachePartition, key)) return 0;
+            var entry = await Cache.LookupEntry(CachePartition, key);
+            return entry?.LongValue ?? 0;
         }
 
         /// <summary>

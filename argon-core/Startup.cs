@@ -44,7 +44,7 @@ namespace JCS.Argon
         /// <summary>
         ///     Current total <see cref="IConfiguration" />
         /// </summary>
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -70,7 +70,7 @@ namespace JCS.Argon
         ///     Configure a centralised last-resort exception handler
         /// </summary>
         /// <param name="app">The current <see cref="IApplicationBuilder" /></param>
-        protected void ConfigureGlobalExceptionHandling(IApplicationBuilder app)
+        protected static void ConfigureGlobalExceptionHandling(IApplicationBuilder app)
         {
             LogMethodCall(_log);
             LogInformation(_log, "Registering global exception handling logic");
@@ -103,10 +103,8 @@ namespace JCS.Argon
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             LogMethodCall(_log);
-            if (env.IsDevelopment())
-                LogInformation(_log, "Starting within a development environment");
-            else
-                LogInformation(_log, "Starting within a non-development environment");
+            LogInformation(_log,
+                env.IsDevelopment() ? "Starting within a development environment" : "Starting within a non-development environment");
 
             ConfigureGlobalExceptionHandling(app);
             app.UseSwagger();

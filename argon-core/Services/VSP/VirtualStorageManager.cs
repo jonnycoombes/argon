@@ -131,21 +131,18 @@ namespace JCS.Argon.Services.VSP
         {
             LogMethodCall(_log);
             LogDebug(_log, $"Instantiating a virtual storage provider of type [{providerType}]");
-            if (ProviderExists(providerType))
-            {
+            if (!ProviderExists(providerType))
+                throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                    $"Request for a virtual storage provider which doesn't appear to exist: [{providerType}]");
 #pragma warning disable 8600
-                var instance =
-                    (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
+            var instance =
+                (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
 #pragma warning restore 8600
-                if (instance == null)
-                    throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                        $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
+            if (instance == null)
+                throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
+                    $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
 
-                return instance;
-            }
-
-            throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                $"Request for a virtual storage provider which doesn't appear to exist: [{providerType}]");
+            return instance;
         }
 
 
@@ -194,9 +191,8 @@ namespace JCS.Argon.Services.VSP
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Scanning for binding with tag \"{tag}\"");
-            foreach (var binding in _virtualStorageOptions.Bindings)
-                if (binding.Tag == tag)
-                    return binding;
+            foreach (var binding in _virtualStorageOptions.Bindings.Where(binding => binding.Tag == tag))
+                return binding;
 
             LogWarning(_log, $"Couldn't locate a binding with tag \"{tag}\"");
             return null;

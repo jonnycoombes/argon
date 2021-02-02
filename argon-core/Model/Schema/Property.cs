@@ -100,6 +100,8 @@ namespace JCS.Argon.Model.Schema
                 case PropertyType.DateTime:
                     DateTimeValue = null;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

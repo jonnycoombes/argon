@@ -20,7 +20,7 @@ namespace JCS.Argon
         ///     Generate a configuration object based on the current working directory and the
         ///     root-level appsettings.json file
         /// </summary>
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+        private static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .AddEnvironmentVariables()
@@ -32,18 +32,18 @@ namespace JCS.Argon
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.WithMachineName()
                 .CreateLogger();
-            var _log = Log.ForContext<Program>();
+            var log = Log.ForContext<Program>();
             try
             {
-                LogInformation(_log, $"Starting Argon Version {GetApplicationAssemblyVersion()}");
+                LogInformation(log, $"Starting Argon Version {GetApplicationAssemblyVersion()}");
                 CreateHostBuilder(args)
                     .Build()
                     .Run();
             }
             catch (Exception ex)
             {
-                LogExceptionError(_log, ex);
-                LogError(_log, "Argon startup failed");
+                LogExceptionError(log, ex);
+                LogError(log, "Argon startup failed");
             }
             finally
             {
@@ -51,7 +51,7 @@ namespace JCS.Argon
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureLogging((context, builder) => { builder.ClearProviders(); })

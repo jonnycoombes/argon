@@ -110,6 +110,8 @@ namespace JCS.Argon.Services.Core
                                 $"No value type or value set specified for constraint [{cmd.Name}]");
 
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 var awaiter = await DbContext.AddAsync(constraint);

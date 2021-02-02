@@ -27,45 +27,31 @@ namespace JCS.Argon.Services.Core
             {
                 var ex = exceptionHandlerPathFeature.Error;
                 _log.LogWarning($"Found an exception of type {ex.GetType()}");
-                switch (ex)
+                return ex switch
                 {
-                    case ICollectionManager.CollectionManagerException e:
+                    ICollectionManager.CollectionManagerException e => new ExceptionResponse
                     {
-                        return new ExceptionResponse
-                        {
-                            HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
-                            Message = e.Message,
-                            Source = e.Source
-                        };
-                    }
-                    case IConstraintGroupManager.ConstraintGroupManagerException e:
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
+                    IConstraintGroupManager.ConstraintGroupManagerException e => new ExceptionResponse
                     {
-                        return new ExceptionResponse
-                        {
-                            HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
-                            Message = e.Message,
-                            Source = e.Source
-                        };
-                    }
-                    case IPropertyGroupManager.PropertyGroupManagerException e:
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
+                    IPropertyGroupManager.PropertyGroupManagerException e => new ExceptionResponse
                     {
-                        return new ExceptionResponse
-                        {
-                            HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
-                            Message = e.Message,
-                            Source = e.Source
-                        };
-                    }
-                    default:
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
+                    _ => new ExceptionResponse
                     {
-                        return new ExceptionResponse
-                        {
-                            HttpResponseCode = StatusCodes.Status500InternalServerError,
-                            Message = ex.Message,
-                            Source = ex.Source
-                        };
+                        HttpResponseCode = StatusCodes.Status500InternalServerError, Message = ex.Message, Source = ex.Source
                     }
-                }
+                };
             }
 
             _log.LogWarning("Didn't locate an exception in the current context");

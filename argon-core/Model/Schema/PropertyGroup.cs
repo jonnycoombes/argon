@@ -45,34 +45,35 @@ namespace JCS.Argon.Model.Schema
             if (HasProperty(name))
             {
                 var prop = GetPropertyByName(name);
-                if (prop != null)
+                if (prop == null) return;
+                if (prop.Type != type)
                 {
-                    if (prop.Type != type)
-                    {
-                        prop.ClearValue();
-                        prop.Type = type;
-                    }
+                    prop.ClearValue();
+                    prop.Type = type;
+                }
 
-                    switch (type)
-                    {
-                        case PropertyType.Boolean:
-                            prop.BooleanValue = (bool) value;
-                            break;
-                        case PropertyType.Number:
-                            prop.NumberValue = Convert.ToDouble(value);
-                            break;
-                        case PropertyType.DateTime:
-                            prop.DateTimeValue = (DateTime) value;
-                            break;
-                        default:
-                            prop.StringValue = value.ToString();
-                            break;
-                    }
+                switch (type)
+                {
+                    case PropertyType.Boolean:
+                        prop.BooleanValue = (bool) value;
+                        break;
+                    case PropertyType.Number:
+                        prop.NumberValue = Convert.ToDouble(value);
+                        break;
+                    case PropertyType.DateTime:
+                        prop.DateTimeValue = (DateTime) value;
+                        break;
+                    case PropertyType.String:
+                        prop.StringValue = value.ToString();
+                        break;
+                    default:
+                        prop.StringValue = value.ToString();
+                        break;
                 }
             }
             else
             {
-                if (Properties == null) Properties = new List<Property>();
+                Properties ??= new List<Property>();
 
                 switch (type)
                 {
@@ -98,6 +99,14 @@ namespace JCS.Argon.Model.Schema
                             Name = name,
                             Type = PropertyType.DateTime,
                             DateTimeValue = (DateTime) value
+                        });
+                        break;
+                    case PropertyType.String:
+                        Properties.Add(new Property
+                        {
+                            Name = name,
+                            Type = PropertyType.String,
+                            StringValue = value.ToString()
                         });
                         break;
                     default:
@@ -168,9 +177,7 @@ namespace JCS.Argon.Model.Schema
         /// <returns></returns>
         public Property? GetPropertyByName(string propertyName)
         {
-            if (HasProperty(propertyName))
-                return Properties?.First(p => p.Name.Equals(propertyName));
-            return null;
+            return HasProperty(propertyName) ? Properties?.First(p => p.Name.Equals(propertyName)) : null;
         }
     }
 }

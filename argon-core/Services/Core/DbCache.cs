@@ -128,14 +128,10 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var entry = await LookupEntry(partition, key);
-            if (entry != null)
-            {
-                DbContext.CacheEntries.Remove(entry);
-                await DbContext.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
+            if (entry == null) return false;
+            DbContext.CacheEntries.Remove(entry);
+            await DbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

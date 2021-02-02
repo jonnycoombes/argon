@@ -50,7 +50,9 @@ namespace JCS.Argon.Services.Core
         public async Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
-            if (await DbContext.Items.AnyAsync(i => i.Id == itemId))
+            if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified item does not exist");
             {
                 var item = await DbContext.Items
                     .Include(i => i.PropertyGroup)
@@ -59,9 +61,6 @@ namespace JCS.Argon.Services.Core
                     .FirstAsync(i => i.Id == itemId);
                 return item;
             }
-
-            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                "The specified item does not exist");
         }
 
         /// <inheritdoc cref="IItemManager.GetItemVersionAsync(Collection, Item, Guid)" />
@@ -117,8 +116,8 @@ namespace JCS.Argon.Services.Core
                 await DbContext.SaveChangesAsync();
                 item = addOp.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
-                collection.Length = collection.Length + 1;
-                collection.Size = collection.Size + version.Size;
+                collection.Length += 1;
+                collection.Size += version.Size;
                 DbContext.Collections.Update(collection);
                 await DbContext.SaveChangesAsync();
                 return item;
@@ -154,8 +153,8 @@ namespace JCS.Argon.Services.Core
                 await DbContext.SaveChangesAsync();
                 version = addOp.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
-                collection.Length = collection.Length + 1;
-                collection.Size = collection.Size + version.Size;
+                collection.Length += 1;
+                collection.Size += version.Size;
                 DbContext.Collections.Update(collection);
                 await DbContext.SaveChangesAsync();
                 return item;
@@ -250,7 +249,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
         /// <param name="minorVersion">Optional minor version (default to 0)</param>
         /// <returns></returns>
-        protected Task<ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1,
+        private static Task<ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1,
             int minorVersion = 0)
         {
             LogMethodCall(_log);

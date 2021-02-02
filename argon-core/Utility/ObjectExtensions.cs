@@ -13,7 +13,7 @@ namespace JCS.Argon.Utility
             if (target == null) throw new NullAssertionException(message);
         }
 
-        public class NullAssertionException : Exception
+        private class NullAssertionException : Exception
         {
             public NullAssertionException(string message) : base(message)
             {

@@ -10,7 +10,7 @@ namespace JCS.Argon.Utility
 {
     public static class StringHelper
     {
-        public static string CollapseStringList(List<string> source)
+        public static string CollapseStringList(IEnumerable<string> source)
         {
             var sb = new StringBuilder();
             foreach (var s in source) sb.Append($"{s}{Environment.NewLine}");

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -50,13 +51,13 @@ namespace JCS.Argon.Utility
         /// </summary>
         /// <param name="fields"></param>
         /// <returns></returns>
-        protected MultipartFormDataContent CreateMultiPartFormTemplate((string, string)[] fields)
+        protected static MultipartFormDataContent CreateMultiPartFormTemplate(IEnumerable<(string, string)> fields)
         {
             LogMethodCall(_log);
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
-            foreach (var field in fields) template.Add(CreateStringFormField(field.Item1, field.Item2));
+            foreach (var (item1, item2) in fields) template.Add(CreateStringFormField(item1, item2));
 
             return template;
         }
@@ -69,13 +70,12 @@ namespace JCS.Argon.Utility
         /// <param name="content"></param>
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
-        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, (string, string)[] headers,
+        protected async Task<JObject> PostMultiPartRequestForJsonAsync(Uri uri, IEnumerable<(string, string)> headers,
             MultipartFormDataContent content, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected");
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-            requestMessage.Content = content;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri) {Content = content};
             MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
@@ -98,19 +98,14 @@ namespace JCS.Argon.Utility
         /// <param name="source">The original Uri</param>
         /// <param name="fields">A series of string pairs</param>
         /// <returns></returns>
-        protected Uri AppendQueryStringParametersToUri(Uri source, (string, string)[] fields)
+        private static Uri AppendQueryStringParametersToUri(Uri source, IEnumerable<(string, string)>? fields)
         {
             LogMethodCall(_log);
-            if (fields != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var field in fields) sb.Append($"{field.Item1}={field.Item2}&");
-
-                var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
-                return new Uri($"{source}?{queryString}");
-            }
-
-            return source;
+            if (fields == null) return source;
+            var sb = new StringBuilder();
+            foreach (var (item1, item2) in fields) sb.Append($"{item1}={item2}&");
+            var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
+            return new Uri($"{source}?{queryString}");
         }
 
         /// <summary>
@@ -147,17 +142,16 @@ namespace JCS.Argon.Utility
         /// <param name="queryParams">A series of query string parameters which are appended to the source uri</param>
         /// <param name="checkResponseCodes">If true, then response codes are checked and optional exceptions are thrown</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> GetRequest(Uri uri, (string, string)[] headers,
-            (string, string)[] queryParams, bool checkResponseCodes = true)
+        protected async Task<HttpResponseMessage> GetRequest(Uri uri, IEnumerable<(string, string)>? headers,
+            IEnumerable<(string, string)>? queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
-            HttpResponseMessage response;
             LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
             uri = AppendQueryStringParametersToUri(uri, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
             MergeHeaders(requestMessage, headers);
-            response = await HttpClient.SendAsync(requestMessage);
+            var response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
             return response;
         }
@@ -183,9 +177,10 @@ namespace JCS.Argon.Utility
         /// </summary>
         /// <param name="message">The <see cref="HttpRequestMessage" /></param>
         /// <param name="headers">An array of string pairs</param>
-        private void MergeHeaders(HttpRequestMessage message, (string, string)[] headers)
+        private static void MergeHeaders(HttpRequestMessage message, IEnumerable<(string, string)>? headers)
         {
-            foreach (var header in headers) message.Headers.Add(header.Item1, header.Item2);
+            if (headers == null) return;
+            foreach (var (item1, item2) in headers) message.Headers.Add(item1, item2);
         }
 
         /// <summary>
@@ -194,7 +189,7 @@ namespace JCS.Argon.Utility
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected StringContent CreateStringFormField(string name, string value)
+        private static StringContent CreateStringFormField(string name, string value)
         {
             LogMethodCall(_log);
             return new StringContent(value)
@@ -209,7 +204,7 @@ namespace JCS.Argon.Utility
             };
         }
 
-        public sealed class BaseRestClientException : ResponseAwareException
+        private sealed class BaseRestClientException : ResponseAwareException
         {
             public BaseRestClientException(int? statusHint, string? message) : base(statusHint, message)
             {
