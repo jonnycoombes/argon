@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
+using JCS.Argon.Tests.Unit;
 using Serilog;
 using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
@@ -11,7 +12,7 @@ using static JCS.Neon.Glow.Helpers.Crypto.PassphraseHelpers;
 
 #endregion
 
-namespace JCS.Argon.Tests.Unit.Services
+namespace JCS.Argon.Tests.Tests.Unit.Services
 {
     /// <summary>
     ///     Test suite for <see cref="IItemManager" />
@@ -19,12 +20,12 @@ namespace JCS.Argon.Tests.Unit.Services
     [Collection("Units")]
     [Trait("Category", "Unit")]
     [Trait("Provider", "VSP")]
-    public class VSPItemTests : AbstractTestBase
+    public class VspItemTests : AbstractTestBase
     {
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<VSPCollectionTests>();
+        private static readonly ILogger _log = Log.ForContext<VspCollectionTests>();
 
         [Theory(DisplayName = "Must be able to count the items in a collection")]
         [Trait("Category", "Unit")]

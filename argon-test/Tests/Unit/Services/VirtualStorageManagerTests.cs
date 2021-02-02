@@ -1,12 +1,13 @@
 #region
 
+using JCS.Argon.Tests.Unit;
 using Serilog;
 using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 #endregion
 
-namespace JCS.Argon.Tests.Unit.Services
+namespace JCS.Argon.Tests.Tests.Unit.Services
 {
     /// <summary>
     ///     Test suite for <see cref="JCS.Argon.Services.VSP.IVirtualStorageManager" /> instances

@@ -1,10 +1,12 @@
 ﻿#region
 
+using JCS.Argon.Services.Core;
+using JCS.Argon.Tests.Unit;
 using Xunit;
 
 #endregion
 
-namespace JCS.Argon.Tests.Unit.Services
+namespace JCS.Argon.Tests.Tests.Unit.Services
 {
     /// <summary>
     ///     Test suite for <see cref="ICollectionManager" /> against an external OTCS provider.  The configuration and
@@ -13,7 +15,7 @@ namespace JCS.Argon.Tests.Unit.Services
     [Collection("Units")]
     [Trait("Category", "Unit")]
     [Trait("Provider", "OTCS")]
-    public class OTCSCollectionTests : AbstractTestBase
+    public class OtcsCollectionTests : AbstractTestBase
     {
     }
 }

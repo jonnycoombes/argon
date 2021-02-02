@@ -3,13 +3,14 @@
 using System;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
+using JCS.Argon.Tests.Unit;
 using Serilog;
 using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 #endregion
 
-namespace JCS.Argon.Tests.Unit.Services
+namespace JCS.Argon.Tests.Tests.Unit.Services
 {
     /// <summary>
     ///     Test suite for <see cref="ICollectionManager" /> against a self-contained VSP provider
@@ -17,12 +18,12 @@ namespace JCS.Argon.Tests.Unit.Services
     [Collection("Units")]
     [Trait("Category", "Unit")]
     [Trait("Provider", "VSP")]
-    public class VSPCollectionTests : AbstractTestBase
+    public class VspCollectionTests : AbstractTestBase
     {
         /// <summary>
         ///     Static logger for this test suite
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<VSPCollectionTests>();
+        private static readonly ILogger _log = Log.ForContext<VspCollectionTests>();
 
         [Fact(DisplayName = "An empty database must contain no collections")]
         [Trait("Category", "Unit")]
