@@ -1,10 +1,13 @@
+#region
+
 using System;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
-using Xunit;
 using Serilog;
+using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using static JCS.Neon.Glow.Helpers.General.ParseHelpers;
+
+#endregion
 
 namespace JCS.Argon.Tests.Unit.Services
 {
@@ -13,9 +16,9 @@ namespace JCS.Argon.Tests.Unit.Services
     public class CollectionManagerTests : AbstractTestBase
     {
         /// <summary>
-        /// Static logger for this test suite
+        ///     Static logger for this test suite
         /// </summary>
-        private static ILogger _log = Log.ForContext<CollectionManagerTests>();
+        private static readonly ILogger _log = Log.ForContext<CollectionManagerTests>();
 
         [Fact(DisplayName = "An empty database must contain no collections")]
         [Trait("Category", "Unit")]
@@ -68,7 +71,7 @@ namespace JCS.Argon.Tests.Unit.Services
         public async void CreateCollection(string name, string providerTag)
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand()
+            var cmd = new CreateCollectionCommand
             {
                 Name = name,
                 Description = "Test description",
@@ -86,7 +89,7 @@ namespace JCS.Argon.Tests.Unit.Services
         public async void AttemptCreationWithDuplicateName(string providerTag)
         {
             var name = "Test Duplicate Collection";
-            var cmd = new CreateCollectionCommand()
+            var cmd = new CreateCollectionCommand
             {
                 Name = name,
                 Description = "Duplicate collection",
@@ -107,7 +110,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [InlineData("TestOTCSCollection")]
         public async void CountCollections(string providerTag)
         {
-            var cmds = new CreateCollectionCommand[]
+            var cmds = new[]
             {
                 new CreateCollectionCommand("Collection 1", providerTag, ""),
                 new CreateCollectionCommand("Collection 2", providerTag, ""),
@@ -118,7 +121,7 @@ namespace JCS.Argon.Tests.Unit.Services
                 new CreateCollectionCommand("Collection 7", providerTag, ""),
                 new CreateCollectionCommand("Collection 8", providerTag, ""),
                 new CreateCollectionCommand("Collection 9", providerTag, ""),
-                new CreateCollectionCommand("Collection 10", providerTag, ""),
+                new CreateCollectionCommand("Collection 10", providerTag, "")
             };
             foreach (var cmd in cmds)
             {
@@ -135,7 +138,7 @@ namespace JCS.Argon.Tests.Unit.Services
         [InlineData("TestOTCSCollection")]
         public async void ListCollections(string providerTag)
         {
-            var cmds = new CreateCollectionCommand[]
+            var cmds = new[]
             {
                 new CreateCollectionCommand("Collection 1", providerTag, ""),
                 new CreateCollectionCommand("Collection 2", providerTag, ""),

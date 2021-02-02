@@ -1,28 +1,29 @@
-﻿using System.Collections;
+﻿#region
+
 using System.Collections.Generic;
 using System.Linq;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
-using JCS.Neon.Glow.Helpers.Crypto;
-using Xunit;
 using Serilog;
+using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using static JCS.Neon.Glow.Types.Extensions.ByteArrayExtensions;
 using static JCS.Neon.Glow.Helpers.Crypto.PassphraseHelpers;
+
+#endregion
 
 namespace JCS.Argon.Tests.Unit.Services
 {
     /// <summary>
-    /// Test suite for <see cref="IItemManager"/>
+    ///     Test suite for <see cref="IItemManager" />
     /// </summary>
     [Collection("Units")]
-        [Trait("Category", "Unit")]
+    [Trait("Category", "Unit")]
     public class ItemManagerTests : AbstractTestBase
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<CollectionManagerTests>();
+        private static readonly ILogger _log = Log.ForContext<CollectionManagerTests>();
 
         [Theory(DisplayName = "Must be able to count the items in a collection")]
         [Trait("Category", "Unit")]
@@ -63,7 +64,7 @@ namespace JCS.Argon.Tests.Unit.Services
         {
             LogMethodCall(_log);
             var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);
-            var randomContents = PassphraseHelpers.GenerateRandomPassphrase(builder =>
+            var randomContents = GenerateRandomPassphrase(builder =>
             {
                 builder.SetRequiredLength(sizeInBytes);
                 builder.SetBase64Encoding(true);
@@ -102,7 +103,7 @@ namespace JCS.Argon.Tests.Unit.Services
         {
             LogMethodCall(_log);
             var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);
-            var randomContents = PassphraseHelpers.GenerateRandomPassphrase(builder =>
+            var randomContents = GenerateRandomPassphrase(builder =>
             {
                 builder.SetRequiredLength(sizeInBytes);
                 builder.SetBase64Encoding(true);

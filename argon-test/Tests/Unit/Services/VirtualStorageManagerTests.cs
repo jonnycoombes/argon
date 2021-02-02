@@ -1,21 +1,24 @@
-using JCS.Argon.Services.VSP.Providers;
-using Xunit;
+#region
+
 using Serilog;
+using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+
+#endregion
 
 namespace JCS.Argon.Tests.Unit.Services
 {
     /// <summary>
-    /// Test suite for <see cref="JCS.Argon.Services.VSP.IVirtualStorageManager"/> instances
+    ///     Test suite for <see cref="JCS.Argon.Services.VSP.IVirtualStorageManager" /> instances
     /// </summary>
     [Collection("Units")]
-        [Trait("Category", "Unit")]
+    [Trait("Category", "Unit")]
     public class VirtualStorageManagerTests : AbstractTestBase
     {
         /// <summary>
-        /// Static test logger
+        ///     Static test logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<VirtualStorageManagerTests>();
+        private static readonly ILogger _log = Log.ForContext<VirtualStorageManagerTests>();
 
         [Fact(DisplayName = "Must be at least a single binding retrievable from the current storage provider")]
         [Trait("Category", "Unit")]
