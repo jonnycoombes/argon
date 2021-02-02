@@ -61,15 +61,12 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             if (!_binding!.Properties.ContainsKey(ROOTPATH_PROPERTY))
-            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"{ROOTPATH_PROPERTY} not found in binding configuration for this provider");
-            }
 
             _rootPathInfo = new DirectoryInfo(@$"{(string) _binding!.Properties[ROOTPATH_PROPERTY]}");
             LogInformation(_log, $"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
             if (!Directory.Exists(_rootPathInfo.FullName))
-            {
                 try
                 {
                     LogInformation(_log,
@@ -81,7 +78,6 @@ namespace JCS.Argon.Services.VSP.Providers
                     throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                         $"Unable to create new root location for collections at {_rootPathInfo.FullName}: {ex.Message}", ex);
                 }
-            }
         }
 
         /// <summary>
@@ -123,10 +119,8 @@ namespace JCS.Argon.Services.VSP.Providers
             var result = new IVirtualStorageProvider.StorageOperationResult();
             var collectionRootPath = GenerateCollectionPath(collection);
             if (Directory.Exists(collectionRootPath))
-            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Computed collection storage path already exists! {collectionRootPath}");
-            }
 
             return await Task.Run(() =>
             {
@@ -195,10 +189,8 @@ namespace JCS.Argon.Services.VSP.Providers
             var itemStoragePath = GenerateItemStoragePath(collection, item);
             var versionStoragePath = GenerateVersionPath(collection, item, itemVersion);
             if (!File.Exists(versionStoragePath))
-            {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"The specified version storage location doesn't exist, when it should: {versionStoragePath}");
-            }
 
             var stream = new FileStream(versionStoragePath, FileMode.Open);
             return await Task.Run(() =>

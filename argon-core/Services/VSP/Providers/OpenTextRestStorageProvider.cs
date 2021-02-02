@@ -103,12 +103,10 @@ namespace JCS.Argon.Services.VSP.Providers
                 var collectionRootPath = GenerateCollectionPath(collection);
                 var nodeId = await _client.CreatePath(GenerateCollectionPath(collection));
                 if (nodeId == null)
-                {
                     return new IVirtualStorageProvider.StorageOperationResult
                     {
                         Status = IVirtualStorageProvider.StorageOperationStatus.Failed
                     };
-                }
 
                 var result = new IVirtualStorageProvider.StorageOperationResult();
                 result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
@@ -153,10 +151,8 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
-            {
                 throw new OpenTextRestClient.OpenTextRestClientException(StatusCodes.Status400BadRequest,
                     "Unable to locate cached node id for collection");
-            }
 
             await _client.Authenticate();
 

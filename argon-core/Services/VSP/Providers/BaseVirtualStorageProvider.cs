@@ -110,7 +110,9 @@ namespace JCS.Argon.Services.VSP.Providers
                 contentType = "text/plain";
             }
             else
+            {
                 contentType = source.ContentType;
+            }
 
             return contentType;
         }

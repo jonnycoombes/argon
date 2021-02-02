@@ -64,6 +64,7 @@ namespace JCS.Argon.Services.Core
                 "The specified item does not exist");
         }
 
+        /// <inheritdoc cref="IItemManager.GetItemVersionAsync(Collection, Item, Guid)" />
         public async Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
         {
             LogMethodCall(_log);
@@ -71,7 +72,7 @@ namespace JCS.Argon.Services.Core
                 .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IItemManager.GetCurrentItemVersionAsync(Collection, Guid)" />
         public async Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
@@ -80,7 +81,7 @@ namespace JCS.Argon.Services.Core
                 .SingleAsync(v => v.Major == maxVersion && v.Item.Id == itemId);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IItemManager.GetCurrentItemVersionAsync(Collection, Item)" />
         public async Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Item item)
         {
             LogMethodCall(_log);
@@ -89,14 +90,14 @@ namespace JCS.Argon.Services.Core
                 .SingleAsync(v => v.Major == maxVersion && v.Item.Id == item.Id);
         }
 
-        /// <inheritdoc></inheritdoc>
+        /// <inheritdoc cref="IItemManager.CountItemsAsync(Collection)" />
         public async Task<int> CountItemsAsync(Collection collection)
         {
             LogMethodCall(_log);
             return await DbContext.Items.CountAsync(c => c.Collection.Id == collection.Id);
         }
 
-        /// <inheritdoc></inheritdoc>
+        /// <inheritdoc cref="IItemManager.CountItemsAsync()" />
         public async Task<int> CountItemsAsync()
         {
             LogMethodCall(_log);

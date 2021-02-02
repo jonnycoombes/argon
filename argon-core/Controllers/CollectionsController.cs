@@ -80,8 +80,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Collection> CreateCollection([FromBody]
-            CreateCollectionCommand cmd)
+        public async Task<Collection> CreateCollection([FromBody] CreateCollectionCommand cmd)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
@@ -180,8 +179,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId,
-            [FromBody]
-            List<CreateOrUpdateConstraintCommand> cmds)
+            [FromBody] List<CreateOrUpdateConstraintCommand> cmds)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
@@ -201,8 +199,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody]
-            PatchCollectionCommand cmd)
+        public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand cmd)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.UpdateCollectionAsync(collectionId, cmd);

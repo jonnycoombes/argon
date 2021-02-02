@@ -12,6 +12,9 @@ using JCS.Argon.Model.Schema;
 
 namespace JCS.Argon.Services.Core
 {
+    /// <summary>
+    ///     Service responsible for top-level collection-related operations
+    /// </summary>
     public interface ICollectionManager
     {
         /// <summary>

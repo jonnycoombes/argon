@@ -19,8 +19,7 @@ namespace JCS.Argon.Contexts
         ///     Default constructor
         /// </summary>
         /// <param name="options"></param>
-        public SqlDbContext([NotNullAttribute]
-            DbContextOptions options) : base(options)
+        public SqlDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
         }
 

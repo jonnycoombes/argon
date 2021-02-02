@@ -56,7 +56,9 @@ namespace JCS.Argon.Model.Schema
                 if (Constraints != null) return Constraints.First(c => c.SourceProperty.Equals(sourceProperty));
             }
             else
+            {
                 return null;
+            }
 
             return null;
         }
