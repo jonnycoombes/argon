@@ -71,7 +71,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ExtLib" />
     <Folder Include="Migrations" />
   </ItemGroup>
 
