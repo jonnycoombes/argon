@@ -1,20 +1,24 @@
+#region
+
 using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon.Controllers
 {
     /// <summary>
-    /// Abstract base class for all API controllers
+    ///     Abstract base class for all API controllers
     /// </summary>
     public class BaseApiController : ControllerBase
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<BaseApiController>();
+        private static readonly ILogger _log = Log.ForContext<BaseApiController>();
 
         protected BaseApiController()
         {
@@ -22,7 +26,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Helper function which attempts to decode any supplied properties within an inbound request
+        ///     Helper function which attempts to decode any supplied properties within an inbound request
         /// </summary>
         /// <returns></returns>
         protected Dictionary<string, object>? ExtractPropertiesFromRequest()
@@ -30,9 +34,7 @@ namespace JCS.Argon.Controllers
             LogMethodCall(_log);
             Dictionary<string, object>? properties = null;
             if (Request.Form.ContainsKey("Properties"))
-            {
                 properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
-            }
 
             return properties;
         }

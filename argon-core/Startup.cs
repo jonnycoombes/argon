@@ -1,30 +1,31 @@
-using System;
+#region
+
 using System.Text.Json;
 using JCS.Argon.Extensions;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon
 {
     public class Startup
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<Startup>();
+        private static readonly ILogger _log = Log.ForContext<Startup>();
 
         /// <summary>
-        /// Constructor - just inject a config and current environment
+        ///     Constructor - just inject a config and current environment
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="env"></param>
@@ -36,12 +37,12 @@ namespace JCS.Argon
         }
 
         /// <summary>
-        /// Current <see cref="IWebHostEnvironment"/>
+        ///     Current <see cref="IWebHostEnvironment" />
         /// </summary>
         private IWebHostEnvironment Environment { get; }
 
         /// <summary>
-        /// Current total <see cref="IConfiguration"/>
+        ///     Current total <see cref="IConfiguration" />
         /// </summary>
         public IConfiguration Configuration { get; }
 
@@ -56,9 +57,9 @@ namespace JCS.Argon
         }
 
         /// <summary>
-        /// This is a NO-OP at the moment
+        ///     This is a NO-OP at the moment
         /// </summary>
-        /// <param name="app">The current <see cref="IApplicationBuilder"/></param>
+        /// <param name="app">The current <see cref="IApplicationBuilder" /></param>
         protected void EnsureDatabaseIsCreated(IApplicationBuilder app)
         {
             LogMethodCall(_log);
@@ -66,9 +67,9 @@ namespace JCS.Argon
         }
 
         /// <summary>
-        /// Configure a centralised last-resort exception handler
+        ///     Configure a centralised last-resort exception handler
         /// </summary>
-        /// <param name="app">The current <see cref="IApplicationBuilder"/></param>
+        /// <param name="app">The current <see cref="IApplicationBuilder" /></param>
         protected void ConfigureGlobalExceptionHandling(IApplicationBuilder app)
         {
             LogMethodCall(_log);
@@ -82,7 +83,7 @@ namespace JCS.Argon
                     if (payload != null)
                     {
                         context.Response.Headers.Clear();
-                        context.Response.StatusCode = ((int) payload.HttpResponseCode)!;
+                        context.Response.StatusCode = payload.HttpResponseCode!;
                         context.Response.ContentType = "application/json; utf-8";
                         await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
                         await context.Response.CompleteAsync();
@@ -103,26 +104,18 @@ namespace JCS.Argon
         {
             LogMethodCall(_log);
             if (env.IsDevelopment())
-            {
                 LogInformation(_log, "Starting within a development environment");
-            }
             else
-            {
                 LogInformation(_log, "Starting within a non-development environment");
-            }
 
             ConfigureGlobalExceptionHandling(app);
             app.UseSwagger();
             var apiOptions = new ApiOptions();
             Configuration.GetSection(ApiOptions.ConfigurationSection).Bind(apiOptions);
             if (apiOptions.ExternallyHosted)
-            {
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("./swagger/v1/swagger.json", "Argon v1"));
-            }
             else
-            {
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
-            }
 
             app.UseSerilogRequestLogging();
             app.UseResponseCompression();

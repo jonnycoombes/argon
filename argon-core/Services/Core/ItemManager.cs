@@ -1,9 +1,10 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
@@ -13,27 +14,29 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon.Services.Core
 {
     public class ItemManager : BaseCoreService, IItemManager
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<ItemManager>();
+        private static readonly ILogger _log = Log.ForContext<ItemManager>();
 
         /// <summary>
-        /// Default constructor
+        ///     Default constructor
         /// </summary>
         /// <param name="options">Current configuration</param>
-        /// <param name="serviceProvider">Current DI <see cref="IServiceProvider"/></param>
+        /// <param name="serviceProvider">Current DI <see cref="IServiceProvider" /></param>
         public ItemManager(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
             : base(options, serviceProvider)
         {
             LogMethodCall(_log);
         }
 
-        /// <inheritdoc cref="IItemManager.GetItemsForCollectionAsync"/> 
+        /// <inheritdoc cref="IItemManager.GetItemsForCollectionAsync" />
         public async Task<List<Item>> GetItemsForCollectionAsync(Collection collection)
         {
             LogMethodCall(_log);
@@ -43,7 +46,7 @@ namespace JCS.Argon.Services.Core
             return items;
         }
 
-        /// <inheritdoc cref="IItemManager.GetItemForCollectionAsync"/>
+        /// <inheritdoc cref="IItemManager.GetItemForCollectionAsync" />
         public async Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
@@ -56,18 +59,16 @@ namespace JCS.Argon.Services.Core
                     .FirstAsync(i => i.Id == itemId);
                 return item;
             }
-            else
-            {
-                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                    "The specified item does not exist");
-            }
+
+            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                "The specified item does not exist");
         }
 
         public async Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
         {
             LogMethodCall(_log);
             return await DbContext.Versions
-                .SingleAsync(v => (v.Id == versionId && v.Item.Id == item.Id));
+                .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id);
         }
 
         /// <inheritdoc />
@@ -76,16 +77,16 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == itemId).MaxAsync(v => v.Major);
             return await DbContext.Versions
-                .SingleAsync(v => (v.Major == maxVersion && v.Item.Id == itemId));
+                .SingleAsync(v => v.Major == maxVersion && v.Item.Id == itemId);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Item item)
         {
             LogMethodCall(_log);
             var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
             return await DbContext.Versions
-                .SingleAsync(v => (v.Major == maxVersion && v.Item.Id == item.Id));
+                .SingleAsync(v => v.Major == maxVersion && v.Item.Id == item.Id);
         }
 
         /// <inheritdoc></inheritdoc>
@@ -102,7 +103,7 @@ namespace JCS.Argon.Services.Core
             return await DbContext.Items.CountAsync();
         }
 
-        /// <inheritdoc cref="IItemManager.AddItemToCollectionAsync"/>
+        /// <inheritdoc cref="IItemManager.AddItemToCollectionAsync" />
         public async Task<Item> AddItemToCollectionAsync(Collection collection, Dictionary<string, object>? properties,
             IFormFile inboundFile)
         {
@@ -124,7 +125,7 @@ namespace JCS.Argon.Services.Core
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
             {
                 // roll back the entity changes
-                LogWarning(_log, $"Caught storage exception whilst attempting item physical operation");
+                LogWarning(_log, "Caught storage exception whilst attempting item physical operation");
                 throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
@@ -138,7 +139,7 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="IItemManager.AddItemVersionToCollectionAsync"/>
+        /// <inheritdoc cref="IItemManager.AddItemVersionToCollectionAsync" />
         public async Task<Item> AddItemVersionToCollectionAsync(Collection collection, Item item, Dictionary<string, object>? properties,
             IFormFile inboundFile)
         {
@@ -146,7 +147,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
-                var version = await CreateNewVersionTemplate(inboundFile, majorVersion: maxVersion + 1);
+                var version = await CreateNewVersionTemplate(inboundFile, maxVersion + 1);
                 version.Item = item;
                 var addOp = await DbContext.Versions.AddAsync(version);
                 await DbContext.SaveChangesAsync();
@@ -161,27 +162,27 @@ namespace JCS.Argon.Services.Core
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
             {
                 // roll back the entity changes
-                LogWarning(_log, $"Caught storage exception whilst attempting item physical operation");
+                LogWarning(_log, "Caught storage exception whilst attempting item physical operation");
                 throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
             catch (Exception ex)
             {
                 // roll back the entity changes
-                LogWarning(_log, $"Caught general exception whilst attempting version physical operation - rolling back db changes");
+                LogWarning(_log, "Caught general exception whilst attempting version physical operation - rolling back db changes");
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
         }
 
-        /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync"/>
+        /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync" />
         public async Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
         }
 
         /// <summary>
-        /// Interact with the storage provider to store the actual item in the storage layer
+        ///     Interact with the storage provider to store the actual item in the storage layer
         /// </summary>
         /// <param name="collection">The parent collection</param>
         /// <param name="item">The freshly minted item</param>
@@ -202,7 +203,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        /// Helper method that does the heavy lifting around the retrieval of specific version streams from storage
+        ///     Helper method that does the heavy lifting around the retrieval of specific version streams from storage
         /// </summary>
         /// <param name="collection"></param>
         /// <param name="item"></param>
@@ -216,14 +217,9 @@ namespace JCS.Argon.Services.Core
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
             var retrievalResult = await provider.ReadCollectionItemVersionAsync(collection, item, itemVersion);
             if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
-            {
                 return retrievalResult.Stream;
-            }
-            else
-            {
-                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
-                    $"An unhandled error occurred whilst attempting to retrieve a version from storage");
-            }
+            throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
+                "An unhandled error occurred whilst attempting to retrieve a version from storage");
         }
 
         protected async Task<Item> CreateNewItemTemplate(Collection collection, ItemVersion itemVersion,
@@ -232,14 +228,14 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var propertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
             propertyGroup.MergeDictionary(properties);
-            var item = new Item()
+            var item = new Item
             {
                 Name = itemVersion.Name,
                 Collection = collection,
                 CreatedDate = DateTime.Now,
                 LastModified = DateTime.Now,
                 PropertyGroup = propertyGroup,
-                Versions = new List<JCS.Argon.Model.Schema.ItemVersion>()
+                Versions = new List<ItemVersion>()
             };
             item.Versions.Add(itemVersion);
             itemVersion.Item = item;
@@ -247,20 +243,20 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        /// Creates a new version template (TODO - additional validation of inbound form file structure)
+        ///     Creates a new version template (TODO - additional validation of inbound form file structure)
         /// </summary>
         /// <param name="source">The source object</param>
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
         /// <param name="minorVersion">Optional minor version (default to 0)</param>
         /// <returns></returns>
-        protected Task<JCS.Argon.Model.Schema.ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1,
+        protected Task<ItemVersion> CreateNewVersionTemplate(IFormFile source, int majorVersion = 1,
             int minorVersion = 0)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Handling form file [{source.Name}, {source.Length}, {source.FileName}]");
             return Task.Run(() =>
             {
-                var version = new ItemVersion()
+                var version = new ItemVersion
                 {
                     Name = source.FileName,
                     MIMEType = source.Headers == null ? "text/plain" : source.ContentType,

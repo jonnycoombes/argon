@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -9,10 +11,10 @@ using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,18 +23,20 @@ using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
+#endregion
+
 namespace JCS.Argon.Extensions
 {
     public static class ArgonServicesCollectionExtension
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(ArgonServicesCollectionExtension));
+        private static readonly ILogger _log = Log.ForContext(typeof(ArgonServicesCollectionExtension));
 
         /// <summary>
-        /// Register the db context, optional branching here to allow for different connection strings based on the
-        /// currently configured environment
+        ///     Register the db context, optional branching here to allow for different connection strings based on the
+        ///     currently configured environment
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
@@ -49,7 +53,7 @@ namespace JCS.Argon.Extensions
                     services.AddDbContext<SqlDbContext>(options =>
                     {
                         options.UseSqlServer(config.GetConnectionString("DefaultConnection"),
-                            sqlServerOptionsAction: sqlOptions => { });
+                            sqlOptions => { });
                         options.EnableDetailedErrors();
                     });
                 }
@@ -70,7 +74,7 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        /// Adds any argon-specific configuration elements into the IoC container
+        ///     Adds any argon-specific configuration elements into the IoC container
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
@@ -99,7 +103,7 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        /// All Argon-specific services should be added to the IoC container here
+        ///     All Argon-specific services should be added to the IoC container here
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
@@ -115,7 +119,7 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        /// Register any typed/untyped IHttpClientFactories here
+        ///     Register any typed/untyped IHttpClientFactories here
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
@@ -126,10 +130,10 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        /// Do anything specific to controller bindings, Swagger configuration etc...
-        /// Specific alterations here to ignore null values in Json serialisation to
-        /// minimise payload size, and also to de-clutter responses.
-        /// in here
+        ///     Do anything specific to controller bindings, Swagger configuration etc...
+        ///     Specific alterations here to ignore null values in Json serialisation to
+        ///     minimise payload size, and also to de-clutter responses.
+        ///     in here
         /// </summary>
         /// <param name="services">Current services collection</param>
         /// <param name="config"></param>
@@ -161,9 +165,9 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        /// Register all application-specific services such as the VSP registry etc...
-        /// Note the differences between whether services are scoped (basically per-session) or
-        /// singleton
+        ///     Register all application-specific services such as the VSP registry etc...
+        ///     Note the differences between whether services are scoped (basically per-session) or
+        ///     singleton
         /// </summary>
         /// <param name="services">The current services collection</param>
         /// <param name="config"></param>

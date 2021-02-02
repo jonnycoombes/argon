@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,52 +12,52 @@ using Microsoft.AspNetCore.Http;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon.Services.VSP.Providers
 {
     public class OpenTextRestClient : BaseRestClient
     {
         /// <summary>
-        /// The expected OT authentication header field
+        ///     The expected OT authentication header field
         /// </summary>
         private const string OtcsticketHeader = "OTCSTicket";
 
         /// <summary>
-        /// This never changes between CS instances
+        ///     This never changes between CS instances
         /// </summary>
         public const int EnterpriseNodeId = 2000;
 
         /// <summary>
-        /// The REST api authentication endpoint suffix
+        ///     The REST api authentication endpoint suffix
         /// </summary>
         public const string AuthEndpointSuffix = "v1/auth";
 
         /// <summary>
-        /// The v2 nodes api suffix
+        ///     The v2 nodes api suffix
         /// </summary>
         public const string NodesV2Suffix = "v2/nodes";
 
         /// <summary>
-        /// The v1 nodes api suffix
+        ///     The v1 nodes api suffix
         /// </summary>
         public const string NodesV1Suffix = "v1/nodes";
 
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<OpenTextRestClient>();
+        private static readonly ILogger _log = Log.ForContext<OpenTextRestClient>();
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="cache"></param>
-        public OpenTextRestClient(IDbCache? cache) : base()
+        public OpenTextRestClient(IDbCache? cache)
         {
             LogMethodCall(_log);
             Cache = cache;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="log"></param>
         /// <param name="cache"></param>
@@ -64,7 +66,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="userName"></param>
         /// <param name="password"></param>
         public OpenTextRestClient(ILogger log, IDbCache cache, string cachePartition,
-            string endpointAddress, string userName, string password) : base()
+            string endpointAddress, string userName, string password)
         {
             LogMethodCall(_log);
             CachePartition = cachePartition;
@@ -75,43 +77,43 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// An optional instance of <see cref="IDbCache" /> which may be used for stashing
-        /// useful information.  (Mainly node ids).
+        ///     An optional instance of <see cref="IDbCache" /> which may be used for stashing
+        ///     useful information.  (Mainly node ids).
         /// </summary>
-        private IDbCache? Cache { get; set; }
+        private IDbCache? Cache { get; }
 
         /// <summary>
-        /// The current REST base endpoint address
-        /// </summary>
-        /// <value></value>
-        public string? EndpointAddress { get; set; } = null!;
-
-        /// <summary>
-        /// The user to be used within basic authentication requests
+        ///     The current REST base endpoint address
         /// </summary>
         /// <value></value>
-        public string? UserName { get; set; } = null!;
+        public string? EndpointAddress { get; set; }
 
         /// <summary>
-        /// The password to be used for basic authentication 
+        ///     The user to be used within basic authentication requests
         /// </summary>
         /// <value></value>
-        public string? Password { get; set; } = null!;
+        public string? UserName { get; set; }
 
         /// <summary>
-        /// The current authentication token
+        ///     The password to be used for basic authentication
         /// </summary>
         /// <value></value>
-        public string? AuthenticationToken { get; set; } = null!;
+        public string? Password { get; set; }
 
         /// <summary>
-        /// A partition value to use with the supplied instance of <see cref="IDbCache" />
+        ///     The current authentication token
+        /// </summary>
+        /// <value></value>
+        public string? AuthenticationToken { get; set; }
+
+        /// <summary>
+        ///     A partition value to use with the supplied instance of <see cref="IDbCache" />
         /// </summary>
         /// <value></value>
         public string CachePartition { get; set; } = null!;
 
         /// <summary>
-        /// Just check the current configuration
+        ///     Just check the current configuration
         /// </summary>
         /// <exception cref="OpenTextRestClientException"></exception>
         protected void ValidateConfiguration()
@@ -119,21 +121,21 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             if (EndpointAddress == null || UserName == null || Password == null)
             {
-                LogWarning(_log, $"{this.GetType()}: Failed to validate current configuration");
+                LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    $"OpenText REST Client is not currently configured correctly");
+                    "OpenText REST Client is not currently configured correctly");
             }
         }
 
         /// <summary>
-        /// Attempts an authentication operation and stashes away the authentication ticket/token
+        ///     Attempts an authentication operation and stashes away the authentication ticket/token
         /// </summary>
         /// <exception cref="OpenTextRestClientException"></exception>
         public async Task<string> Authenticate()
         {
             LogMethodCall(_log);
             ValidateConfiguration();
-            var content = CreateMultiPartFormTemplate(new (string, string)[]
+            var content = CreateMultiPartFormTemplate(new[]
             {
                 ("username", UserName!),
                 ("password", Password!)
@@ -146,14 +148,12 @@ namespace JCS.Argon.Services.VSP.Providers
                 if (json.ContainsKey("ticket"))
                 {
                     AuthenticationToken = (string) json["ticket"]!;
-                    LogDebug(_log, $"{this.GetType()}: Authentication successful");
+                    LogDebug(_log, $"{GetType()}: Authentication successful");
                     return AuthenticationToken;
                 }
-                else
-                {
-                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                        $"Couldn't locate authentication ticket in OpenText response");
-                }
+
+                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                    "Couldn't locate authentication ticket in OpenText response");
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             ValidateConfiguration();
             var content = CreateMultiPartFormTemplate(
-                new (string, string)[]
+                new[]
                 {
                     ("type", "144"),
                     ("parent_id", parentId.ToString()),
@@ -184,24 +184,22 @@ namespace JCS.Argon.Services.VSP.Providers
 
                 if (json.ContainsKey("results"))
                 {
-                    var raw = (json["results"]["data"]["properties"]["id"]).ToString();
+                    var raw = json["results"]["data"]["properties"]["id"].ToString();
                     return long.Parse(raw);
                 }
-                else
-                {
-                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                        $"An invalid response was returned by OpenText outcall - results element wasn't found");
-                }
+
+                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                    "An invalid response was returned by OpenText outcall - results element wasn't found");
             }
             catch
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    $"An invalid response was returned by OpenText outcall - results element wasn't found");
+                    "An invalid response was returned by OpenText outcall - results element wasn't found");
             }
         }
 
         /// <summary>
-        /// Creates a folder underneath a given parent folder
+        ///     Creates a folder underneath a given parent folder
         /// </summary>
         /// <param name="parentId">The id of the parent folder</param>
         /// <param name="name">The name for the folder</param>
@@ -212,7 +210,7 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             ValidateConfiguration();
             var content = CreateMultiPartFormTemplate(
-                new (string, string)[]
+                new[]
                 {
                     ("type", 0.ToString()),
                     ("parent_id", parentId.ToString()),
@@ -229,14 +227,12 @@ namespace JCS.Argon.Services.VSP.Providers
                     content);
                 if (json.ContainsKey("results"))
                 {
-                    var raw = (json["results"]["data"]["properties"]["id"]).ToString();
+                    var raw = json["results"]["data"]["properties"]["id"].ToString();
                     return long.Parse(raw);
                 }
-                else
-                {
-                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                        $"An invalid response was returned by OpenText outcall - results element wasn't found");
-                }
+
+                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                    "An invalid response was returned by OpenText outcall - results element wasn't found");
             }
             catch (Exception ex)
             {
@@ -252,7 +248,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Retrieves the content for a given node
+        ///     Retrieves the content for a given node
         /// </summary>
         /// <param name="nodeId">The node id</param>
         /// <param name="versionId">The version id</param>
@@ -264,13 +260,9 @@ namespace JCS.Argon.Services.VSP.Providers
             Uri uri;
 
             if (versionId == -1)
-            {
                 uri = new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/content");
-            }
             else
-            {
                 uri = new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}/versions/{versionId}/content");
-            }
 
             try
             {
@@ -289,7 +281,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Tries to retrieve the child folder id for a given folder
+        ///     Tries to retrieve the child folder id for a given folder
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="name"></param>
@@ -313,10 +305,8 @@ namespace JCS.Argon.Services.VSP.Providers
                     var node = json["results"][0];
                     return long.Parse(node["data"]["properties"]["id"].ToString());
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             }
             catch (Exception ex)
             {
@@ -326,7 +316,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// The format for cached path entries
+        ///     The format for cached path entries
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -337,7 +327,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Adds a path and it's node id to the cache
+        ///     Adds a path and it's node id to the cache
         /// </summary>
         /// <param name="path">The path to be cached</param>
         /// <param name="id">The corresponding node id</param>
@@ -350,7 +340,7 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        /// Returns the cache value associated with a given path
+        ///     Returns the cache value associated with a given path
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -364,18 +354,15 @@ namespace JCS.Argon.Services.VSP.Providers
                 var entry = await Cache.LookupEntry(CachePartition, key);
                 if (entry != null && entry.LongValue != null)
                     return entry.LongValue.Value;
-                else
-                    return 0;
-            }
-            else
-            {
                 return 0;
             }
+
+            return 0;
         }
 
         /// <summary>
-        /// Attempts to create a path relative to the Enterprise node.  This method is cache-aware
-        /// based on a non-null <see cref="IDbCache"/> instance being provided and a partition.
+        ///     Attempts to create a path relative to the Enterprise node.  This method is cache-aware
+        ///     based on a non-null <see cref="IDbCache" /> instance being provided and a partition.
         /// </summary>
         /// <param name="path">A path of the format "/folder1/folder2../folderN</param>
         /// <param name="cache"></param>
@@ -402,14 +389,12 @@ namespace JCS.Argon.Services.VSP.Providers
 
                 return parentId;
             }
-            else
-            {
-                return cacheId;
-            }
+
+            return cacheId;
         }
 
         /// <summary>
-        /// Thrown if operations within the client fail
+        ///     Thrown if operations within the client fail
         /// </summary>
         public sealed class OpenTextRestClientException : ResponseAwareException
         {

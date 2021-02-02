@@ -1,7 +1,8 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 #pragma warning disable 1574
 
 namespace JCS.Argon.Services.Core
@@ -17,12 +20,11 @@ namespace JCS.Argon.Services.Core
     public class ConstraintGroupManager : BaseCoreService, IConstraintGroupManager
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<ConstraintGroupManager>();
+        private static readonly ILogger _log = Log.ForContext<ConstraintGroupManager>();
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceProvider"></param>
@@ -32,7 +34,7 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
         }
 
-        /// <inheritdoc></inheritdoc> 
+        /// <inheritdoc></inheritdoc>
         public async Task<ConstraintGroup> CreateConstraintGroupAsync()
         {
             LogMethodCall(_log);
@@ -49,7 +51,7 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync()"></inheritdoc> 
+        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync()"></inheritdoc>
         public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> cmds)
         {
             LogMethodCall(_log);
@@ -74,13 +76,13 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintAsync"/>
+        /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintAsync" />
         public async Task<Constraint> CreateConstraintAsync(CreateOrUpdateConstraintCommand cmd)
         {
             LogMethodCall(_log);
             try
             {
-                var constraint = new Constraint()
+                var constraint = new Constraint
                 {
                     Name = cmd.Name,
                     ConstraintType = cmd.ConstraintType,
@@ -116,7 +118,7 @@ namespace JCS.Argon.Services.Core
                         break;
                 }
 
-                var awaiter = (await DbContext.AddAsync(constraint));
+                var awaiter = await DbContext.AddAsync(constraint);
                 await DbContext.SaveChangesAsync();
                 return awaiter.Entity;
             }
@@ -127,7 +129,7 @@ namespace JCS.Argon.Services.Core
             }
         }
 
-        /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints"/>
+        /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints" />
         public async Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties)
         {
             LogMethodCall(_log);

@@ -1,5 +1,9 @@
+#region
+
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+
+#endregion
 
 namespace JCS.Argon.Model.Commands
 {

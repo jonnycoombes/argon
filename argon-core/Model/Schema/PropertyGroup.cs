@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -5,20 +7,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 
+#endregion
+
 namespace JCS.Argon.Model.Schema
 {
-    [Table(name: "propertyGroup", Schema = "argon")]
+    [Table("propertyGroup", Schema = "argon")]
     public class PropertyGroup
     {
         /// <summary>
-        /// The primary concurrency token for this entity
+        ///     The primary concurrency token for this entity
         /// </summary>
         [JsonIgnore]
         [Timestamp]
         public byte[]? Timestamp { get; set; }
 
         /// <summary>
-        /// The unique identifier for the version
+        ///     The unique identifier for the version
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -26,12 +30,12 @@ namespace JCS.Argon.Model.Schema
         public Guid? Id { get; set; }
 
         /// <summary>
-        /// The properties in the bag
+        ///     The properties in the bag
         /// </summary>
         public List<Property>? Properties { get; set; }
 
         /// <summary>
-        /// Adds or replaces a property
+        ///     Adds or replaces a property
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
@@ -55,7 +59,7 @@ namespace JCS.Argon.Model.Schema
                             prop.BooleanValue = (bool) value;
                             break;
                         case PropertyType.Number:
-                            prop.NumberValue = (double) Convert.ToDouble(value);
+                            prop.NumberValue = Convert.ToDouble(value);
                             break;
                         case PropertyType.DateTime:
                             prop.DateTimeValue = (DateTime) value;
@@ -68,15 +72,12 @@ namespace JCS.Argon.Model.Schema
             }
             else
             {
-                if (Properties == null)
-                {
-                    Properties = new List<Property>();
-                }
+                if (Properties == null) Properties = new List<Property>();
 
                 switch (type)
                 {
                     case PropertyType.Boolean:
-                        Properties.Add(new Property()
+                        Properties.Add(new Property
                         {
                             Name = name,
                             Type = type,
@@ -84,15 +85,15 @@ namespace JCS.Argon.Model.Schema
                         });
                         break;
                     case PropertyType.Number:
-                        Properties.Add(new Property()
+                        Properties.Add(new Property
                         {
                             Name = name,
                             Type = PropertyType.Number,
-                            NumberValue = (double) Convert.ToDouble(value),
+                            NumberValue = Convert.ToDouble(value)
                         });
                         break;
                     case PropertyType.DateTime:
-                        Properties.Add(new Property()
+                        Properties.Add(new Property
                         {
                             Name = name,
                             Type = PropertyType.DateTime,
@@ -100,7 +101,7 @@ namespace JCS.Argon.Model.Schema
                         });
                         break;
                     default:
-                        Properties.Add(new Property()
+                        Properties.Add(new Property
                         {
                             Name = name,
                             Type = PropertyType.String,
@@ -112,10 +113,9 @@ namespace JCS.Argon.Model.Schema
         }
 
         /// <summary>
-        /// Merges a dictionary of values into a given property group.  For each key in the dictionary:
-        ///
-        /// 1.  If there is currently no property with the name of the key, then it's created and added
-        /// 2.  If there is an existing property with a name matching the key, then it's value is replaced.
+        ///     Merges a dictionary of values into a given property group.  For each key in the dictionary:
+        ///     1.  If there is currently no property with the name of the key, then it's created and added
+        ///     2.  If there is an existing property with a name matching the key, then it's value is replaced.
         /// </summary>
         /// <param name="source"></param>
         public void MergeDictionary(Dictionary<string, object>? source)
@@ -124,7 +124,7 @@ namespace JCS.Argon.Model.Schema
             {
                 foreach (var key in source.Keys)
                 {
-                    object value = source[key];
+                    var value = source[key];
                     switch (value)
                     {
                         case string s:
@@ -154,7 +154,7 @@ namespace JCS.Argon.Model.Schema
         }
 
         /// <summary>
-        /// Helper function for searching for a given property
+        ///     Helper function for searching for a given property
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>
@@ -164,20 +164,15 @@ namespace JCS.Argon.Model.Schema
         }
 
         /// <summary>
-        /// Retrieves a given property by name
+        ///     Retrieves a given property by name
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>
         public Property? GetPropertyByName(string propertyName)
         {
             if (HasProperty(propertyName))
-            {
                 return Properties?.First(p => p.Name.Equals(propertyName));
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

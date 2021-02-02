@@ -1,7 +1,11 @@
+#region
+
 using JCS.Argon.Model.Responses;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
+#endregion
 
 namespace JCS.Argon.Services.Core
 {
@@ -22,7 +26,7 @@ namespace JCS.Argon.Services.Core
             if (exceptionHandlerPathFeature.Error != null)
             {
                 var ex = exceptionHandlerPathFeature.Error;
-                _log.LogWarning($"Found an exception of type {(ex.GetType())}");
+                _log.LogWarning($"Found an exception of type {ex.GetType()}");
                 switch (ex)
                 {
                     case ICollectionManager.CollectionManagerException e:
@@ -63,11 +67,9 @@ namespace JCS.Argon.Services.Core
                     }
                 }
             }
-            else
-            {
-                _log.LogWarning("Didn't locate an exception in the current context");
-                return new ExceptionResponse();
-            }
+
+            _log.LogWarning("Didn't locate an exception in the current context");
+            return new ExceptionResponse();
         }
     }
 }

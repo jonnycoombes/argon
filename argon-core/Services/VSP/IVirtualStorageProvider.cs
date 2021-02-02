@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +11,12 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
 
+#endregion
+
 namespace JCS.Argon.Services.VSP
 {
     /// <summary>
-    /// The core interface that must be implemented by each distinct VSP provider
+    ///     The core interface that must be implemented by each distinct VSP provider
     /// </summary>
     public interface IVirtualStorageProvider
     {
@@ -23,20 +27,21 @@ namespace JCS.Argon.Services.VSP
         }
 
         /// <summary>
-        /// Read-only property that contains the current <see cref="VirtualStorageBinding"/>
+        ///     Read-only property that contains the current <see cref="VirtualStorageBinding" />
         /// </summary>
         VirtualStorageBinding? Binding { get; }
 
 
         /// <summary>
-        /// Should return a unique identifying string for the provider.  This is used within
-        /// <see cref="VirtualStorageBinding"/> configuration elements in order to tell instances of <see cref="IVirtualStorageManager"/>
-        /// what class to load, and then to validate the configuration
+        ///     Should return a unique identifying string for the provider.  This is used within
+        ///     <see cref="VirtualStorageBinding" /> configuration elements in order to tell instances of
+        ///     <see cref="IVirtualStorageManager" />
+        ///     what class to load, and then to validate the configuration
         /// </summary>
         string ProviderType { get; }
 
         /// <summary>
-        /// Binds a given provider to its configuration
+        ///     Binds a given provider to its configuration
         /// </summary>
         /// <param name="binding"></param>
         /// <param name="dbCache"></param>
@@ -44,15 +49,15 @@ namespace JCS.Argon.Services.VSP
         public void Bind(VirtualStorageBinding binding, IDbCache dbCache, HttpClient httpClient);
 
         /// <summary>
-        /// Asks a provider to create a physical representation of a <see cref="Collection"/>
+        ///     Asks a provider to create a physical representation of a <see cref="Collection" />
         /// </summary>
         /// <param name="collection">The entity associated with the collection.  This may be mutated by this operation</param>
         /// <returns></returns>
         public Task<StorageOperationResult> CreateCollectionAsync(Collection collection);
 
         /// <summary>
-        /// Given an <see cref="Item"/> and <see cref="ItemVersion"/> instance, create a physical representation of a
-        /// specific version
+        ///     Given an <see cref="Item" /> and <see cref="ItemVersion" /> instance, create a physical representation of a
+        ///     specific version
         /// </summary>
         /// <param name="collection">The parent collection for the version</param>
         /// <param name="item">The item model element</param>
@@ -63,7 +68,7 @@ namespace JCS.Argon.Services.VSP
             IFormFile source);
 
         /// <summary>
-        /// Reads a specific item version from a collection 
+        ///     Reads a specific item version from a collection
         /// </summary>
         /// <param name="collection">The collection object</param>
         /// <param name="item">The item object</param>
@@ -85,41 +90,34 @@ namespace JCS.Argon.Services.VSP
         }
 
         /// <summary>
-        /// Class used to standardise responses back from the virtual storage provider layer
+        ///     Class used to standardise responses back from the virtual storage provider layer
         /// </summary>
         public class StorageOperationResult
         {
             /// <summary>
-            /// Default constructor
-            /// </summary>
-            public StorageOperationResult()
-            {
-            }
-
-            /// <summary>
-            /// A required operation status code
+            ///     A required operation status code
             /// </summary>
             public StorageOperationStatus Status { get; set; } = StorageOperationStatus.Ok;
 
             /// <summary>
-            /// And optional set of properties that may or may not be merged into
-            /// <see cref="PropertyGroup"/> instances
+            ///     And optional set of properties that may or may not be merged into
+            ///     <see cref="PropertyGroup" /> instances
             /// </summary>
             public Dictionary<string, object>? Properties { get; set; }
 
             /// <summary>
-            /// An optional stream object which may be returned by certain operations
+            ///     An optional stream object which may be returned by certain operations
             /// </summary>
             public Stream? Stream { get; set; }
 
             /// <summary>
-            /// An optional error message that can be passed back up through the stack
-            /// In general, only used if some kind of 'retryable' error occurs
+            ///     An optional error message that can be passed back up through the stack
+            ///     In general, only used if some kind of 'retryable' error occurs
             /// </summary>
             public string? ErrorMessage { get; set; }
 
             /// <summary>
-            /// An optional size property
+            ///     An optional size property
             /// </summary>
             public long? Size { get; set; }
         }

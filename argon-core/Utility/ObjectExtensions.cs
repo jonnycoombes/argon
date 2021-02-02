@@ -1,15 +1,16 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace JCS.Argon.Utility
 {
     public static class ObjectExtensions
     {
-        public static void AssertNotNull(this Object obj, object? target, string message)
+        public static void AssertNotNull(this object obj, object? target, string message)
         {
-            if (target == null)
-            {
-                throw new NullAssertionException(message);
-            }
+            if (target == null) throw new NullAssertionException(message);
         }
 
         public class NullAssertionException : Exception

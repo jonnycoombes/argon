@@ -1,14 +1,16 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
-using JCS.Neon.Glow.Helpers.General;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+
+#endregion
 
 
 namespace JCS.Argon.Services.Core
@@ -16,15 +18,15 @@ namespace JCS.Argon.Services.Core
     public class DbCache : BaseCoreService, IDbCache
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<DbCache>();
+        private static readonly ILogger _log = Log.ForContext<DbCache>();
 
         /// <summary>
-        /// Default constructor
+        ///     Default constructor
         /// </summary>
         /// <param name="options">The current api configuration</param>
-        /// <param name="serviceProvider">The current DI <see cref="IServiceProvider"/></param>
+        /// <param name="serviceProvider">The current DI <see cref="IServiceProvider" /></param>
         public DbCache(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
             : base(options, serviceProvider)
         {
@@ -35,7 +37,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             await DeleteEntry(partition, key);
-            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry()
+            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry
             {
                 Partition = partition,
                 Key = key,
@@ -49,7 +51,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             await DeleteEntry(partition, key);
-            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry()
+            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry
             {
                 Partition = partition,
                 Key = key,
@@ -63,7 +65,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             await DeleteEntry(partition, key);
-            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry()
+            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry
             {
                 Partition = partition,
                 Key = key,
@@ -77,7 +79,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             await DeleteEntry(partition, key);
-            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry()
+            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry
             {
                 Partition = partition,
                 Key = key,
@@ -91,7 +93,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             await DeleteEntry(partition, key);
-            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry()
+            var addOp = await DbContext.CacheEntries.AddAsync(new CacheEntry
             {
                 Partition = partition,
                 Key = key,
@@ -124,10 +126,8 @@ namespace JCS.Argon.Services.Core
                 await DbContext.SaveChangesAsync();
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
+#region
+
 using System;
 using System.Threading.Tasks;
-using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
@@ -8,20 +9,22 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon.Services.Core
 {
     /// <summary>
-    /// Default implementation of a property manager
+    ///     Default implementation of a property manager
     /// </summary>
     public class PropertyGroupManager : BaseCoreService, IPropertyGroupManager
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<Core.PropertyGroupManager>();
+        private static readonly ILogger _log = Log.ForContext<PropertyGroupManager>();
 
         /// <summary>
-        /// Default constructor
+        ///     Default constructor
         /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceProvider"></param>
@@ -31,7 +34,7 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
         }
 
-        /// <inheritdoc cref="IPropertyGroupManager.CreatePropertyGroupAsync"/>
+        /// <inheritdoc cref="IPropertyGroupManager.CreatePropertyGroupAsync" />
         public async Task<PropertyGroup> CreatePropertyGroupAsync()
         {
             LogMethodCall(_log);

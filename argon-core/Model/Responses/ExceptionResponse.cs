@@ -1,7 +1,7 @@
 namespace JCS.Argon.Model.Responses
 {
     /// <summary>
-    /// Generic exception response object
+    ///     Generic exception response object
     /// </summary>
     public class ExceptionResponse
     {

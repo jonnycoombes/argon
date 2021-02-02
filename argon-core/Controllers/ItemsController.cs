@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,27 +10,29 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
+#endregion
+
 namespace JCS.Argon.Controllers
 {
     [Route("/api/v1/Collections")]
     public class ItemsController : BaseApiController
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<ItemsController>();
+        private static readonly ILogger _log = Log.ForContext<ItemsController>();
 
         /// <summary>
-        /// The <see cref="CollectionManager"/> instance - DI'd 
+        ///     The <see cref="CollectionManager" /> instance - DI'd
         /// </summary>
         protected readonly ICollectionManager _collectionManager;
 
         /// <summary>
-        /// The <see cref="ItemManager"/> instance - DI'd
+        ///     The <see cref="ItemManager" /> instance - DI'd
         /// </summary>
         protected readonly IItemManager _itemManager;
 
-        public ItemsController(ICollectionManager collectionManager, IItemManager itemManager) : base()
+        public ItemsController(ICollectionManager collectionManager, IItemManager itemManager)
         {
             LogMethodCall(_log);
             _collectionManager = collectionManager;
@@ -36,7 +40,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Retrieves a list of items for a given collection.
+        ///     Retrieves a list of items for a given collection.
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <returns></returns>
@@ -57,7 +61,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Reads the meta-data (including <see cref="PropertyGroup"/>) for a given item
+        ///     Reads the meta-data (including <see cref="PropertyGroup" />) for a given item
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
@@ -79,10 +83,10 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Reads the content for a specific collection item. By default, this will return the content of the latest version
+        ///     Reads the content for a specific collection item. By default, this will return the content of the latest version
         /// </summary>
         /// <remarks>
-        /// This method will return the latest version of the item by default.  
+        ///     This method will return the latest version of the item by default.
         /// </remarks>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
@@ -107,7 +111,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Reads the contents of a specific version
+        ///     Reads the contents of a specific version
         /// </summary>
         /// <param name="collectionId"></param>
         /// <param name="itemId"></param>
@@ -133,20 +137,22 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Performs an upload of new content to a given collection.  This will create the initial version for the content
+        ///     Performs an upload of new content to a given collection.  This will create the initial version for the content
         /// </summary>
         /// <param name="collectionId"></param>
         /// <param name="file"></param>
         /// <remarks>
-        /// This is a multi-part file upload request, with the addition that the "Headers" object may also be
-        /// used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
-        /// automatic type-detection is performed on the meta-data pairs.
+        ///     This is a multi-part file upload request, with the addition that the "Headers" object may also be
+        ///     used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
+        ///     automatic type-detection is performed on the meta-data pairs.
         /// </remarks>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         /// <response code="201">Successful creation of new content</response>
-        /// <response code="400">Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
-        /// in response payload.</response>
+        /// <response code="400">
+        ///     Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
+        ///     in response payload.
+        /// </response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
         [Route("/api/v1/Collections/{collectionId}/Items")]
@@ -155,7 +161,8 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
+        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")]
+            IFormFile file)
         {
             LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
@@ -166,21 +173,23 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Will add a new version to a given item of content 
+        ///     Will add a new version to a given item of content
         /// </summary>
         /// <param name="collectionId"></param>
         /// <param name="itemId">The </param>
         /// <param name="file"></param>
         /// <remarks>
-        ///This is a multi-part file upload request, with the addition that the "Headers" object may also be
-        /// used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
-        /// automatic type-detection is performed on the meta-data pairs.
+        ///     This is a multi-part file upload request, with the addition that the "Headers" object may also be
+        ///     used in order to specify a map of meta-data values to be assigned against the content.  Where possible,
+        ///     automatic type-detection is performed on the meta-data pairs.
         /// </remarks>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         /// <response code="201">Successful creation of new content</response>
-        /// <response code="400">Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
-        /// in response payload.</response>
+        /// <response code="400">
+        ///     Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
+        ///     in response payload.
+        /// </response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpPost]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Versions")]
@@ -189,7 +198,8 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")] IFormFile file)
+        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")]
+            IFormFile file)
         {
             LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
@@ -201,7 +211,7 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        /// Retrieves the content of a specific item version
+        ///     Retrieves the content of a specific item version
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
@@ -214,7 +224,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<JCS.Argon.Model.Schema.ItemVersion> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
+        public async Task<ItemVersion> ReadItemVersionMeta(Guid collectionId, Guid itemId, Guid versionId)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);

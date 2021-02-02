@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -8,17 +10,19 @@ using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
+#endregion
+
 namespace JCS.Argon
 {
     public class Program
     {
         /// <summary>
-        /// Generate a configuration object based on the current working directory and the
-        /// root-level appsettings.json file
+        ///     Generate a configuration object based on the current working directory and the
+        ///     root-level appsettings.json file
         /// </summary>
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", true, true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -47,10 +51,12 @@ namespace JCS.Argon
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureLogging((context, builder) => { builder.ClearProviders(); })
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+        }
     }
 }
