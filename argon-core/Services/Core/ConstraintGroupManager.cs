@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
@@ -123,10 +124,79 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IConstraintGroupManager.ValidatePropertiesAgainstCosntraints" />
-        public async Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties)
+        public List<string> ValidatePropertiesAgainstConstraints(ConstraintGroup constraintGroup, PropertyGroup properties)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+            var results = new List<string>();
+            if (constraintGroup.Constraints == null) return results;
+
+            // mandatory constraints 
+            var mandatoryConstraints = constraintGroup.Constraints.Where(c => c.ConstraintType == ConstraintType.Mandatory);
+            results.AddRange(from constraint in mandatoryConstraints
+                where !properties.HasProperty(constraint.SourceProperty)
+                select $"Constraint \"{constraint.Name}\" violated, \"{constraint.SourceProperty}\" not found within supplied properties");
+
+            // type constraints
+            var typeConstraints = constraintGroup.Constraints.Where(c => c.ConstraintType == ConstraintType.AllowableType);
+            results.AddRange(from constraint in typeConstraints
+                where properties.HasProperty(constraint.SourceProperty)
+                let property = properties.GetPropertyByName(constraint.SourceProperty)
+                where !CheckPropertyType(constraint, property!)
+                select $"Type constraint \"{constraint.Name}\" violated, specified value is not of the correct type \"{property.Name}\"");
+
+            // type and values constraints
+            var typeAndValueConstraints = constraintGroup.Constraints.Where(c => c.ConstraintType == ConstraintType.AllowableTypeAndValues);
+            results.AddRange(from constraint in typeAndValueConstraints
+                where properties.HasProperty(constraint.SourceProperty)
+                let property = properties.GetPropertyByName(constraint.SourceProperty)
+                where !CheckPropertyTypeAndValue(constraint, property!)
+                select
+                    $"Type constraint \"{constraint.Name}\" violated, specified value is not of the correct type, or doesn't have a valid value \"{property.Name}\"");
+
+
+            return results;
+        }
+
+        /// <summary>
+        ///     Checks whether a given property has been populated with an allowable value
+        /// </summary>
+        /// <param name="typeAndValueConstraint">The constraint to be applied</param>
+        /// <param name="property">The property to check</param>
+        /// <returns>true if the property meets the constraint, false otherwise</returns>
+        private static bool CheckPropertyTypeAndValue(Constraint typeAndValueConstraint, Property property)
+        {
+            if (CheckPropertyType(typeAndValueConstraint, property))
+            {
+                if (typeAndValueConstraint.AllowableValues == null || typeAndValueConstraint.AllowableValues.Length <= 0) return false;
+                var value = property.ValueToString();
+                if (value == null) return false;
+                if (typeAndValueConstraint.AllowableValues.Any(v => v.Equals(value))) return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Checks whether a specific property value is of a given type
+        /// </summary>
+        /// <param name="typeConstraint">The <see cref="Constraint" /> that provides the type constraint</param>
+        /// <param name="property">The property to check</param>
+        /// <returns>true if the property meets the type constraint, false otherwise</returns>
+        private static bool CheckPropertyType(Constraint typeConstraint, Property property)
+        {
+            return typeConstraint.ValueType switch
+            {
+                ConstraintValidTypes.String => property.Type == PropertyType.String,
+                ConstraintValidTypes.Number => property.Type == PropertyType.Number,
+                ConstraintValidTypes.DateTime => property.Type == PropertyType.DateTime,
+                ConstraintValidTypes.Boolean => property.Type == PropertyType.Boolean,
+                null => false,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }
