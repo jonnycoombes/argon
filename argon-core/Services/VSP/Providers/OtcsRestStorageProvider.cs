@@ -175,10 +175,11 @@ namespace JCS.Argon.Services.VSP.Providers
             var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
             if (item.PropertyGroup.HasProperty("nodeId"))
                 itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
-            else if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
-                itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
             else
-                itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
+                if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
+                    itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
+                else
+                    itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
 
             if (itemNodeId == 0)
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,

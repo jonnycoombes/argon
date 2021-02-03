@@ -34,7 +34,8 @@ namespace JCS.Argon.Model.Configuration
 
         /// <summary>
         ///     Generic set of properties for the provider, which will vary based on the underlying
-        ///     implementation.  The native filesystem provider will have a different set of properties from the Otcs provider for example.
+        ///     implementation.  The native filesystem provider will have a different set of properties from the Otcs provider for
+        ///     example.
         /// </summary>
         public Dictionary<string, object> Properties { get; set; }
 

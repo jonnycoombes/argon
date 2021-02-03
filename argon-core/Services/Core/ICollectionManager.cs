@@ -75,7 +75,10 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         ///     Retrieves a list of currently configured <see cref="VirtualStorageBinding" /> instances
         /// </summary>
-        /// <returns>A list of <see cref="VirtualStorageBinding" /> instances.  These are basically taken from the current system configuration</returns>
+        /// <returns>
+        ///     A list of <see cref="VirtualStorageBinding" /> instances.  These are basically taken from the current system
+        ///     configuration
+        /// </returns>
         public List<VirtualStorageBinding> GetStorageBindings();
 
         /// <summary>

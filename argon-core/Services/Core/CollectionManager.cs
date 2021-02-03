@@ -219,7 +219,10 @@ namespace JCS.Argon.Services.Core
         /// <param name="cmd"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        /// <exception cref="ICollectionManager.CollectionManagerException">Thrown if <see cref="IVirtualStorageProvider" /> throws an error</exception>
+        /// <exception cref="ICollectionManager.CollectionManagerException">
+        ///     Thrown if <see cref="IVirtualStorageProvider" /> throws
+        ///     an error
+        /// </exception>
         private async Task<Collection> PerformProviderCollectionCreationActions(CreateCollectionCommand cmd, Collection collection)
         {
             LogDebug(_log, $"Looking up a virtual storage provider with tag [{cmd.ProviderTag}");

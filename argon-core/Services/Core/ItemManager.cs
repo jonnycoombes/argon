@@ -222,6 +222,13 @@ namespace JCS.Argon.Services.Core
                 "An unhandled error occurred whilst attempting to retrieve a version from storage");
         }
 
+        /// <summary>
+        ///     Creates a new <see cref="Item" /> template which includes an initial version, along with a populated property group
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /> for the new item</param>
+        /// <param name="itemVersion">The initial <see cref="ItemVersion" /> for the new item</param>
+        /// <param name="properties">A (pre-validated) property bag for the new item</param>
+        /// <returns></returns>
         protected async Task<Item> CreateNewItemTemplate(Collection collection, ItemVersion itemVersion,
             Dictionary<string, object>? properties)
         {
@@ -230,12 +237,8 @@ namespace JCS.Argon.Services.Core
             propertyGroup.MergeDictionary(properties);
             var item = new Item
             {
-                Name = itemVersion.Name,
-                Collection = collection,
-                CreatedDate = DateTime.Now,
-                LastModified = DateTime.Now,
-                PropertyGroup = propertyGroup,
-                Versions = new List<ItemVersion>()
+                Name = itemVersion.Name, Collection = collection, CreatedDate = DateTime.Now, LastModified = DateTime.Now,
+                PropertyGroup = propertyGroup, Versions = new List<ItemVersion>()
             };
             item.Versions.Add(itemVersion);
             itemVersion.Item = item;
@@ -243,7 +246,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        ///     Creates a new version template (TODO - additional validation of inbound form file structure)
+        ///     Creates a new version template
         /// </summary>
         /// <param name="source">The source object</param>
         /// <param name="majorVersion">Optional major version (defaults to 1)</param>
@@ -258,11 +261,8 @@ namespace JCS.Argon.Services.Core
             {
                 var version = new ItemVersion
                 {
-                    Name = source.FileName,
-                    MIMEType = source.Headers == null ? "text/plain" : source.ContentType,
-                    Size = source.Length,
-                    Major = majorVersion,
-                    Minor = minorVersion
+                    Name = source.FileName, MIMEType = source.Headers == null ? "text/plain" : source.ContentType, Size = source.Length,
+                    Major = majorVersion, Minor = minorVersion
                 };
                 return version;
             });

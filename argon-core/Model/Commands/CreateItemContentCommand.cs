@@ -26,7 +26,8 @@ namespace JCS.Argon.Model.Commands
         public Dictionary<string, object> Properties { get; set; } = null!;
 
         /// <summary>
-        ///     An <see cref="IFormFile" /> reference which can be used in order to retrieve the actual content for the item, along with other
+        ///     An <see cref="IFormFile" /> reference which can be used in order to retrieve the actual content for the item, along
+        ///     with other
         ///     information such as MIME type etc...
         /// </summary>
         public IFormFile File { get; set; } = null!;

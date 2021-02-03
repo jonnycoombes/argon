@@ -231,7 +231,8 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
-        ///     Generates the base header set for a new request.   If we are running with Basic authentication, then the OTCS authentication
+        ///     Generates the base header set for a new request.   If we are running with Basic authentication, then the OTCS
+        ///     authentication
         ///     token will need to be injected into the headers
         /// </summary>
         /// <returns>An array of string pairs, containing zero or more headers to be added to a request</returns>

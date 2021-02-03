@@ -92,14 +92,17 @@ namespace JCS.Argon.Services.VSP.Providers
                 LogWarning(_log, "Source has no headers - using default content type");
                 contentType = "text/plain";
             }
-            else if (source.ContentType == null)
-            {
-                LogWarning(_log, "Source doesn't appear to have a content type - using default");
-                contentType = "text/plain";
-            }
             else
             {
-                contentType = source.ContentType;
+                if (source.ContentType == null)
+                {
+                    LogWarning(_log, "Source doesn't appear to have a content type - using default");
+                    contentType = "text/plain";
+                }
+                else
+                {
+                    contentType = source.ContentType;
+                }
             }
 
             return contentType;
