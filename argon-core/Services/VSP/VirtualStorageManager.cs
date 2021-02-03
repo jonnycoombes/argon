@@ -51,7 +51,6 @@ namespace JCS.Argon.Services.VSP
             IOptionsMonitor<ApiOptions> apiOptions)
         {
             LogMethodCall(_log);
-            if (apiOptions == null) LogWarning(_log, "Options appear to be null - expect problems");
             _virtualStorageOptions = apiOptions.CurrentValue.VirtualStorageOptions;
             if (_virtualStorageOptions == null) LogWarning(_log, "No virtual storage options found - expect problems");
             _serviceProvider = serviceProvider;

@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -122,14 +124,19 @@ namespace JCS.Argon.Extensions
         }
 
         /// <summary>
-        ///     Register any typed/untyped IHttpClientFactories here
+        ///     Registers a <see cref="HttpClient" /> for use within the storage layer.  By default this client is configured to
+        ///     utilise the default credentials so that pass
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
         private static void RegisterHttpClientServices(IServiceCollection services, IConfiguration config)
         {
             LogHelpers.LogMethodCall(_log);
-            services.AddHttpClient<IVirtualStorageManager, VirtualStorageManager>();
+            services.AddHttpClient<IVirtualStorageManager, VirtualStorageManager>().ConfigurePrimaryHttpMessageHandler(() =>
+                new HttpClientHandler
+                {
+                    Credentials = CredentialCache.DefaultNetworkCredentials
+                });
         }
 
         /// <summary>

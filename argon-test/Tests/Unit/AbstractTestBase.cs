@@ -3,6 +3,7 @@
 using System;
 using System.Data.Common;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using JCS.Argon.Contexts;
@@ -176,7 +177,13 @@ namespace JCS.Argon.Tests.Tests.Unit
             // rather than just checking construction within tests, because most constructors
             // don't actually do a great deal (largely because of late-binding methods used to
             // access specific dependent services in the base)
-            _virtualStorageManager = new VirtualStorageManager(_serviceProvider, new HttpClient(), _options);
+            var handler = new HttpClientHandler
+            {
+                UseDefaultCredentials = true,
+                Credentials = CredentialCache.DefaultNetworkCredentials,
+                PreAuthenticate = true
+            };
+            _virtualStorageManager = new VirtualStorageManager(_serviceProvider, new HttpClient(handler), _options);
             _serviceProvider.GetService(typeof(IVirtualStorageManager))
                 .Returns(_virtualStorageManager);
 

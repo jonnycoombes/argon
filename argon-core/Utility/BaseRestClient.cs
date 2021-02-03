@@ -116,8 +116,8 @@ namespace JCS.Argon.Utility
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
         /// <exception cref="BaseRestClientException"></exception>
-        protected async Task<JObject> GetRequestForJsonAsync(Uri uri, (string, string)[] headers,
-            (string, string)[] queryParams, bool checkResponseCodes = true)
+        protected async Task<JObject> GetRequestForJsonAsync(Uri uri, IEnumerable<(string, string)> headers,
+            IEnumerable<(string, string)> queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
             var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
@@ -163,8 +163,8 @@ namespace JCS.Argon.Utility
         /// <param name="queryParams"></param>
         /// <param name="checkResponseCodes"></param>
         /// <returns></returns>
-        protected async Task<Pair<string, Stream>> GetRequestForContentStream(Uri uri, (string, string)[] headers,
-            (string, string)[] queryParams, bool checkResponseCodes = true)
+        protected async Task<Pair<string, Stream>> GetRequestForContentStream(Uri uri, IEnumerable<(string, string)> headers,
+            IEnumerable<(string, string)> queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
             var response = await GetRequest(uri, headers, queryParams, checkResponseCodes);
