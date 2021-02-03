@@ -44,12 +44,12 @@ namespace JCS.Argon.Services.Core
 
         /// <summary>
         ///     Validate a given set of properties against a given contraint group, and then produce a (potentially empty) list
-        ///     of validation errors which may be fed back further up the pipeline
+        ///     of validation errors which may be fed back to the caller
         /// </summary>
         /// <param name="constraints">A valid set of constraints to perform validation against</param>
         /// <param name="properties">A valid (possibly empty) set of properties</param>
         /// <returns></returns>
-        public Task<List<string>> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties);
+        public List<string> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties);
 
         /// <summary>
         ///     Thrown in the event of a failure within the constraint group manager
