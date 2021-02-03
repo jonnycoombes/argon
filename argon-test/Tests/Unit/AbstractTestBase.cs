@@ -110,6 +110,8 @@ namespace JCS.Argon.Tests.Tests.Unit
             _dbContext.Database.EnsureDeleted();
             _dbContext.Dispose();
             LogInformation(_log, "Test database blatted");
+            var vfsBinding = _options.CurrentValue.VirtualStorageOptions
+                .Bindings.Find(b => b.ProviderType == "nativeFileSystem");
         }
 
         /// <summary>
@@ -131,6 +133,10 @@ namespace JCS.Argon.Tests.Tests.Unit
 #endif
         }
 
+        /// <summary>
+        ///     Creates an in-memory database for use within a given series of tests
+        /// </summary>
+        /// <returns>Connection to a new SQLite in-memory database</returns>
         private static DbConnection CreateInMemoryDatabase()
         {
             var connection = new SqliteConnection("Filename=:memory:");
@@ -138,6 +144,9 @@ namespace JCS.Argon.Tests.Tests.Unit
             return connection;
         }
 
+        /// <summary>
+        ///     Migrates the database - i.e. creates all the necessary schema structures
+        /// </summary>
         private void MigrateDatabase()
         {
             LogMethodCall(_log);
