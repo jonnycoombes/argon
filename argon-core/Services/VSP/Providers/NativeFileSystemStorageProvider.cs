@@ -76,7 +76,7 @@ namespace JCS.Argon.Services.VSP.Providers
             catch (Exception ex)
             {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
-                    $"Unable to create new root location for collections at {_rootPathInfo.FullName}: {ex.Message}", ex);
+                    $"Unable to create new root location for collections at {_rootPathInfo?.FullName}: {ex.Message}", ex);
             }
         }
 
