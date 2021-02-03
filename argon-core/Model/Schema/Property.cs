@@ -110,5 +110,21 @@ namespace JCS.Argon.Model.Schema
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        /// <summary>
+        ///     Utility that converts the current internal value to a string
+        /// </summary>
+        /// <returns></returns>
+        public string? ValueToString()
+        {
+            return Type switch
+            {
+                PropertyType.String => StringValue,
+                PropertyType.Number => NumberValue?.ToString(),
+                PropertyType.DateTime => DateTimeValue?.ToString("u"),
+                PropertyType.Boolean => BooleanValue?.ToString(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
     }
 }
