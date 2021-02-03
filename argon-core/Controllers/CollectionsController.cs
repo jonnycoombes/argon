@@ -15,6 +15,9 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
+    /// <summary>
+    ///     The main controller for <see cref="Collection" /> related operations
+    /// </summary>
     [ApiController]
     [Route("/api/v1/[controller]")]
     public class CollectionsController : BaseApiController

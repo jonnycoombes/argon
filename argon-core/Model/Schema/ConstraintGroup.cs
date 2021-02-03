@@ -11,6 +11,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     Aggregate entity for <see cref="Constraint" /> entities
+    /// </summary>
     [Table("constraintGroup", Schema = "argon")]
     public class ConstraintGroup
     {

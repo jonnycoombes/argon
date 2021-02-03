@@ -9,6 +9,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     The currently supported set of property types
+    /// </summary>
     public enum PropertyType
     {
         String,
@@ -17,6 +20,9 @@ namespace JCS.Argon.Model.Schema
         Boolean
     }
 
+    /// <summary>
+    ///     A property can be assigned to a given <see cref="Item" /> entity through the propertyGroup
+    /// </summary>
     [Table("property", Schema = "argon")]
     public class Property
     {

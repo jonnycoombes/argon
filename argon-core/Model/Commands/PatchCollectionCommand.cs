@@ -1,5 +1,8 @@
 namespace JCS.Argon.Model.Commands
 {
+    /// <summary>
+    ///     Command for the patching of existing collections - TODO needs to have constraint support added
+    /// </summary>
     public class PatchCollectionCommand
     {
         /// <summary>

@@ -10,6 +10,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     Each collection stores multiple <see cref="Item" /> entities
+    /// </summary>
     [Table("item", Schema = "argon")]
     public class Item
     {

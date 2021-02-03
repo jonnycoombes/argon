@@ -11,6 +11,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     Aggregate entity for <see cref="Property" /> entities
+    /// </summary>
     [Table("propertyGroup", Schema = "argon")]
     public class PropertyGroup
     {
@@ -37,9 +40,9 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         ///     Adds or replaces a property
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="value"></param>
+        /// <param name="name">The name of the property</param>
+        /// <param name="type">The required property type</param>
+        /// <param name="value">The value for the property</param>
         public void AddOrReplaceProperty(string name, PropertyType type, object value)
         {
             if (HasProperty(name))
@@ -126,7 +129,7 @@ namespace JCS.Argon.Model.Schema
         ///     1.  If there is currently no property with the name of the key, then it's created and added
         ///     2.  If there is an existing property with a name matching the key, then it's value is replaced.
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">A dictionary containing a series of 1-level KV pairs to merge into the property group</param>
         public void MergeDictionary(Dictionary<string, object>? source)
         {
             if (source != null)
@@ -163,8 +166,8 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         ///     Helper function for searching for a given property
         /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
+        /// <param name="propertyName">The name of the property to check for</param>
+        /// <returns>true if the property exists within the property group</returns>
         public bool HasProperty(string propertyName)
         {
             return Properties != null && Properties.Any(p => p.Name.Equals(propertyName));
@@ -173,8 +176,8 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         ///     Retrieves a given property by name
         /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
+        /// <param name="propertyName">The name of the property to try and return</param>
+        /// <returns>The property or null</returns>
         public Property? GetPropertyByName(string propertyName)
         {
             return HasProperty(propertyName) ? Properties?.First(p => p.Name.Equals(propertyName)) : null;

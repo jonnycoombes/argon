@@ -2,12 +2,14 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using JCS.Argon.Model.Schema;
 
 #endregion
 
 namespace JCS.Argon.Model.Commands
 {
     /// <summary>
+    ///     Command for the creation of new <see cref="Collection" /> instances
     /// </summary>
     public class CreateCollectionCommand
     {
@@ -18,6 +20,12 @@ namespace JCS.Argon.Model.Commands
         {
         }
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="name">The name of the new collection</param>
+        /// <param name="providerTag">The tag for the provider to use in order to create the collection</param>
+        /// <param name="description">An optional description for the collection</param>
         public CreateCollectionCommand(string name, string providerTag, string? description)
         {
             Name = name;

@@ -75,12 +75,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         public async void CreateCollection(string name, string providerTag)
         {
             LogMethodCall(_log);
-            var cmd = new CreateCollectionCommand
-            {
-                Name = name,
-                Description = "Test description",
-                ProviderTag = providerTag
-            };
+            var cmd = new CreateCollectionCommand {Name = name, Description = "Test description", ProviderTag = providerTag};
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
             Assert.Equal(0, collection.Length);
@@ -93,12 +88,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         public async void AttemptCreationWithDuplicateName(string providerTag)
         {
             const string name = "Test Duplicate Collection";
-            var cmd = new CreateCollectionCommand
-            {
-                Name = name,
-                Description = "Duplicate collection",
-                ProviderTag = providerTag
-            };
+            var cmd = new CreateCollectionCommand {Name = name, Description = "Duplicate collection", ProviderTag = providerTag};
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
             Assert.Equal(0, collection.Length);

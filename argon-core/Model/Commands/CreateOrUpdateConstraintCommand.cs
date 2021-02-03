@@ -12,7 +12,7 @@ namespace JCS.Argon.Model.Commands
     public class CreateOrUpdateConstraintCommand
     {
         /// <summary>
-        ///     The name of the constraint
+        ///     The name of the constraint to update or create
         /// </summary>
         [Required]
         public string Name { get; set; } = null!;

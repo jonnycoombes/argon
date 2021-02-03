@@ -15,6 +15,9 @@ using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
 namespace JCS.Argon.Controllers
 {
+    /// <summary>
+    ///     Controller for handling configuration-related operations
+    /// </summary>
     [ApiController]
     [Route("/api/v1/[controller]")]
     public class ConfigurationController : BaseApiController

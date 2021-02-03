@@ -20,6 +20,9 @@ namespace JCS.Argon.Controllers
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<BaseApiController>();
 
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
         protected BaseApiController()
         {
             LogMethodCall(_log);

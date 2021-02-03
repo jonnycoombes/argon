@@ -14,6 +14,10 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
+    /// <summary>
+    ///     Controller for handling item-related requests to the API
+    /// </summary>
+    [ApiController]
     [Route("/api/v1/Collections")]
     public class ItemsController : BaseApiController
     {

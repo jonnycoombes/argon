@@ -9,6 +9,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     Each <see cref="Item" /> entity can have multiple versions
+    /// </summary>
     [Table("itemVersion", Schema = "argon")]
     public class ItemVersion
     {

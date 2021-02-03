@@ -12,6 +12,9 @@ using System.Text.Json.Serialization;
 
 namespace JCS.Argon.Model.Schema
 {
+    /// <summary>
+    ///     The main collection entity.  This represents the top of the storage heirarchy
+    /// </summary>
     [Table("collection", Schema = "argon")]
     public class Collection
     {
