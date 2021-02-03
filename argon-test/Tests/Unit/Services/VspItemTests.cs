@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
-using JCS.Argon.Tests.Unit;
 using Serilog;
 using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
@@ -29,8 +28,8 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to count the items in a collection")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        [InlineData("TestOTCSCollection")]
         public async void CountCollectionItems(string providerTag)
         {
             LogMethodCall(_log);
@@ -42,6 +41,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to create new items in a collection")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData(1024, "TestFS")]
         [InlineData(12024, "TestFS")]
         [InlineData(4096, "TestFS")]
@@ -52,16 +52,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         [InlineData(150000, "TestFS")]
         [InlineData(644440, "TestFS")]
         [InlineData(33333333, "TestFS")]
-        [InlineData(1024, "TestOTCSCollection")]
-        [InlineData(12024, "TestOTCSCollection")]
-        [InlineData(4096, "TestOTCSCollection")]
-        [InlineData(8192, "TestOTCSCollection")]
-        [InlineData(10, "TestOTCSCollection")]
-        [InlineData(65536, "TestOTCSCollection")]
-        [InlineData(100000, "TestOTCSCollection")]
-        [InlineData(150000, "TestOTCSCollection")]
-        [InlineData(644440, "TestOTCSCollection")]
-        [InlineData(33333333, "TestOTCSCollection")]
         public async void CreateCollectionItems(int sizeInBytes, string providerTag)
         {
             LogMethodCall(_log);
@@ -81,6 +71,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to add new items and subsequently retrieve them")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData(1024, "TestFS")]
         [InlineData(12024, "TestFS")]
         [InlineData(4096, "TestFS")]
@@ -91,16 +82,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         [InlineData(150000, "TestFS")]
         [InlineData(644440, "TestFS")]
         [InlineData(33333333, "TestFS")]
-        [InlineData(1024, "TestOTCSCollection")]
-        [InlineData(12024, "TestOTCSCollection")]
-        [InlineData(4096, "TestOTCSCollection")]
-        [InlineData(8192, "TestOTCSCollection")]
-        [InlineData(10, "TestOTCSCollection")]
-        [InlineData(65536, "TestOTCSCollection")]
-        [InlineData(100000, "TestOTCSCollection")]
-        [InlineData(150000, "TestOTCSCollection")]
-        [InlineData(644440, "TestOTCSCollection")]
-        [InlineData(33333333, "TestOTCSCollection")]
         public async void AddAndRetrieveItems(int sizeInBytes, string providerTag)
         {
             LogMethodCall(_log);

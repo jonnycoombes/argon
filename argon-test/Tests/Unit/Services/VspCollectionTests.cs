@@ -3,7 +3,6 @@
 using System;
 using JCS.Argon.Model.Commands;
 using JCS.Argon.Services.Core;
-using JCS.Argon.Tests.Unit;
 using Serilog;
 using Xunit;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
@@ -27,6 +26,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Fact(DisplayName = "An empty database must contain no collections")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         public async void CountEmptyDatabase()
         {
             LogMethodCall(_log);
@@ -36,6 +36,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Fact(DisplayName = "Must not be able to retrieve a collection from an empty database")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         public void AttemptRetrievalFromEmptyDatabase()
         {
             LogMethodCall(_log);
@@ -47,6 +48,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Attempting to load collections with random identifiers should fail")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("0ddd1bb5-3dce-4ec1-9d3e-a6115783a638")]
         [InlineData("7220c4e1-c609-46ea-9bef-efc8b826e379")]
         [InlineData("f7e87df8-18ba-436b-9891-ae13714cbac4")]
@@ -63,16 +65,12 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to create new collections")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("Test Collection 1", "TestFS")]
         [InlineData("Test Collection 2", "TestFS")]
         [InlineData("Test Collection 3", "TestFS")]
         [InlineData("Test Collection 4", "TestFS")]
         [InlineData("Test Collection 5", "TestFS")]
-        [InlineData("Test Collection 1", "TestOTCSCollection")]
-        [InlineData("Test Collection 2", "TestOTCSCollection")]
-        [InlineData("Test Collection 3", "TestOTCSCollection")]
-        [InlineData("Test Collection 4", "TestOTCSCollection")]
-        [InlineData("Test Collection 5", "TestOTCSCollection")]
         public async void CreateCollection(string name, string providerTag)
         {
             LogMethodCall(_log);
@@ -89,8 +87,8 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must not be able to create collections with a duplicate name")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        [InlineData("TestOTCSCollection")]
         public async void AttemptCreationWithDuplicateName(string providerTag)
         {
             const string name = "Test Duplicate Collection";
@@ -111,8 +109,8 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to count collections")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        [InlineData("TestOTCSCollection")]
         public async void CountCollections(string providerTag)
         {
             var cmds = new[]
@@ -136,8 +134,8 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to list collections")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        [InlineData("TestOTCSCollection")]
         public async void ListCollections(string providerTag)
         {
             var cmds = new[]
@@ -163,8 +161,8 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
 
         [Theory(DisplayName = "Must be able to retrieve a single collection by id")]
         [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        [InlineData("TestOTCSCollection")]
         public async void RetrieveCollection(string providerTag)
         {
             var cmd = new CreateCollectionCommand("Test Collection", providerTag, null);

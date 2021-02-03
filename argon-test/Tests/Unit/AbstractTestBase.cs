@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Data.Common;
 using System.IO;
@@ -13,82 +15,83 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using NSubstitute;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
-namespace JCS.Argon.Tests.Unit
+#endregion
+
+namespace JCS.Argon.Tests.Tests.Unit
 {
     /// <summary>
-    /// Base class for unit and service tests.  Basically contains methods for mocking services as required,
-    /// along with establishing DB contexts etc...this base class assumes and will use a separate series of
-    /// application settings found within the appsettings.Test.json file
+    ///     Base class for unit and service tests.  Basically contains methods for mocking services as required,
+    ///     along with establishing DB contexts etc...this base class assumes and will use a separate series of
+    ///     application settings found within the appsettings.Test.json file
     /// </summary>
     public abstract class AbstractTestBase : IDisposable
     {
         /// <summary>
-        /// Static logger instance
+        ///     Static logger instance
         /// </summary>
         private static ILogger _log;
 
         /// <summary>
-        /// The <see cref="ICollectionManager"/> instance for testing
+        ///     The <see cref="ICollectionManager" /> instance for testing
         /// </summary>
         protected ICollectionManager _collectionManager;
 
         /// <summary>
-        /// The current configuration instance to be used during testing
+        ///     The current configuration instance to be used during testing
         /// </summary>
-        protected IConfiguration _configuration;
+        private IConfiguration _configuration;
 
         /// <summary>
-        /// The <see cref="IConstraintGroupManager"/> instance for testing
+        ///     The <see cref="IConstraintGroupManager" /> instance for testing
         /// </summary>
-        protected IConstraintGroupManager _constraintGroupManager;
+        private IConstraintGroupManager _constraintGroupManager;
 
         /// <summary>
-        /// The current sql context options
+        ///     The current sql context options
         /// </summary>
-        protected DbContextOptions<SqlDbContext> _contextOptions;
+        private DbContextOptions<SqlDbContext> _contextOptions;
 
         /// <summary>
-        /// The <see cref="IDbCache"/> instance for testing
+        ///     The <see cref="IDbCache" /> instance for testing
         /// </summary>
-        protected IDbCache _dbCache;
+        private IDbCache _dbCache;
 
         /// <summary>
-        /// The db context to use within the tests
+        ///     The db context to use within the tests
         /// </summary>
-        protected SqlDbContext _dbContext;
+        private SqlDbContext _dbContext;
 
         /// <summary>
-        /// The <see cref="IItemManager"/> instance for testing
+        ///     The <see cref="IItemManager" /> instance for testing
         /// </summary>
         protected IItemManager _itemManager;
 
         /// <summary>
-        /// The mocked/test api configuration options
+        ///     The mocked/test api configuration options
         /// </summary>
-        protected IOptionsMonitor<ApiOptions> _options;
+        private IOptionsMonitor<ApiOptions> _options;
 
         /// <summary>
-        /// The <see cref="IPropertyGroupManager"/> intance for testing
+        ///     The <see cref="IPropertyGroupManager" /> intance for testing
         /// </summary>
-        protected IPropertyGroupManager _propertyGroupManager;
+        private IPropertyGroupManager _propertyGroupManager;
 
         /// <summary>
-        /// The mock service provider
+        ///     The mock service provider
         /// </summary>
-        protected IServiceProvider _serviceProvider;
+        private IServiceProvider _serviceProvider;
 
         /// <summary>
-        /// The <see cref="IVirtualStorageManager"/> instance for testing
+        ///     The <see cref="IVirtualStorageManager" /> instance for testing
         /// </summary>
         protected IVirtualStorageManager _virtualStorageManager;
 
         /// <summary>
-        /// Constructor which just sets up a bunch of things 
+        ///     Constructor which just sets up a bunch of things
         /// </summary>
         protected AbstractTestBase()
         {
@@ -102,17 +105,15 @@ namespace JCS.Argon.Tests.Unit
         public void Dispose()
         {
             LogMethodCall(_log);
-            if (_dbContext != null)
-            {
-                LogInformation(_log, "Tearing down current test database");
-                _dbContext.Database.EnsureDeleted();
-                _dbContext.Dispose();
-                LogInformation(_log, "Test database blatted");
-            }
+            if (_dbContext == null) return;
+            LogInformation(_log, "Tearing down current test database");
+            _dbContext.Database.EnsureDeleted();
+            _dbContext.Dispose();
+            LogInformation(_log, "Test database blatted");
         }
 
         /// <summary>
-        /// Stands up the options for the db context
+        ///     Stands up the options for the db context
         /// </summary>
         private void CreateContextOptions()
         {
@@ -130,14 +131,14 @@ namespace JCS.Argon.Tests.Unit
 #endif
         }
 
-        protected static DbConnection CreateInMemoryDatabase()
+        private static DbConnection CreateInMemoryDatabase()
         {
             var connection = new SqliteConnection("Filename=:memory:");
             connection.Open();
             return connection;
         }
 
-        protected void MigrateDatabase()
+        private void MigrateDatabase()
         {
             LogMethodCall(_log);
             LogInformation(_log, "Ensuring that we have a fresh database to test against");
@@ -146,7 +147,7 @@ namespace JCS.Argon.Tests.Unit
         }
 
         /// <summary>
-        /// Mock any services/providers that are required within the tests
+        ///     Mock any services/providers that are required within the tests
         /// </summary>
         private void MockServices()
         {
@@ -190,7 +191,7 @@ namespace JCS.Argon.Tests.Unit
         }
 
         /// <summary>
-        /// Configures logging for use during tests (so that full logging may be used in test cases)
+        ///     Configures logging for use during tests (so that full logging may be used in test cases)
         /// </summary>
         private void ConfigureLogging()
         {
@@ -202,13 +203,13 @@ namespace JCS.Argon.Tests.Unit
         }
 
         /// <summary>
-        /// Stands up the <see cref="IConfiguration"/> instance to be used during testing
+        ///     Stands up the <see cref="IConfiguration" /> instance to be used during testing
         /// </summary>
         private void MockConfiguration()
         {
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Test.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.Test.json", true, true)
                 .AddEnvironmentVariables()
                 .Build();
             var options = new ApiOptions();
@@ -218,22 +219,22 @@ namespace JCS.Argon.Tests.Unit
         }
 
         /// <summary>
-        /// Helper function for creating a test instance of <see cref="IFormFile"/>
+        ///     Helper function for creating a test instance of <see cref="IFormFile" />
         /// </summary>
         /// <param name="name">The name to set against the form file</param>
         /// <param name="content">The string content</param>
         /// <param name="contentType"></param>
         /// <returns></returns>
-        protected IFormFile CreateTestFormFile(string name, string content, string contentType = "text/plain")
+        protected static IFormFile CreateTestFormFile(string name, string content, string contentType = "text/plain")
         {
             LogMethodCall(_log);
-            byte[] bytes = Encoding.UTF8.GetBytes(content);
+            var bytes = Encoding.UTF8.GetBytes(content);
             var file = new FormFile(
-                baseStream: new MemoryStream(bytes),
-                baseStreamOffset: 0,
-                length: bytes.Length,
-                name: "Content",
-                fileName: name
+                new MemoryStream(bytes),
+                0,
+                bytes.Length,
+                "Content",
+                name
             );
             return file;
         }
