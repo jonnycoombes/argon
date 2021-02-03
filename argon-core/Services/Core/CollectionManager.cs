@@ -89,7 +89,7 @@ namespace JCS.Argon.Services.Core
                 constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync();
 
             var propertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
-            var addOp = await DbContext.Collections.AddAsync(new Collection
+            var op = await DbContext.Collections.AddAsync(new Collection
             {
                 Name = cmd.Name,
                 Description = cmd.Description,
@@ -99,7 +99,7 @@ namespace JCS.Argon.Services.Core
             });
 
             await DbContext.SaveChangesAsync();
-            var collection = addOp.Entity;
+            var collection = op.Entity;
 
             // grab the provider and then ask for the physical operations to be performed
             try

@@ -41,9 +41,9 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             try
             {
-                var addOp = await DbContext.AddAsync(new ConstraintGroup());
+                var op = await DbContext.AddAsync(new ConstraintGroup());
                 await DbContext.SaveChangesAsync();
-                return addOp.Entity;
+                return op.Entity;
             }
             catch (Exception ex)
             {
@@ -66,9 +66,9 @@ namespace JCS.Argon.Services.Core
                     constraintGroup.Constraints.Add(constraint);
                 }
 
-                var addOp = await DbContext.AddAsync(constraintGroup);
+                var op = await DbContext.AddAsync(constraintGroup);
                 await DbContext.SaveChangesAsync();
-                return addOp.Entity;
+                return op.Entity;
             }
             catch (Exception ex)
             {

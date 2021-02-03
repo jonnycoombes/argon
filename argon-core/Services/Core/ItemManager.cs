@@ -112,9 +112,9 @@ namespace JCS.Argon.Services.Core
             {
                 var version = await CreateNewVersionTemplate(inboundFile);
                 var item = await CreateNewItemTemplate(collection, version, properties);
-                var addOp = await DbContext.Items.AddAsync(item);
+                var op = await DbContext.Items.AddAsync(item);
                 await DbContext.SaveChangesAsync();
-                item = addOp.Entity;
+                item = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.Length += 1;
                 collection.Size += version.Size;
@@ -149,9 +149,9 @@ namespace JCS.Argon.Services.Core
                 var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
                 var version = await CreateNewVersionTemplate(inboundFile, maxVersion + 1);
                 version.Item = item;
-                var addOp = await DbContext.Versions.AddAsync(version);
+                var op = await DbContext.Versions.AddAsync(version);
                 await DbContext.SaveChangesAsync();
-                version = addOp.Entity;
+                version = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.Length += 1;
                 collection.Size += version.Size;
