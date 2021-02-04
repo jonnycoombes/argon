@@ -175,8 +175,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
-                {"Document Title", "Something"},
-                {"Document Type", "Some Document Type"},
                 {"MustBeBool", true},
                 {"MustBeNumber", 123223},
                 {"MustBeString", "Cheesy that's what"},
@@ -216,9 +214,9 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
-                {"MustBeBool", true},
-                {"MustBeNumber", "this is an invalid property type"},
-                {"MustBeString", "Cheesy that's what"},
+                {"MustBeBool", "Invalid property type"},
+                {"MustBeNumber", "Invalid property type"},
+                {"MustBeString", 12345},
                 {"MustBeDate", DateTime.Now}
             };
             await Assert.ThrowsAsync<IItemManager.ItemManagerException>(async () =>
