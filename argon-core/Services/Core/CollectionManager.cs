@@ -8,7 +8,6 @@ using JCS.Argon.Model.Commands;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.VSP;
-using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -29,7 +28,7 @@ namespace JCS.Argon.Services.Core
         private static readonly ILogger _log = Log.ForContext<CollectionManager>();
 
         /// <summary>
-        ///     Default constructor, parameters are DI'd by the IoC layer
+        ///     Default constructor, parameters are injected by the IoC layer
         /// </summary>
         /// <param name="options">The current system configuration</param>
         /// <param name="serviceProvider">The current DI <see cref="IServiceProvider" /></param>
@@ -161,8 +160,11 @@ namespace JCS.Argon.Services.Core
 
             var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
             if (validationErrors.Count != 0)
+            {
+                var message = validationErrors.Aggregate((s, t) => s + Environment.NewLine + t);
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
-                    $"Validation errors occurred: {StringHelper.CollapseStringList(validationErrors)}");
+                    $"Validation errors occurred: {message}");
+            }
 
             collection.Name = cmd.Name ?? collection.Name;
             collection.Description = cmd.Description ?? collection.Description;
