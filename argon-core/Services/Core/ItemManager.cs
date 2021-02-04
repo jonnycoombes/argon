@@ -112,6 +112,7 @@ namespace JCS.Argon.Services.Core
             {
                 var version = await CreateNewVersionTemplate(inboundFile);
                 var item = await CreateNewItemTemplate(collection, version, properties);
+                ValidatePropertiesAgainstConstraints(collection, item);
                 var op = await DbContext.Items.AddAsync(item);
                 await DbContext.SaveChangesAsync();
                 item = op.Entity;
@@ -126,7 +127,7 @@ namespace JCS.Argon.Services.Core
             {
                 // roll back the entity changes
                 LogWarning(_log, "Caught storage exception whilst attempting item physical operation");
-                throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                throw new IItemManager.ItemManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
             catch (Exception ex)
@@ -134,7 +135,7 @@ namespace JCS.Argon.Services.Core
                 // roll back the entity changes
                 LogWarning(_log, $"Caught general exception whilst attempting item physical operation \"{ex.Message}\"");
                 LogExceptionError(_log, ex);
-                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
         }
@@ -163,14 +164,14 @@ namespace JCS.Argon.Services.Core
             {
                 // roll back the entity changes
                 LogWarning(_log, "Caught storage exception whilst attempting item physical operation");
-                throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
+                throw new IItemManager.ItemManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
             catch (Exception ex)
             {
                 // roll back the entity changes
                 LogWarning(_log, "Caught general exception whilst attempting version physical operation - rolling back db changes");
-                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
         }
@@ -179,6 +180,24 @@ namespace JCS.Argon.Services.Core
         public async Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <summary>
+        ///     Checks a given <see cref="Item" />'s property set against a specified set of contraints, if they exist within a
+        ///     given collection
+        /// </summary>
+        /// <param name="collection">The collection which may or may not have constraints</param>
+        /// <param name="item">The <see cref="Item" /> owning the properties</param>
+        /// <exception cref="ICollectionManager.CollectionManagerException"></exception>
+        private void ValidatePropertiesAgainstConstraints(Collection collection, Item item)
+        {
+            if (collection.ConstraintGroup == null) return;
+            var constraintCheckResults = ConstraintGroupManager.ValidatePropertiesAgainstConstraints(collection.ConstraintGroup,
+                item.PropertyGroup);
+            if (constraintCheckResults.Count <= 0) return;
+            var message = constraintCheckResults.Aggregate((s, t) => s + ',' + t);
+            throw new IItemManager.ItemManagerException(StatusCodes.Status400BadRequest,
+                message);
         }
 
         /// <summary>
