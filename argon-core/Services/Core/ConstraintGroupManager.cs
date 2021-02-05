@@ -58,10 +58,12 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             try
             {
-                var constraintGroup = new ConstraintGroup();
+                var constraintGroup = new ConstraintGroup
+                {
+                    Constraints = new List<Constraint>()
+                };
                 foreach (var cmd in cmds)
                 {
-                    constraintGroup.Constraints = new List<Constraint>();
                     var constraint = await CreateConstraintAsync(cmd);
                     constraintGroup.Constraints.Add(constraint);
                 }
@@ -87,7 +89,10 @@ namespace JCS.Argon.Services.Core
                 {
                     Name = cmd.Name,
                     ConstraintType = cmd.ConstraintType,
-                    SourceProperty = cmd.SourceProperty
+                    SourceProperty = cmd.SourceProperty,
+                    TargetProperty = cmd.TargetProperty,
+                    ValueType = cmd.ValueType,
+                    AllowableValues = cmd.AllowableValues
                 };
                 switch (cmd.ConstraintType)
                 {
@@ -112,9 +117,9 @@ namespace JCS.Argon.Services.Core
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var addOp = await DbContext.AddAsync(constraint);
+                var op = await DbContext.AddAsync(constraint);
                 await DbContext.SaveChangesAsync();
-                return addOp.Entity;
+                return op.Entity;
             }
             catch (Exception ex)
             {
