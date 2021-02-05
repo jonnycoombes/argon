@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
+using JCS.Argon.Model.OperationFilters;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Services.VSP;
 using JCS.Neon.Glow.Helpers.General;
@@ -23,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 #endregion
 
@@ -143,7 +145,8 @@ namespace JCS.Argon.Extensions
         ///     Do anything specific to controller bindings, Swagger configuration etc...
         ///     Specific alterations here to ignore null values in Json serialisation to
         ///     minimise payload size, and also to de-clutter responses.
-        ///     in here
+        ///     in here.  In order to ensure that Swashbuckle generates automated documentation correctly,
+        ///     we inject an <see cref="IOperationFilter" /> to modify/subvert the generation of parameters on the outgoing
         /// </summary>
         /// <param name="services">Current services collection</param>
         /// <param name="config"></param>
@@ -157,6 +160,7 @@ namespace JCS.Argon.Extensions
             });
             services.AddSwaggerGen(c =>
             {
+                c.OperationFilter<ArgonOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Argon - Content Service Layer",
