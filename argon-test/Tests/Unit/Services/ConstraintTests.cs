@@ -223,7 +223,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             {
                 await _itemManager.AddItemToCollectionAsync(collection, properties, formFile);
             });
-            Assert.True(false);
         }
     }
 }
