@@ -64,9 +64,40 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IItemManager.DeleteItemFromCollection" />
-        public Task DeleteItemFromCollection(Collection collection, Guid itemId)
+        public async Task DeleteItemFromCollection(Collection collection, Guid itemId)
         {
-            throw new NotImplementedException();
+            LogMethodCall(_log);
+            try
+            {
+                if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                        "The specified item does not exist");
+                {
+                    var item = await DbContext.Items
+                        .Include(i => i.PropertyGroup)
+                        .Include(i => i.PropertyGroup.Properties)
+                        .Include(i => i.Versions)
+                        .FirstAsync(i => i.Id == itemId);
+                    await PerformProviderItemDeletionActions(collection, item);
+                    DbContext.Items.Remove(item);
+                    await DbContext.SaveChangesAsync();
+                }
+            }
+            catch (IVirtualStorageManager.VirtualStorageManagerException ex)
+            {
+                // roll back the entity changes
+                LogWarning(_log, "Caught storage exception whilst attempting item physical operation");
+                throw new IItemManager.ItemManagerException(ex.ResponseCodeHint,
+                    ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                // roll back the entity changes
+                LogWarning(_log, $"Caught general exception whilst attempting item physical operation \"{ex.Message}\"");
+                LogExceptionError(_log, ex);
+                throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
+                    ex.Message, ex);
+            }
         }
 
         /// <inheritdoc cref="IItemManager.GetItemVersionAsync(Collection, Item, Guid)" />
@@ -237,7 +268,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
-            var deletionResult = await provider.DeleteCollectionItemAsync(collection, item);
+            await provider.DeleteCollectionItemAsync(collection, item);
         }
 
         /// <summary>
