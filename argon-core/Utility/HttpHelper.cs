@@ -16,9 +16,11 @@ namespace JCS.Argon.Utility
         {
             var host = context.Request.Host;
             if (context.Request.Scheme == "https")
+            {
                 return host.Port == 443
                     ? $"{context.Request.Scheme}://{Dns.GetHostName()}{context.Request.Path}"
                     : $"{context.Request.Scheme}://{Dns.GetHostName()}:{context.Request.Host.Port}{context.Request.Path}";
+            }
 
             return host.Port == 80
                 ? $"{context.Request.Scheme}://{Dns.GetHostName()}{context.Request.Path}"

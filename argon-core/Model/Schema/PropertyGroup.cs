@@ -133,6 +133,7 @@ namespace JCS.Argon.Model.Schema
         public void MergeDictionary(Dictionary<string, object>? source)
         {
             if (source != null)
+            {
                 foreach (var key in source.Keys)
                 {
                     var value = source[key];
@@ -161,6 +162,7 @@ namespace JCS.Argon.Model.Schema
                             break;
                     }
                 }
+            }
         }
 
         /// <summary>

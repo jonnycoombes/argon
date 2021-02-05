@@ -103,10 +103,12 @@ namespace JCS.Argon.Services.VSP.Providers
                 var collectionRootPath = GenerateCollectionPath(collection);
                 var nodeId = await _client.CreatePath(GenerateCollectionPath(collection));
                 if (nodeId == null)
+                {
                     return new IVirtualStorageProvider.StorageOperationResult
                     {
                         Status = IVirtualStorageProvider.StorageOperationStatus.Failed
                     };
+                }
 
                 var result = new IVirtualStorageProvider.StorageOperationResult
                 {
@@ -139,6 +141,7 @@ namespace JCS.Argon.Services.VSP.Providers
             var authType = (string) _binding.Properties["authType"];
             OtcsRestClient client;
             if (authType == null || authType == "basic")
+            {
                 client = new OtcsRestClient(_dbCache)
                 {
                     OtcsAuthenticationType = OtcsRestClient.AuthenticationType.Basic,
@@ -148,7 +151,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     Password = Binding!.Properties["password"].ToString(),
                     HttpClient = _httpClient
                 };
+            }
             else
+            {
                 client = new OtcsRestClient(_dbCache)
                 {
                     OtcsAuthenticationType = OtcsRestClient.AuthenticationType.Ntlm,
@@ -156,6 +161,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     EndpointAddress = Binding!.Properties["endpoint"].ToString(),
                     HttpClient = _httpClient
                 };
+            }
 
             return client;
         }
@@ -166,8 +172,10 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
+            {
                 throw new OtcsRestClient.OpenTextRestClientException(StatusCodes.Status400BadRequest,
                     "Unable to locate cached node id for collection");
+            }
 
             await _client.Authenticate();
 
@@ -175,21 +183,26 @@ namespace JCS.Argon.Services.VSP.Providers
             var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
             if (item.PropertyGroup.HasProperty("nodeId"))
                 itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+            else if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
+                itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
             else
-                if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
-                    itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
-                else
-                    itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
+                itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
 
             if (itemNodeId == 0)
+            {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                     "Unable to create/locate node id");
+            }
+
             item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemNodeId);
             var versionNodeId =
                 await _client.CreateFolder(itemNodeId, $"{itemVersion.Major}_{itemVersion.Minor}", itemVersion.Name);
             if (versionNodeId == 0)
+            {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                     "Unable to create/locate node id");
+            }
+
             var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
             var result = new IVirtualStorageProvider.StorageOperationResult
             {

@@ -100,18 +100,27 @@ namespace JCS.Argon.Services.Core
                         break;
                     case ConstraintType.Mapping:
                         if (cmd.TargetProperty == null)
+                        {
                             throw new IConstraintGroupManager.ConstraintGroupManagerException(StatusCodes.Status400BadRequest,
                                 $"No target property specified for constraint [{cmd.Name}]");
+                        }
+
                         break;
                     case ConstraintType.AllowableType:
                         if (cmd.ValueType == null)
+                        {
                             throw new IConstraintGroupManager.ConstraintGroupManagerException(StatusCodes.Status400BadRequest,
                                 $"No value type specified for constraint [{cmd.Name}]");
+                        }
+
                         break;
                     case ConstraintType.AllowableTypeAndValues:
                         if (cmd.ValueType == null || cmd.AllowableValues == null)
+                        {
                             throw new IConstraintGroupManager.ConstraintGroupManagerException(StatusCodes.Status400BadRequest,
                                 $"No value type or value set specified for constraint [{cmd.Name}]");
+                        }
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -178,9 +187,7 @@ namespace JCS.Argon.Services.Core
                 if (typeAndValueConstraint.AllowableValues.Any(v => v.Equals(value))) return true;
             }
             else
-            {
                 return false;
-            }
 
             return false;
         }

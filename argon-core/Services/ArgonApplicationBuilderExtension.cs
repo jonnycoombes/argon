@@ -35,9 +35,9 @@ namespace JCS.Argon.Extensions
             {
                 var timer = new Stopwatch();
                 timer.Start();
-#pragma warning disable 1998
+                #pragma warning disable 1998
                 context.Response.OnStarting(async () =>
-#pragma warning restore 1998
+                    #pragma warning restore 1998
                 {
                     timer.Stop();
                     context.Response.Headers.Add(X_ARGON_TIMINGS_TOTAL, timer.ElapsedMilliseconds.ToString());

@@ -14,7 +14,7 @@ namespace JCS.Argon.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
+            #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
@@ -359,7 +359,7 @@ namespace JCS.Argon.Migrations
             modelBuilder.Entity("JCS.Argon.Model.Schema.Item", b => { b.Navigation("Versions"); });
 
             modelBuilder.Entity("JCS.Argon.Model.Schema.PropertyGroup", b => { b.Navigation("Properties"); });
-#pragma warning restore 612, 618
+            #pragma warning restore 612, 618
         }
     }
 }

@@ -51,8 +51,11 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                     "The specified item does not exist");
+            }
+
             {
                 var item = await DbContext.Items
                     .Include(i => i.PropertyGroup)
@@ -70,8 +73,11 @@ namespace JCS.Argon.Services.Core
             try
             {
                 if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+                {
                     throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                         "The specified item does not exist");
+                }
+
                 {
                     var item = await DbContext.Items
                         .Include(i => i.PropertyGroup)

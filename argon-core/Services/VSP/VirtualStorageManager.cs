@@ -78,8 +78,10 @@ namespace JCS.Argon.Services.VSP
             LogDebug(_log, $"Attempting instantiation of VSP provider with tag [{tag}]");
             var binding = GetBindingFromTag(tag);
             if (binding == null)
+            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"No virtual storage provider exists for the specified tag: {tag}");
+            }
 
             try
             {
@@ -131,15 +133,19 @@ namespace JCS.Argon.Services.VSP
             LogMethodCall(_log);
             LogDebug(_log, $"Instantiating a virtual storage provider of type [{providerType}]");
             if (!ProviderExists(providerType))
+            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Request for a virtual storage provider which doesn't appear to exist: [{providerType}]");
-#pragma warning disable 8600
+            }
+            #pragma warning disable 8600
             var instance =
                 (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
-#pragma warning restore 8600
+            #pragma warning restore 8600
             if (instance == null)
+            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Failed to instance a new instance of a virtual storage provider with type: [{providerType}]");
+            }
 
             return instance;
         }
@@ -160,9 +166,9 @@ namespace JCS.Argon.Services.VSP
                     .Where(t => !t.IsAbstract && !t.IsInterface);
                 foreach (var providerType in providerTypes)
                 {
-#pragma warning disable 8600
+                    #pragma warning disable 8600
                     var instance = (IVirtualStorageProvider) ReflectionHelper.InstantiateType(providerType);
-#pragma warning restore 8600
+                    #pragma warning restore 8600
                     if (instance != null)
                     {
                         LogInformation(_log, $"Found VSP provider implementation: ({providerType.Name},{instance.ProviderType})");

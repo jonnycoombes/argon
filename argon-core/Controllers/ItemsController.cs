@@ -162,7 +162,8 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")] IFormFile file)
+        public async Task<Item> CreateItemContent(Guid collectionId, [FromForm(Name = "Content")]
+            IFormFile file)
         {
             LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();
@@ -197,7 +198,8 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")] IFormFile file)
+        public async Task<Item> CreateItemVersion(Guid collectionId, Guid itemId, [FromForm(Name = "Content")]
+            IFormFile file)
         {
             LogMethodCall(_log);
             var properties = ExtractPropertiesFromRequest();

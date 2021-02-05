@@ -184,13 +184,18 @@ namespace JCS.Argon.Services.VSP.Providers
                 var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"),
                     new (string, string)[] { }, content);
                 if (!json.ContainsKey("ticket"))
+                {
                     throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                         "Couldn't locate authentication ticket in OpenText response");
+                }
+
                 AuthenticationToken = (string) json["ticket"]!;
                 LogDebug(_log, $"{GetType()}: Authentication successful");
                 if (AuthenticationToken == null)
+                {
                     throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                         "Couldn't locate authentication ticket in OpenText response");
+                }
             }
             catch (Exception ex)
             {
@@ -201,7 +206,6 @@ namespace JCS.Argon.Services.VSP.Providers
 
         private async Task DoBasicAuthentication()
         {
-            
         }
 
         public async Task<long> UploadFile(long parentId, string name, string fileName, Stream source)
@@ -222,8 +226,10 @@ namespace JCS.Argon.Services.VSP.Providers
                 var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{NodesV2Suffix}"), GenerateHeaders(),
                     content);
                 if (!json.ContainsKey("results"))
+                {
                     throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                         "An invalid response was returned by OpenText outcall - results element wasn't found");
+                }
 
                 var raw = json["results"]["data"]["properties"]["id"].ToString();
                 return long.Parse(raw);
@@ -272,8 +278,11 @@ namespace JCS.Argon.Services.VSP.Providers
                 var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{NodesV2Suffix}"), GenerateHeaders(),
                     content);
                 if (!json.ContainsKey("results"))
+                {
                     throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                         "An invalid response was returned by OpenText outcall - results element wasn't found");
+                }
+
                 var raw = json["results"]["data"]["properties"]["id"].ToString();
                 return long.Parse(raw);
             }

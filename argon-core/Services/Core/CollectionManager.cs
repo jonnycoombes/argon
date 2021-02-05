@@ -78,8 +78,11 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var exists = await CollectionExistsAsync(cmd.Name);
             if (exists)
+            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
                     "A collection with that name already exists");
+            }
+
             // create the necessary entities first
             ConstraintGroup? constraintGroup;
             if (cmd.Constraints != null)
@@ -135,12 +138,14 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             if (await CollectionExistsAsync(collectionId))
+            {
                 return await DbContext.Collections
                     .Include(c => c.ConstraintGroup)
                     .Include(c => c.ConstraintGroup!.Constraints)
                     .Include(c => c.PropertyGroup)
                     .Include(c => c.PropertyGroup!.Properties)
                     .FirstAsync(c => c.Id == collectionId);
+            }
 
             throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                 "The specified collection does not exist");
@@ -155,8 +160,10 @@ namespace JCS.Argon.Services.Core
 
             var collection = await DbContext.Collections.FirstAsync(c => c.Id == collectionId);
             if (collection == null)
+            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                     "Collection has moved or cannot be found - shouldn't happen");
+            }
 
             var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
             if (validationErrors.Count != 0)
@@ -232,8 +239,10 @@ namespace JCS.Argon.Services.Core
             var creationResult = await provider.CreateCollectionAsync(collection);
 
             if (creationResult.Status != IVirtualStorageProvider.StorageOperationStatus.Ok)
+            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
+            }
 
             if (creationResult.Properties != null) collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
 

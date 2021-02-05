@@ -61,8 +61,10 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             if (!_binding!.Properties.ContainsKey(RootpathProperty))
+            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"{RootpathProperty} not found in binding configuration for this provider");
+            }
 
             _rootPathInfo = new DirectoryInfo(@$"{(string) _binding!.Properties[RootpathProperty]}");
             LogInformation(_log, $"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
@@ -119,8 +121,10 @@ namespace JCS.Argon.Services.VSP.Providers
             var result = new IVirtualStorageProvider.StorageOperationResult();
             var collectionRootPath = GenerateCollectionPath(collection);
             if (Directory.Exists(collectionRootPath))
+            {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Computed collection storage path already exists! {collectionRootPath}");
+            }
 
             return await Task.Run(() =>
             {
@@ -191,8 +195,10 @@ namespace JCS.Argon.Services.VSP.Providers
             var itemStoragePath = GenerateItemStoragePath(collection, item);
             var versionStoragePath = GenerateVersionPath(collection, item, itemVersion);
             if (!File.Exists(versionStoragePath))
+            {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"The specified version storage location doesn't exist, when it should: {versionStoragePath}");
+            }
 
             var stream = new FileStream(versionStoragePath, FileMode.Open);
             return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
@@ -208,8 +214,11 @@ namespace JCS.Argon.Services.VSP.Providers
             LogMethodCall(_log);
             var itemStoragePath = GenerateItemStoragePath(collection, item);
             if (!Directory.Exists(itemStoragePath))
+            {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"The specified version storage location doesn't exist, when it should: {itemStoragePath}");
+            }
+
             try
             {
                 LogVerbose(_log, $"Attempting deletion of item directory \"{itemStoragePath}\"");

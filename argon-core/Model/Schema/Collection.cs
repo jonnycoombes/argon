@@ -19,6 +19,18 @@ namespace JCS.Argon.Model.Schema
     public class Collection
     {
         /// <summary>
+        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
+        /// </summary>
+        public enum StockCollectionProperties
+        {
+            Path,
+            CreateDate,
+            LastAccessed,
+            Length,
+            ContentType
+        }
+
+        /// <summary>
         ///     The primary concurrency token for this entity
         /// </summary>
         [JsonIgnore]
@@ -74,17 +86,5 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// </summary>
         public ConstraintGroup? ConstraintGroup { get; set; }
-
-        /// <summary>
-        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
-        /// </summary>
-        public enum StockCollectionProperties
-        {
-            Path,
-            CreateDate,
-            LastAccessed,
-            Length,
-            ContentType
-        }
     }
 }
