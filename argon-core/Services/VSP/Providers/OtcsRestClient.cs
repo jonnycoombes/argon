@@ -199,6 +199,11 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
+        private async Task DoBasicAuthentication()
+        {
+            
+        }
+
         public async Task<long> UploadFile(long parentId, string name, string fileName, Stream source)
         {
             LogMethodCall(_log);

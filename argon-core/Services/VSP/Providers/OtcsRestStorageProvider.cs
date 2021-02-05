@@ -113,9 +113,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
                     Properties = new Dictionary<string, object>
                     {
-                        {$"{ProviderProperties.Path}", collectionRootPath},
-                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
-                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
+                        {$"{Collection.StockCollectionProperties.Path}", collectionRootPath},
+                        {$"{Collection.StockCollectionProperties.CreateDate}", DateTime.Now},
+                        {$"{Collection.StockCollectionProperties.LastAccessed}", DateTime.Now},
                         {"nodeId", nodeId}
                     }
                 };

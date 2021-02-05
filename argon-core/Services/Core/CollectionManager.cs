@@ -251,6 +251,7 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var validationErrors = new List<string>();
             if (cmd.Name == null) return validationErrors;
+            if (cmd.Name.Length == 0) validationErrors.Add("A collection cannot have an empty name");
             if (target.Name == cmd.Name) return validationErrors;
             var exists = await CollectionExistsAsync(cmd.Name);
             if (exists) validationErrors.Add("A collection with the supplied name already exists");

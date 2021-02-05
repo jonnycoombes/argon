@@ -110,17 +110,5 @@ namespace JCS.Argon.Services.VSP.Providers
 
             return contentType;
         }
-
-        /// <summary>
-        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
-        /// </summary>
-        protected enum ProviderProperties
-        {
-            Path,
-            CreateDate,
-            LastAccessed,
-            Length,
-            ContentType
-        }
     }
 }

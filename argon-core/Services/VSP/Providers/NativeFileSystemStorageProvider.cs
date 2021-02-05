@@ -88,9 +88,9 @@ namespace JCS.Argon.Services.VSP.Providers
         protected string? GetItemPathFromProperties(Item item)
         {
             LogMethodCall(_log);
-            if (item.PropertyGroup.HasProperty(ProviderProperties.Path.ToString()))
+            if (item.PropertyGroup.HasProperty(Collection.StockCollectionProperties.Path.ToString()))
             {
-                var prop = item.PropertyGroup.GetPropertyByName(ProviderProperties.Path.ToString());
+                var prop = item.PropertyGroup.GetPropertyByName(Collection.StockCollectionProperties.Path.ToString());
                 return prop?.StringValue;
             }
 
@@ -129,9 +129,9 @@ namespace JCS.Argon.Services.VSP.Providers
                 result.Status = IVirtualStorageProvider.StorageOperationStatus.Ok;
                 result.Properties = new Dictionary<string, object>
                 {
-                    {$"{ProviderProperties.Path}", collectionRootPath},
-                    {$"{ProviderProperties.CreateDate}", info.CreationTimeUtc},
-                    {$"{ProviderProperties.LastAccessed}", info.LastAccessTimeUtc}
+                    {$"{Collection.StockCollectionProperties.Path}", collectionRootPath},
+                    {$"{Collection.StockCollectionProperties.CreateDate}", info.CreationTimeUtc},
+                    {$"{Collection.StockCollectionProperties.LastAccessed}", info.LastAccessTimeUtc}
                 };
                 return result;
             });
@@ -167,11 +167,11 @@ namespace JCS.Argon.Services.VSP.Providers
                     Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
                     Properties = new Dictionary<string, object>
                     {
-                        {$"{ProviderProperties.Path}", itemStoragePath},
-                        {$"{ProviderProperties.CreateDate}", DateTime.Now},
-                        {$"{ProviderProperties.LastAccessed}", DateTime.Now},
-                        {$"{ProviderProperties.Length}", source.Length},
-                        {$"{ProviderProperties.ContentType}", DetermineContentType(source)}
+                        {$"{Collection.StockCollectionProperties.Path}", itemStoragePath},
+                        {$"{Collection.StockCollectionProperties.CreateDate}", DateTime.Now},
+                        {$"{Collection.StockCollectionProperties.LastAccessed}", DateTime.Now},
+                        {$"{Collection.StockCollectionProperties.Length}", source.Length},
+                        {$"{Collection.StockCollectionProperties.ContentType}", DetermineContentType(source)}
                     }
                 };
                 return result;
