@@ -48,7 +48,6 @@ namespace JCS.Argon.Controllers
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Items")]
         [Produces("application/json")]
@@ -70,7 +69,6 @@ namespace JCS.Argon.Controllers
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Properties")]
         [Produces("application/json")]
@@ -95,7 +93,6 @@ namespace JCS.Argon.Controllers
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="itemId">The unique identifier for the item</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -229,7 +226,7 @@ namespace JCS.Argon.Controllers
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
-            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            await _itemManager.DeleteItemFromCollection(collection, itemId);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
         }
 
@@ -240,7 +237,6 @@ namespace JCS.Argon.Controllers
         /// <param name="itemId">The unique identifier for the item</param>
         /// <param name="versionId">The unique identifier for the item version</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties")]
         [Produces("application/json")]

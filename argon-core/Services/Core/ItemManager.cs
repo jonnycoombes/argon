@@ -228,6 +228,19 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
+        ///     Interact with the appropriate <see cref="IVirtualStorageProvider" /> in order to delete a given item
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /> for the item to be deleted</param>
+        /// <param name="item">The <see cref="Item" /> to be deleted</param>
+        /// <returns></returns>
+        private async Task PerformProviderItemDeletionActions(Collection collection, Item item)
+        {
+            LogMethodCall(_log);
+            var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
+            var deletionResult = await provider.DeleteCollectionItemAsync(collection, item);
+        }
+
+        /// <summary>
         ///     Helper method that does the heavy lifting around the retrieval of specific version streams from storage
         /// </summary>
         /// <param name="collection"></param>
