@@ -207,7 +207,7 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             var itemStoragePath = GenerateItemStoragePath(collection, item);
-            if (!File.Exists(itemStoragePath))
+            if (!Directory.Exists(itemStoragePath))
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     $"The specified version storage location doesn't exist, when it should: {itemStoragePath}");
             try
