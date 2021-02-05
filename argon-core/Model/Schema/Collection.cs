@@ -74,5 +74,17 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         /// </summary>
         public ConstraintGroup? ConstraintGroup { get; set; }
+
+        /// <summary>
+        ///     An enumeration of "stock" provider properties - returned in the property bag for certain operations
+        /// </summary>
+        public enum StockCollectionProperties
+        {
+            Path,
+            CreateDate,
+            LastAccessed,
+            Length,
+            ContentType
+        }
     }
 }

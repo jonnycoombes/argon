@@ -142,7 +142,7 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Constraint?> ReadCollectionConstraints(Guid collectionId, Guid constraintId)
+        public async Task<Constraint?> ReadCollectionConstraint(Guid collectionId, Guid constraintId)
         {
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
@@ -156,7 +156,7 @@ namespace JCS.Argon.Controllers
             var constraint = constraintGroup.Constraints?.Find(c => c.Id.Equals(constraintId));
             if (constraint == null)
             {
-                HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+                HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return null;
             }
 
