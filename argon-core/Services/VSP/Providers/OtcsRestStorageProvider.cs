@@ -224,9 +224,27 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item)
+        /// <inheritdoc cref="IVirtualStorageProvider.DeleteCollectionItemAsync" />
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item
+            item)
         {
-            throw new NotImplementedException();
+            LogMethodCall(_log);
+            try
+            {
+                await _client.Authenticate();
+                var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                await _client.DeleteNode(itemNodeId);
+                var result = new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+                };
+                return result;
+            }
+            catch
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    "Unable to retrieve item version");
+            }
         }
     }
 }

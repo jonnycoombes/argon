@@ -313,6 +313,28 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
+        ///     Attempts the deletion of a given node
+        /// </summary>
+        /// <param name="nodeId">The node id</param>
+        /// <returns></returns>
+        /// <exception cref="OpenTextRestClientException">Thrown if we get an error from the underlying Otcs REST layer</exception>
+        public async Task DeleteNode(long nodeId)
+        {
+            LogMethodCall(_log);
+            ValidateConfiguration();
+            var uri = new Uri($"{EndpointAddress}/{NodesV1Suffix}/{nodeId}");
+            try
+            {
+                await DeleteRequest(uri, GenerateHeaders(), null);
+            }
+            catch (Exception ex)
+            {
+                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                    $"An exception was caught during an OpenText outcall: {ex.GetBaseException().Message}", ex);
+            }
+        }
+
+        /// <summary>
         ///     Tries to retrieve the child folder id for a given folder
         /// </summary>
         /// <param name="parentId"></param>

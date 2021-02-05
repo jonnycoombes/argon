@@ -141,15 +141,35 @@ namespace JCS.Argon.Utility
         /// <param name="headers">A series of string pairs which are converted to headers</param>
         /// <param name="queryParams">A series of query string parameters which are appended to the source uri</param>
         /// <param name="checkResponseCodes">If true, then response codes are checked and optional exceptions are thrown</param>
-        /// <returns></returns>
+        /// <returns>The returned <see cref="HttpResponseMessage" /></returns>
         protected async Task<HttpResponseMessage> GetRequest(Uri uri, IEnumerable<(string, string)>? headers,
             IEnumerable<(string, string)>? queryParams, bool checkResponseCodes = true)
         {
             LogMethodCall(_log);
-            LogMethodCall(_log);
             this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
             uri = AppendQueryStringParametersToUri(uri, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            MergeHeaders(requestMessage, headers);
+            var response = await HttpClient.SendAsync(requestMessage);
+            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            return response;
+        }
+
+        /// <summary>
+        ///     Generic method for issuing a DELETE request with headers and query parameters
+        /// </summary>
+        /// <param name="uri">The Uri to issue the DELETE request against</param>
+        /// <param name="headers">A series of string pairs which are converted to headers within the request</param>
+        /// <param name="queryParams">A series of query string parameters which are appended to the source uri</param>
+        /// <param name="checkResponseCodes">If ture, then response codes are checked and optional exception are thrown</param>
+        /// <returns>The returned <see cref="HttpResponseMessage" /></returns>
+        protected async Task<HttpResponseMessage> DeleteRequest(Uri uri, IEnumerable<(string, string)>? headers,
+            IEnumerable<(string, string)>? queryParams, bool checkResponseCodes = true)
+        {
+            LogMethodCall(_log);
+            this.AssertNotNull(HttpClient, "HttpClient is null...unexpected!");
+            uri = AppendQueryStringParametersToUri(uri, queryParams);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
             MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
             if (checkResponseCodes) response.EnsureSuccessStatusCode();
