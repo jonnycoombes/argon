@@ -202,10 +202,32 @@ namespace JCS.Argon.Services.VSP.Providers
             });
         }
 
-        public override Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item
+            item)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+            var itemStoragePath = GenerateItemStoragePath(collection, item);
+            if (!File.Exists(itemStoragePath))
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"The specified version storage location doesn't exist, when it should: {itemStoragePath}");
+            try
+            {
+                LogVerbose(_log, $"Attempting deletion of item directory \"{itemStoragePath}\"");
+                Directory.Delete(itemStoragePath, true);
+            }
+            catch (IOException ex)
+            {
+                LogWarning(_log, $"Caught an I/O exception whilst attempting to delete an item directory \"{itemStoragePath}\"");
+                return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Failed
+                });
+            }
+
+            return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+            });
         }
     }
 }
