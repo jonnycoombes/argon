@@ -33,6 +33,14 @@ namespace JCS.Argon.Services.Core
         public Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId);
 
         /// <summary>
+        ///     Attempts the deletion of an item from the given collection
+        /// </summary>
+        /// <param name="collection">The parent collection</param>
+        /// <param name="itemId">The id of the item to delete</param>
+        /// <returns></returns>
+        public Task DeleteItemFromCollection(Collection collection, Guid itemId);
+
+        /// <summary>
         ///     Retrieve a specified version for an item
         /// </summary>
         /// <param name="collection">The parent <see cref="Collection" /></param>

@@ -201,5 +201,11 @@ namespace JCS.Argon.Services.VSP.Providers
                 Stream = stream
             });
         }
+
+        public override Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item)
+        {
+            LogMethodCall(_log);
+            throw new NotImplementedException();
+        }
     }
 }

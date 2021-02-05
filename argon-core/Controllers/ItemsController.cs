@@ -187,7 +187,6 @@ namespace JCS.Argon.Controllers
         ///     automatic type-detection is performed on the meta-data pairs.
         /// </remarks>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         /// <response code="201">Successful creation of new content</response>
         /// <response code="400">
         ///     Bad request. May be for a number of reasons, such as uniqueness constraints being violated. Details given
@@ -210,6 +209,28 @@ namespace JCS.Argon.Controllers
             var revisedItem = await _itemManager.AddItemVersionToCollectionAsync(collection, item, properties, file);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return revisedItem;
+        }
+
+        /// <summary>
+        ///     Will attempt the deletion of an existing item from a given collection
+        /// </summary>
+        /// <param name="collectionId">The identifier for the parent collection</param>
+        /// <param name="itemId">The identifier for the item to delete</param>
+        /// <returns></returns>
+        /// <response code="200">Successful deletion of the item</response>
+        /// <response code="500">Internal server error - check the response payload</response>
+        /// [HttpDelete]
+        [HttpDelete]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task DeleteItem(Guid collectionId, Guid itemId)
+        {
+            LogMethodCall(_log);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
         }
 
         /// <summary>

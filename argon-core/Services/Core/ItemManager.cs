@@ -63,6 +63,12 @@ namespace JCS.Argon.Services.Core
             }
         }
 
+        /// <inheritdoc cref="IItemManager.DeleteItemFromCollection" />
+        public Task DeleteItemFromCollection(Collection collection, Guid itemId)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc cref="IItemManager.GetItemVersionAsync(Collection, Item, Guid)" />
         public async Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
         {

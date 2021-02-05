@@ -223,5 +223,10 @@ namespace JCS.Argon.Services.VSP.Providers
                     "Unable to retrieve item version");
             }
         }
+
+        public override Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

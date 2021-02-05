@@ -68,6 +68,15 @@ namespace JCS.Argon.Services.VSP
             IFormFile source);
 
         /// <summary>
+        ///     Given a reference to a <see cref="Collection" /> and an <see cref="Item" /> within that collection, attempts the deletion of
+        ///     the item from the underlying storage
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /></param>
+        /// <param name="item">The <see cref="Item" /> to delete</param>
+        /// <returns></returns>
+        public Task<StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item);
+
+        /// <summary>
         ///     Reads a specific item version from a collection
         /// </summary>
         /// <param name="collection">The collection object</param>
