@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using JCS.Argon.Model.Schema;
 using Microsoft.AspNetCore.Http;
 
@@ -30,6 +31,7 @@ namespace JCS.Argon.Model.Commands
         ///     with other
         ///     information such as MIME type etc...
         /// </summary>
+        [Required(ErrorMessage = "You must specify content to be uploaded")]
         public IFormFile File { get; set; } = null!;
     }
 }

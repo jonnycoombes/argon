@@ -39,14 +39,14 @@ namespace JCS.Argon.Model.Commands
         ///     to not create collections with identical names.  This restriction may be removed in
         ///     future releases.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "You must specify a name for the collection")]
         public string Name { get; set; }
 
         /// <summary>
         ///     The provider to be used to create the collection.  Must equate to a provider tag
         ///     listed within the current set of registered VSP bindings.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "You must specify a provider tag, so that correct collection storage provider may be selected")]
         public string ProviderTag { get; set; }
 
         /// <summary>

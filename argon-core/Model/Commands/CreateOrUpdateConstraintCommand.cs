@@ -14,7 +14,7 @@ namespace JCS.Argon.Model.Commands
         /// <summary>
         ///     The name of the constraint to update or create
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "You must specify a name for the new constraint")]
         public string Name { get; set; } = null!;
 
         /// <summary>
@@ -27,13 +27,14 @@ namespace JCS.Argon.Model.Commands
         ///         AllowableTypeAndValues - contains an array of allowable values
         ///     </remarks>
         /// </summary>
-        [Required]
+        [Required(ErrorMessage =
+            "A new constraint must have a valid constraint type - one of ('Mandatory, Mapping, AllowableType, AllowableTypeAndValues")]
         public ConstraintType ConstraintType { get; set; }
 
         /// <summary>
         ///     The property that the constraint applies to
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "A new constraint must have a source property specified")]
         public string SourceProperty { get; set; } = null!;
 
         /// <summary>
