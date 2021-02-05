@@ -218,6 +218,7 @@ namespace JCS.Argon.Services.VSP.Providers
             catch (IOException ex)
             {
                 LogWarning(_log, $"Caught an I/O exception whilst attempting to delete an item directory \"{itemStoragePath}\"");
+                LogExceptionWarning(_log, ex);
                 return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
                 {
                     Status = IVirtualStorageProvider.StorageOperationStatus.Failed
