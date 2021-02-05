@@ -53,7 +53,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IConstraintGroupManager.CreateConstraintGroupAsync()"></inheritdoc>
-        public async Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> cmds)
+        public async Task<ConstraintGroup> CreateConstraintGroupAsync(IEnumerable<CreateOrUpdateConstraintCommand> cmds)
         {
             LogMethodCall(_log);
             try

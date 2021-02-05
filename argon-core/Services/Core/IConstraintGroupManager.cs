@@ -33,7 +33,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="constraints"></param>
         /// <returns></returns>
-        public Task<ConstraintGroup> CreateConstraintGroupAsync(List<CreateOrUpdateConstraintCommand> constraints);
+        public Task<ConstraintGroup> CreateConstraintGroupAsync(IEnumerable<CreateOrUpdateConstraintCommand> constraints);
 
         /// <summary>
         ///     Creates a new constraint and performs any necessary validation of the create command
