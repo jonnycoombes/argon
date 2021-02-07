@@ -78,10 +78,8 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var exists = await CollectionExistsAsync(cmd.Name);
             if (exists)
-            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
                     "A collection with that name already exists");
-            }
 
             // create the necessary entities first
             ConstraintGroup? constraintGroup;
@@ -137,18 +135,18 @@ namespace JCS.Argon.Services.Core
         public async Task<Collection> GetCollectionAsync(Guid collectionId)
         {
             LogMethodCall(_log);
-            if (await CollectionExistsAsync(collectionId))
-            {
-                return await DbContext.Collections
-                    .Include(c => c.ConstraintGroup)
-                    .Include(c => c.ConstraintGroup!.Constraints)
-                    .Include(c => c.PropertyGroup)
-                    .Include(c => c.PropertyGroup!.Properties)
-                    .FirstAsync(c => c.Id == collectionId);
-            }
+            if (!await CollectionExistsAsync(collectionId))
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified collection does not exist");
 
-            throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                "The specified collection does not exist");
+            var collection = await DbContext.Collections
+                .Include(c => c.ConstraintGroup)
+                .Include(c => c.ConstraintGroup!.Constraints)
+                .Include(c => c.PropertyGroup)
+                .Include(c => c.PropertyGroup!.Properties)
+                .FirstAsync(c => c.Id == collectionId);
+            await CommitCollectionAndUpdateLastAccessed(collection);
+            return collection;
         }
 
         /// <inheritdoc cref="ICollectionManager.UpdateCollectionAsync" />
@@ -158,12 +156,16 @@ namespace JCS.Argon.Services.Core
             if (!await CollectionExistsAsync(collectionId))
                 throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
 
-            var collection = await DbContext.Collections.FirstAsync(c => c.Id == collectionId);
+            var collection = await DbContext.Collections
+                .Include(c => c.ConstraintGroup)
+                .Include(c => c.ConstraintGroup!.Constraints)
+                .Include(c => c.PropertyGroup)
+                .Include(c => c.PropertyGroup!.Properties)
+                .FirstAsync(c => c.Id == collectionId);
+
             if (collection == null)
-            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                     "Collection has moved or cannot be found - shouldn't happen");
-            }
 
             var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
             if (validationErrors.Count != 0)
@@ -175,8 +177,7 @@ namespace JCS.Argon.Services.Core
 
             collection.Name = cmd.Name ?? collection.Name;
             collection.Description = cmd.Description ?? collection.Description;
-            DbContext.Collections.Update(collection);
-            await DbContext.SaveChangesAsync();
+            await CommitCollectionAndUpdateLastAccessed(collection);
             return collection;
         }
 
@@ -188,6 +189,23 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             return VirtualStorageManager.GetBindings();
+        }
+
+        /// <summary>
+        ///     Update the last accessed time for a given <see cref="Collection" /> instance.  The current system (server-side) timestamp
+        ///     is used.
+        /// </summary>
+        /// <param name="collection">The collection to update</param>
+        /// <returns>The updated collection</returns>
+        private async Task<Collection> CommitCollectionAndUpdateLastAccessed(Collection collection)
+        {
+            LogMethodCall(_log);
+            if (collection.PropertyGroup == null) return collection;
+            collection.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
+                DateTime.Now);
+            DbContext.Collections.Update(collection);
+            await DbContext.SaveChangesAsync();
+            return collection;
         }
 
         /// <summary>
@@ -239,10 +257,8 @@ namespace JCS.Argon.Services.Core
             var creationResult = await provider.CreateCollectionAsync(collection);
 
             if (creationResult.Status != IVirtualStorageProvider.StorageOperationStatus.Ok)
-            {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
-            }
 
             if (creationResult.Properties != null) collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
 
