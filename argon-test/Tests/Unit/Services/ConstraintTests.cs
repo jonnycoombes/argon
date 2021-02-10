@@ -99,11 +99,11 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 builder.SetRequiredLength(64);
                 builder.SetBase64Encoding(true);
             });
-            var creationCmd = new CreateCollectionCommand("Constrained Collection", providerTag, "")
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
             {
                 Constraints = GenerateConstraintList().Where(c => c.ConstraintType == ConstraintType.Mandatory).ToList()
             };
-            var collection = await _collectionManager.CreateCollectionAsync(creationCmd);
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
@@ -129,11 +129,11 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 builder.SetRequiredLength(64);
                 builder.SetBase64Encoding(true);
             });
-            var creationCmd = new CreateCollectionCommand("Constrained Collection", providerTag, "")
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
             {
                 Constraints = GenerateConstraintList().Where(c => c.ConstraintType == ConstraintType.Mandatory).ToList()
             };
-            var collection = await _collectionManager.CreateCollectionAsync(creationCmd);
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
@@ -167,11 +167,11 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 builder.SetRequiredLength(64);
                 builder.SetBase64Encoding(true);
             });
-            var creationCmd = new CreateCollectionCommand("Constrained Collection", providerTag, "")
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
             {
                 Constraints = GenerateConstraintList().Where(c => c.ConstraintType == ConstraintType.AllowableType).ToList()
             };
-            var collection = await _collectionManager.CreateCollectionAsync(creationCmd);
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
@@ -206,11 +206,11 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 builder.SetRequiredLength(64);
                 builder.SetBase64Encoding(true);
             });
-            var creationCmd = new CreateCollectionCommand("Constrained Collection", providerTag, "")
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
             {
                 Constraints = GenerateConstraintList().Where(c => c.ConstraintType == ConstraintType.AllowableType).ToList()
             };
-            var collection = await _collectionManager.CreateCollectionAsync(creationCmd);
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
             var formFile = CreateTestFormFile("test", randomContents);
             var properties = new Dictionary<string, object>
             {
@@ -223,6 +223,55 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             {
                 await _itemManager.AddItemToCollectionAsync(collection, properties, formFile);
             });
+        }
+
+        [Theory(DisplayName = "Must be able to modify and add to the constraint group for a given collection")]
+        [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
+        [InlineData("TestFS")]
+        public async void AddAndUpdateConstraints(string providerTag)
+        {
+            var constraintList = GenerateConstraintList().ToList();
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
+            {
+                Constraints = GenerateConstraintList().ToList()
+            };
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
+            var collectionId = collection.Id!.Value;
+            Assert.NotNull(collection.ConstraintGroup);
+            Assert.Equal(constraintList.Count, collection.ConstraintGroup.Constraints!.Count);
+            var constraintUpdateCommands = new List<CreateOrUpdateConstraintCommand>
+            {
+                // change the source property of a constraint
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Mandatory Title Constraint",
+                    ConstraintType = ConstraintType.Mandatory,
+                    SourceProperty = "DocumentTitle"
+                },
+                // change the overall type of a constraint
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Document Type Constraint",
+                    ConstraintType = ConstraintType.AllowableType,
+                    SourceProperty = "Document Type",
+                    ValueType = ConstraintValidTypes.String
+                },
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Sample Additional Constraint",
+                    ConstraintType = ConstraintType.AllowableType,
+                    SourceProperty = "AdditionalConstraint",
+                    ValueType = ConstraintValidTypes.Number
+                }
+            };
+            var updatedConstraints = await _collectionManager.UpdateCollectionConstraints(collectionId, constraintUpdateCommands);
+            Constraint updatedConstraint;
+            updatedConstraint = updatedConstraints.Constraints!.Where(c => c.Name == "Mandatory Title Constraint").First();
+            Assert.Equal("DocumentTitle", updatedConstraint.SourceProperty);
+            updatedConstraint = updatedConstraints.Constraints!.Where(c => c.Name == "Document Type Constraint").First();
+            Assert.Equal(ConstraintValidTypes.String, updatedConstraint.ValueType);
+            Assert.Contains(updatedConstraints.Constraints, c => c.Name == "Sample Additional Constraint");
         }
     }
 }
