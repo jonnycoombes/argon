@@ -52,6 +52,16 @@ namespace JCS.Argon.Services.Core
         public List<string> ValidatePropertiesAgainstConstraints(ConstraintGroup constraints, PropertyGroup properties);
 
         /// <summary>
+        ///     Takes a <see cref="Collection" /> and a list of <see cref="CreateOrUpdateConstraintCommand" /> commands, and then merges the
+        ///     new constraints into the existing <see cref="ConstraintGroup" /> for the collection.  If no constraint group is associated with
+        ///     the collection, then a new constraint group is created.
+        /// </summary>
+        /// <param name="collection">The target <see cref="Collection" /></param>
+        /// <param name="commands">A list of <see cref="CreateOrUpdateConstraintCommand" /> commands</param>
+        /// <returns></returns>
+        public Task<Collection> UpdateAndMergeCollectionConstraints(Collection collection, List<CreateOrUpdateConstraintCommand> commands);
+
+        /// <summary>
         ///     Thrown in the event of a failure within the constraint group manager
         /// </summary>
         public sealed class ConstraintGroupManagerException : ResponseAwareException

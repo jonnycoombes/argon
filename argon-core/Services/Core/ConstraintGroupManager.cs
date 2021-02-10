@@ -142,7 +142,10 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var results = new List<string>();
-            if (constraintGroup.Constraints == null) return results;
+            if (constraintGroup.Constraints == null)
+            {
+                return results;
+            }
 
             // mandatory constraints 
             var mandatoryConstraints = constraintGroup.Constraints.Where(c => c.ConstraintType == ConstraintType.Mandatory);
@@ -171,6 +174,49 @@ namespace JCS.Argon.Services.Core
             return results;
         }
 
+        /// <inheritdoc cref="IConstraintGroupManager.UpdateAndMergeCollectionConstraints" />
+        public async Task<Collection> UpdateAndMergeCollectionConstraints(Collection collection, List<CreateOrUpdateConstraintCommand>
+            commands)
+        {
+            LogMethodCall(_log);
+            var constraintGroup = collection.ConstraintGroup;
+            if (constraintGroup == null && commands.Any())
+            {
+                collection.ConstraintGroup = await CreateConstraintGroupAsync(commands);
+            }
+            else
+            {
+                // a constraint group exists, but it may be empty
+                if (constraintGroup.Constraints == null)
+                {
+                    constraintGroup.Constraints = new List<Constraint>();
+                }
+
+                // iterate over the supplied commands and merge in the new or updated constraints
+                foreach (var command in commands)
+                {
+                    if (collection.ConstraintGroup.Constraints.Where(c => c.Name == command.Name).Any())
+                    {
+                        var existingConstraint = (collection.ConstraintGroup.Constraints ?? null)!.First(c => c.Name == command.Name);
+                        if (existingConstraint != null)
+                        {
+                            existingConstraint.AllowableValues = command.AllowableValues;
+                            existingConstraint.ConstraintType = command.ConstraintType;
+                            existingConstraint.SourceProperty = command.SourceProperty;
+                            existingConstraint.TargetProperty = command.TargetProperty;
+                            existingConstraint.ValueType = command.ValueType;
+                        }
+                    }
+                    else
+                    {
+                        collection.ConstraintGroup.Constraints.Add(await ConstraintGroupManager.CreateConstraintAsync(command));
+                    }
+                }
+            }
+
+            return collection;
+        }
+
         /// <summary>
         ///     Checks whether a given property has been populated with an allowable value
         /// </summary>
@@ -181,13 +227,26 @@ namespace JCS.Argon.Services.Core
         {
             if (CheckPropertyType(typeAndValueConstraint, property))
             {
-                if (typeAndValueConstraint.AllowableValues == null || typeAndValueConstraint.AllowableValues.Length <= 0) return false;
+                if (typeAndValueConstraint.AllowableValues == null || typeAndValueConstraint.AllowableValues.Length <= 0)
+                {
+                    return false;
+                }
+
                 var value = property.ValueToString();
-                if (value == null) return false;
-                if (typeAndValueConstraint.AllowableValues.Any(v => v.Equals(value))) return true;
+                if (value == null)
+                {
+                    return false;
+                }
+
+                if (typeAndValueConstraint.AllowableValues.Any(v => v.Equals(value)))
+                {
+                    return true;
+                }
             }
             else
+            {
                 return false;
+            }
 
             return false;
         }
