@@ -11,6 +11,7 @@ using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
@@ -73,10 +74,10 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="ICollectionManager.CreateCollectionAsync" />
-        public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd)
+        public async Task<Collection> CreateCollectionAsync(CreateCollectionCommand command)
         {
             LogMethodCall(_log);
-            var exists = await CollectionExistsAsync(cmd.Name);
+            var exists = await CollectionExistsAsync(command.Name);
             if (exists)
             {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
@@ -85,17 +86,21 @@ namespace JCS.Argon.Services.Core
 
             // create the necessary entities first
             ConstraintGroup? constraintGroup;
-            if (cmd.Constraints != null)
-                constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync(cmd.Constraints);
+            if (command.Constraints != null)
+            {
+                constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync(command.Constraints);
+            }
             else
+            {
                 constraintGroup = await ConstraintGroupManager.CreateConstraintGroupAsync();
+            }
 
             var propertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
             var op = await DbContext.Collections.AddAsync(new Collection
             {
-                Name = cmd.Name,
-                Description = cmd.Description,
-                ProviderTag = cmd.ProviderTag,
+                Name = command.Name,
+                Description = command.Description,
+                ProviderTag = command.ProviderTag,
                 ConstraintGroup = constraintGroup,
                 PropertyGroup = propertyGroup
             });
@@ -106,7 +111,7 @@ namespace JCS.Argon.Services.Core
             // grab the provider and then ask for the physical operations to be performed
             try
             {
-                collection = await PerformProviderCollectionCreationActions(cmd, collection);
+                collection = await PerformProviderCollectionCreationActions(command, collection);
                 DbContext.Update(collection);
                 await DbContext.SaveChangesAsync();
             }
@@ -154,11 +159,13 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="ICollectionManager.UpdateCollectionAsync" />
-        public async Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd)
+        public async Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand command)
         {
             LogMethodCall(_log);
             if (!await CollectionExistsAsync(collectionId))
+            {
                 throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
+            }
 
             var collection = await DbContext.Collections
                 .Include(c => c.ConstraintGroup)
@@ -173,7 +180,7 @@ namespace JCS.Argon.Services.Core
                     "Collection has moved or cannot be found - shouldn't happen");
             }
 
-            var validationErrors = await ValidateCollectionUpdateAsync(collection, cmd);
+            var validationErrors = await ValidateCollectionUpdateAsync(collection, command);
             if (validationErrors.Count != 0)
             {
                 var message = validationErrors.Aggregate((s, t) => s + Environment.NewLine + t);
@@ -181,8 +188,8 @@ namespace JCS.Argon.Services.Core
                     $"Validation errors occurred: {message}");
             }
 
-            collection.Name = cmd.Name ?? collection.Name;
-            collection.Description = cmd.Description ?? collection.Description;
+            collection.Name = command.Name ?? collection.Name;
+            collection.Description = command.Description ?? collection.Description;
             await CommitCollectionAndUpdateLastAccessed(collection);
             return collection;
         }
@@ -197,6 +204,21 @@ namespace JCS.Argon.Services.Core
             return VirtualStorageManager.GetBindings();
         }
 
+        /// <inheritdoc cref="ICollectionManager.UpdateCollectionConstraints" />
+        public async Task<Collection> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands)
+        {
+            LogMethodCall(_log);
+            if (!await CollectionExistsAsync(collectionId))
+            {
+                throw new ICollectionManager.CollectionManagerException(404, "The specified collection does not exist");
+            }
+
+            var collection = await GetCollectionAsync(collectionId);
+            collection = await ConstraintGroupManager.UpdateAndMergeCollectionConstraints(collection, commands); 
+            collection= await CommitCollectionAndUpdateLastAccessed(collection);
+            return collection;
+        }
+
         /// <summary>
         ///     Update the last accessed time for a given <see cref="Collection" /> instance.  The current system (server-side) timestamp
         ///     is used.
@@ -206,7 +228,11 @@ namespace JCS.Argon.Services.Core
         private async Task<Collection> CommitCollectionAndUpdateLastAccessed(Collection collection)
         {
             LogMethodCall(_log);
-            if (collection.PropertyGroup == null) return collection;
+            if (collection.PropertyGroup == null)
+            {
+                return collection;
+            }
+
             collection.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
                 DateTime.Now);
             DbContext.Collections.Update(collection);
@@ -222,7 +248,11 @@ namespace JCS.Argon.Services.Core
         private async Task<bool> CollectionExistsAsync(string name)
         {
             LogMethodCall(_log);
-            if (!await DbContext.Collections.AnyAsync()) return false;
+            if (!await DbContext.Collections.AnyAsync())
+            {
+                return false;
+            }
+
             var existing = await DbContext.Collections
                 .FirstOrDefaultAsync(c => c.Name.Equals(name));
             return !(existing is null);
@@ -268,7 +298,10 @@ namespace JCS.Argon.Services.Core
                     $"Got a potentially retryable error whilst creating collection: {creationResult.ErrorMessage}");
             }
 
-            if (creationResult.Properties != null) collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
+            if (creationResult.Properties != null)
+            {
+                collection.PropertyGroup!.MergeDictionary(creationResult.Properties);
+            }
 
             return collection;
         }
@@ -283,11 +316,27 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var validationErrors = new List<string>();
-            if (cmd.Name == null) return validationErrors;
-            if (cmd.Name.Length == 0) validationErrors.Add("A collection cannot have an empty name");
-            if (target.Name == cmd.Name) return validationErrors;
+            if (cmd.Name == null)
+            {
+                return validationErrors;
+            }
+
+            if (cmd.Name.Length == 0)
+            {
+                validationErrors.Add("A collection cannot have an empty name");
+            }
+
+            if (target.Name == cmd.Name)
+            {
+                return validationErrors;
+            }
+
             var exists = await CollectionExistsAsync(cmd.Name);
-            if (exists) validationErrors.Add("A collection with the supplied name already exists");
+            if (exists)
+            {
+                validationErrors.Add("A collection with the supplied name already exists");
+            }
+
             return validationErrors;
         }
     }

@@ -79,7 +79,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collectionId">The id for the collection to update</param>
         /// <param name="commands">A list of <see cref="CreateOrUpdateConstraintCommand" /> commands</param>
         /// <returns></returns>
-        public Task<ConstraintGroup> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands);
+        public Task<Collection> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands);
 
         /// <summary>
         ///     Retrieves a list of currently configured <see cref="VirtualStorageBinding" /> instances

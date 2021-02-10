@@ -70,7 +70,7 @@ namespace JCS.Argon.Controllers
         ///     series of constraints configured against it, which loosely define how meta-data properties associated
         ///     with items are handled.
         /// </remarks>
-        /// <param name="cmd">Contains the information relating to the new collection</param>
+        /// <param name="command">Contains the information relating to the new collection</param>
         /// <returns></returns>
         /// <response code="201">Successful creation.</response>
         /// <response code="400">
@@ -83,11 +83,10 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Collection> CreateCollection([FromBody]
-            CreateCollectionCommand cmd)
+        public async Task<Collection> CreateCollection([FromBody] CreateCollectionCommand command)
         {
             LogMethodCall(_log);
-            var collection = await _collectionManager.CreateCollectionAsync(cmd);
+            var collection = await _collectionManager.CreateCollectionAsync(command);
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
             return collection;
         }
@@ -169,34 +168,36 @@ namespace JCS.Argon.Controllers
         ///     Updates the constraints associated with a given collection.
         /// </summary>
         /// <remarks>
-        ///     The same format of command is used to create
-        ///     and update constraints.  If a constraint referenced by name already exists, then it is overwritten with the
-        ///     new details.  If no such constraint exists, then a new constraint is created and added to the collection.
-        ///     Constraints take effect on the next operation against the collection.
+        ///     <para>
+        ///         The same format of command is used to create and update constraints.  If a constraint referenced by name already exists, then it is
+        ///         overwritten with the new details.  If no such constraint exists, then a new constraint is created and added to the collection.
+        ///     </para>
+        ///     <para>
+        ///         Constraints take effect on the next operation against the collection.
+        ///     </para>
         /// </remarks>
         /// <param name="collectionId">The unique identifier for the collection</param>
-        /// <param name="cmds">A list of create/update commands</param>
+        /// <param name="commands">A list of create/update commands</param>
         /// <returns></returns>
         [HttpPost("/api/v1/Collections/{collectionId}/Constraints")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ConstraintGroup?> UpdateCollectionConstraints(Guid collectionId,
-            [FromBody]
-            List<CreateOrUpdateConstraintCommand> cmds)
+        public async Task<Collection> UpdateCollectionConstraints(Guid collectionId,
+            [FromBody] List<CreateOrUpdateConstraintCommand> commands)
         {
             LogMethodCall(_log);
-            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var collection = await _collectionManager.UpdateCollectionConstraints(collectionId, commands);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
-            return collection.ConstraintGroup;
+            return collection;
         }
 
         /// <summary>
         ///     Allows for the update of an individual collection
         /// </summary>
         /// <param name="collectionId">The unique identifier associated with the collection to update</param>
-        /// <param name="cmd">A <see cref="PatchCollectionCommand" /> instance containing the updates to be made</param>
+        /// <param name="command">A <see cref="PatchCollectionCommand" /> instance containing the updates to be made</param>
         /// <returns></returns>
         [HttpPatch("{collectionId}")]
         [Produces("application/json")]
@@ -204,11 +205,10 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody]
-            PatchCollectionCommand cmd)
+        public async Task<Collection> UpdateCollection(Guid collectionId, [FromBody] PatchCollectionCommand command)
         {
             LogMethodCall(_log);
-            var collection = await _collectionManager.UpdateCollectionAsync(collectionId, cmd);
+            var collection = await _collectionManager.UpdateCollectionAsync(collectionId, command);
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return collection;
         }
