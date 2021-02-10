@@ -56,14 +56,12 @@ namespace JCS.Argon.Services.Core
                     "The specified item does not exist");
             }
 
-            {
-                var item = await DbContext.Items
-                    .Include(i => i.PropertyGroup)
-                    .Include(i => i.PropertyGroup.Properties)
-                    .Include(i => i.Versions)
-                    .FirstAsync(i => i.Id == itemId);
-                return item;
-            }
+            var item = await DbContext.Items
+                .Include(i => i.PropertyGroup)
+                .Include(i => i.PropertyGroup.Properties)
+                .Include(i => i.Versions)
+                .FirstAsync(i => i.Id == itemId);
+            return item;
         }
 
         /// <inheritdoc cref="IItemManager.DeleteItemFromCollection" />
