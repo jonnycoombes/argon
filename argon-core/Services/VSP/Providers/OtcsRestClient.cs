@@ -204,10 +204,15 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
-        private async Task DoBasicAuthentication()
-        {
-        }
-
+        /// <summary>
+        ///     Uploads a file to a given node (hopefully a folder)
+        /// </summary>
+        /// <param name="parentId">The node id of the parent folder</param>
+        /// <param name="name">The Otcs name property to be set</param>
+        /// <param name="fileName">The underlying filename to be applied to the newly uploaded item</param>
+        /// <param name="source">A <see cref="Stream" /> that can be read in order to obtain the contents of the new file</param>
+        /// <returns>An awaitable which eventually returns the node id of the newly uploaded file</returns>
+        /// <exception cref="OpenTextRestClientException">Thrown if something goes wrong with the upload operation</exception>
         public async Task<long> UploadFile(long parentId, string name, string fileName, Stream source)
         {
             LogMethodCall(_log);
