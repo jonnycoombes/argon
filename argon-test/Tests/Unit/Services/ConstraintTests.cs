@@ -71,6 +71,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                     Name = "String Allowable Value Constraint",
                     ConstraintType = ConstraintType.AllowableTypeAndValues,
                     SourceProperty = "AllowableValues",
+                    ValueType = ConstraintValidTypes.String,
                     AllowableValues = new[] {"Value 1", "Value 2", "Value 3", "Value 4"}
                 },
                 new CreateOrUpdateConstraintCommand
@@ -78,6 +79,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                     Name = "DateTime Value Type Constraint",
                     ConstraintType = ConstraintType.AllowableTypeAndValues,
                     SourceProperty = "AllowableNumericValues",
+                    ValueType = ConstraintValidTypes.Number,
                     AllowableValues = new[] {"1", "2.5", "8"}
                 }
             };
@@ -225,11 +227,11 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             });
         }
 
-        [Theory(DisplayName = "Must be able to modify and add to the constraint group for a given collection")]
+        [Theory(DisplayName = "Must be able to modify and add to the constraint group for a given collection (with existing constraints)")]
         [Trait("Category", "Unit")]
         [Trait("Provider", "VSP")]
         [InlineData("TestFS")]
-        public async void AddAndUpdateConstraints(string providerTag)
+        public async void AddAndUpdateConstraintsExistingConstraints(string providerTag)
         {
             var constraintList = GenerateConstraintList().ToList();
             var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "")
@@ -265,13 +267,59 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                     ValueType = ConstraintValidTypes.Number
                 }
             };
-            var updatedConstraints = await _collectionManager.UpdateCollectionConstraints(collectionId, constraintUpdateCommands);
+            collection = await _collectionManager.UpdateCollectionConstraints(collectionId, constraintUpdateCommands);
             Constraint updatedConstraint;
-            updatedConstraint = updatedConstraints.Constraints!.Where(c => c.Name == "Mandatory Title Constraint").First();
+            Assert.NotNull(collection.ConstraintGroup);
+            updatedConstraint = collection.ConstraintGroup.Constraints!.First(c => c.Name == "Mandatory Title Constraint");
             Assert.Equal("DocumentTitle", updatedConstraint.SourceProperty);
-            updatedConstraint = updatedConstraints.Constraints!.Where(c => c.Name == "Document Type Constraint").First();
+            updatedConstraint = collection.ConstraintGroup.Constraints!.First(c => c.Name == "Document Type Constraint");
             Assert.Equal(ConstraintValidTypes.String, updatedConstraint.ValueType);
-            Assert.Contains(updatedConstraints.Constraints, c => c.Name == "Sample Additional Constraint");
+            Assert.Contains(collection.ConstraintGroup.Constraints, c => c.Name == "Sample Additional Constraint");
+        }
+
+        [Theory(DisplayName =
+            "Must be able to modify and add to the constraint group for a given collection (with no existing constraints)")]
+        [Trait("Category", "Unit")]
+        [Trait("Provider", "VSP")]
+        [InlineData("TestFS")]
+        public async void AddAndUpdateConstraintsNoExistingConstraints(string providerTag)
+        {
+            var createCommand = new CreateCollectionCommand("Constrained Collection", providerTag, "");
+            var collection = await _collectionManager.CreateCollectionAsync(createCommand);
+            var collectionId = collection.Id!.Value;
+            var constraintUpdateCommands = new List<CreateOrUpdateConstraintCommand>
+            {
+                // change the source property of a constraint
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Mandatory Title Constraint",
+                    ConstraintType = ConstraintType.Mandatory,
+                    SourceProperty = "DocumentTitle"
+                },
+                // change the overall type of a constraint
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Document Type Constraint",
+                    ConstraintType = ConstraintType.AllowableType,
+                    SourceProperty = "Document Type",
+                    ValueType = ConstraintValidTypes.String
+                },
+                new CreateOrUpdateConstraintCommand
+                {
+                    Name = "Sample Additional Constraint",
+                    ConstraintType = ConstraintType.AllowableType,
+                    SourceProperty = "AdditionalConstraint",
+                    ValueType = ConstraintValidTypes.Number
+                }
+            };
+            collection = await _collectionManager.UpdateCollectionConstraints(collectionId, constraintUpdateCommands);
+            Constraint updatedConstraint;
+            Assert.NotNull(collection.ConstraintGroup);
+            updatedConstraint = collection.ConstraintGroup.Constraints!.First(c => c.Name == "Mandatory Title Constraint");
+            Assert.Equal("DocumentTitle", updatedConstraint.SourceProperty);
+            updatedConstraint = collection.ConstraintGroup.Constraints!.First(c => c.Name == "Document Type Constraint");
+            Assert.Equal(ConstraintValidTypes.String, updatedConstraint.ValueType);
+            Assert.Contains(collection.ConstraintGroup.Constraints, c => c.Name == "Sample Additional Constraint");
         }
     }
 }
