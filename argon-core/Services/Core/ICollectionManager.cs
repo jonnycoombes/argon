@@ -47,10 +47,10 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="cmd">The <see cref="CreateCollectionCommand" /> containing the parameters for the new collection</param>
+        /// <param name="command">The <see cref="CreateCollectionCommand" /> containing the parameters for the new collection</param>
         /// <returns>A new <see cref="Collection" /> instance</returns>
         /// <exception cref="CollectionManagerException">In the event of something going wrong during the creation process</exception>
-        public Task<Collection> CreateCollectionAsync(CreateCollectionCommand cmd);
+        public Task<Collection> CreateCollectionAsync(CreateCollectionCommand command);
 
         /// <summary>
         ///     Reads a specific collection from the underlying store, based on a supplied collection identifier
@@ -67,10 +67,19 @@ namespace JCS.Argon.Services.Core
         /// <remarks>
         /// </remarks>
         /// <param name="collectionId">The unique identifier for the collection</param>
-        /// <param name="cmd">The things to change</param>
+        /// <param name="command">The things to change</param>
         /// <returns>The updated <see cref="Collection" /></returns>
         /// <exception cref="CollectionManagerException">In the event of something going wrong during the update process</exception>
-        public Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand cmd);
+        public Task<Collection> UpdateCollectionAsync(Guid collectionId, PatchCollectionCommand command);
+
+        /// <summary>
+        ///     Performs an update (create/update) on the <see cref="ConstraintGroup" /> for a given <see cref="Collection" />.  This operation
+        ///     does not allow for the deletion of constraints, this is dealt with through a separate operation.
+        /// </summary>
+        /// <param name="collectionId">The id for the collection to update</param>
+        /// <param name="commands">A list of <see cref="CreateOrUpdateConstraintCommand" /> commands</param>
+        /// <returns></returns>
+        public Task<ConstraintGroup> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands);
 
         /// <summary>
         ///     Retrieves a list of currently configured <see cref="VirtualStorageBinding" /> instances
