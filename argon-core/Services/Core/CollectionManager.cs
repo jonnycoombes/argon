@@ -45,6 +45,7 @@ namespace JCS.Argon.Services.Core
             return await DbContext.Collections.CountAsync();
         }
 
+
         /// <inheritdoc cref="IDbCache.CountTotalItemsAsync" />
         public async Task<int> CountTotalItemsAsync()
         {
@@ -222,6 +223,35 @@ namespace JCS.Argon.Services.Core
         public Task<Collection> TouchCollection(Collection collection)
         {
             return CommitCollectionAndUpdateLastAccessed(collection);
+        }
+
+        /// <inheritdoc cref="ICollectionManager.DeleteCollection" />
+        public async Task DeleteCollection(Guid collectionId)
+        {
+            if (!await CollectionExistsAsync(collectionId))
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified collection does not exist");
+            }
+
+            var collection = await GetCollectionAsync(collectionId);
+            if (await ItemManager.CountItemsAsync(collection) > 0)
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status400BadRequest,
+                    "The specified collection is not empty");
+            }
+
+            try
+            {
+                DbContext.Collections.Remove(collection);
+                await DbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                LogExceptionError(_log, ex);
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    "An internal error occurred during collection deletion operation");
+            }
         }
 
         /// <summary>
