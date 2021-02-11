@@ -83,6 +83,9 @@ namespace JCS.Argon.Services.Core
                         .Include(i => i.Versions)
                         .FirstAsync(i => i.Id == itemId);
                     await PerformProviderItemDeletionActions(collection, item);
+                    collection.NumberOfItems -= 1;
+                    collection.TotalSizeBytes -= await GetItemTotalSize(item);
+                    DbContext.Collections.Update(collection);
                     DbContext.Items.Remove(item);
                     await DbContext.SaveChangesAsync();
                 }
@@ -239,6 +242,17 @@ namespace JCS.Argon.Services.Core
             }
 
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <summary>
+        ///     Aggregates up the total size of a given item, by totalling up the sizes of its versions
+        /// </summary>
+        /// <param name="item">The item to operate on</param>
+        /// <returns>A long which gives the total size occupied by an items versions in bytes</returns>
+        private async Task<long> GetItemTotalSize(Item item)
+        {
+            var sum = await DbContext.Versions.Where(v => v.Item.Id == item.Id).SumAsync(v => v.Size);
+            return sum;
         }
 
         /// <summary>
