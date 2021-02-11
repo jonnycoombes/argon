@@ -108,6 +108,11 @@ namespace JCS.Argon.Services.Core
         public async Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
         {
             LogMethodCall(_log);
+            if (!await ItemVersionExists(item, versionId))
+            {
+                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound, 
+                "The specified item version does not exist");
+            }
             return await DbContext.Versions
                 .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id);
         }
@@ -220,7 +225,24 @@ namespace JCS.Argon.Services.Core
         /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync" />
         public async Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
+            if (!await ItemVersionExists(item, itemVersion.Id.Value))
+            {
+                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound, 
+                    "The specified item version does not exist");
+            }
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <summary>
+        ///     Checks whether a specific item version exists
+        /// </summary>
+        /// <param name="item">The parent <see cref="Item" /></param>
+        /// <param name="versionId">The id of the version to try and locate</param>
+        /// <returns></returns>
+        private async Task<bool> ItemVersionExists(Item item, Guid versionId)
+        {
+            LogMethodCall(_log);
+            return await DbContext.Versions.Where(v => v.Id == versionId && v.Item.Id == item.Id).AnyAsync();
         }
 
         /// <summary>
@@ -232,10 +254,18 @@ namespace JCS.Argon.Services.Core
         /// <exception cref="ICollectionManager.CollectionManagerException"></exception>
         private void ValidatePropertiesAgainstConstraints(Collection collection, Item item)
         {
-            if (collection.ConstraintGroup == null) return;
+            if (collection.ConstraintGroup == null)
+            {
+                return;
+            }
+
             var constraintCheckResults = ConstraintGroupManager.ValidatePropertiesAgainstConstraints(collection.ConstraintGroup,
                 item.PropertyGroup);
-            if (constraintCheckResults.Count <= 0) return;
+            if (constraintCheckResults.Count <= 0)
+            {
+                return;
+            }
+
             var message = constraintCheckResults.Aggregate((s, t) => s + ',' + t);
             throw new IItemManager.ItemManagerException(StatusCodes.Status400BadRequest,
                 message);
@@ -290,7 +320,10 @@ namespace JCS.Argon.Services.Core
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
             var retrievalResult = await provider.ReadCollectionItemVersionAsync(collection, item, itemVersion);
             if (retrievalResult.Status == IVirtualStorageProvider.StorageOperationStatus.Ok && retrievalResult.Stream != null)
+            {
                 return retrievalResult.Stream;
+            }
+
             throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
                 "An unhandled error occurred whilst attempting to retrieve a version from storage");
         }
