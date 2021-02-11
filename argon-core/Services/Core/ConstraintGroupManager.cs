@@ -187,25 +187,24 @@ namespace JCS.Argon.Services.Core
             else
             {
                 // a constraint group exists, but it may be empty
-                if (constraintGroup.Constraints == null)
-                {
-                    constraintGroup.Constraints = new List<Constraint>();
-                }
+                constraintGroup.Constraints ??= new List<Constraint>();
 
                 // iterate over the supplied commands and merge in the new or updated constraints
                 foreach (var command in commands)
                 {
-                    if (collection.ConstraintGroup.Constraints.Where(c => c.Name == command.Name).Any())
+                    if (collection.ConstraintGroup.Constraints.Any(c => c.Name == command.Name))
                     {
                         var existingConstraint = (collection.ConstraintGroup.Constraints ?? null)!.First(c => c.Name == command.Name);
-                        if (existingConstraint != null)
+                        if (existingConstraint == null)
                         {
-                            existingConstraint.AllowableValues = command.AllowableValues;
-                            existingConstraint.ConstraintType = command.ConstraintType;
-                            existingConstraint.SourceProperty = command.SourceProperty;
-                            existingConstraint.TargetProperty = command.TargetProperty;
-                            existingConstraint.ValueType = command.ValueType;
+                            continue;
                         }
+
+                        existingConstraint.AllowableValues = command.AllowableValues;
+                        existingConstraint.ConstraintType = command.ConstraintType;
+                        existingConstraint.SourceProperty = command.SourceProperty;
+                        existingConstraint.TargetProperty = command.TargetProperty;
+                        existingConstraint.ValueType = command.ValueType;
                     }
                     else
                     {
