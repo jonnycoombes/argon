@@ -43,6 +43,11 @@ namespace JCS.Argon.Services.Core
             var items = await DbContext.Items.Where(i => i.Collection.Id == collection.Id)
                 .Include(i => i.Versions)
                 .ToListAsync();
+            foreach (var item in items)
+            {
+                item.Collection = null;
+            }
+
             return items;
         }
 
