@@ -55,6 +55,8 @@ namespace JCS.Argon.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        /// <response code="200">Successful read</response>
+        /// <response code="400">Internal server error</response>
         public async Task<List<Collection>> ReadCollections()
         {
             LogMethodCall(_log);
@@ -78,6 +80,7 @@ namespace JCS.Argon.Controllers
         ///     in response payload.
         /// </response>
         /// <response code="500">Internal server error - check the response payload</response>
+        /// <returns>An instance of <see cref="Collection" /></returns>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -99,7 +102,10 @@ namespace JCS.Argon.Controllers
         ///     including some top-level metrics including its length and overall size.
         /// </remarks>
         /// <param name="collectionId"></param>
-        /// <returns></returns>
+        /// <response code="200">Successful read</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="500">Internal server error</response>
+        /// <returns>A <see cref="Collection" /> reference</returns>
         [HttpGet("{collectionId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -114,10 +120,37 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
+        ///     Call this method in order to delete a collection.  Note that only empty collections may be deleted.  If the collection contains any
+        ///     items, then a 400 response will be generated
+        /// </summary>
+        /// <param name="collectionId">The unique identifier for the collection to delete</param>
+        /// <response code="200">Successful deletion</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="400">The specified collection cannot be deleted because it contains valid items</response>
+        /// <response code="500">Internal server error</response>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("/api/v1/Collections/{collectionId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task DeleteCollection(Guid collectionId)
+        {
+            LogMethodCall(_log);
+            await _collectionManager.DeleteCollection(collectionId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+        }
+
+        /// <summary>
         ///     Gets the constraint group for a given collection, if it exists
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="ConstraintGroup" /> for the <see cref="Collection" /></returns>
+        /// <response code="200">Successful read</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("/api/v1/Collections/{collectionId}/Constraints")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -136,6 +169,9 @@ namespace JCS.Argon.Controllers
         /// </summary>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="constraintId">The unique identifier for the constraint</param>
+        /// <response code="200">Successful read</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="500">Internal server error</response>
         /// <returns></returns>
         [HttpGet("/api/v1/Collections/{collectionId}/Constraints/{constraintId}")]
         [Produces("application/json")]
@@ -178,6 +214,9 @@ namespace JCS.Argon.Controllers
         /// </remarks>
         /// <param name="collectionId">The unique identifier for the collection</param>
         /// <param name="commands">A list of create/update commands</param>
+        /// <response code="200">Successful update</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="500">Internal server error</response>
         /// <returns></returns>
         [HttpPost("/api/v1/Collections/{collectionId}/Constraints")]
         [Produces("application/json")]
@@ -198,6 +237,9 @@ namespace JCS.Argon.Controllers
         /// </summary>
         /// <param name="collectionId">The unique identifier associated with the collection to update</param>
         /// <param name="command">A <see cref="PatchCollectionCommand" /> instance containing the updates to be made</param>
+        /// <response code="200">Successful update</response>
+        /// <response code="404">The specified collection doesn't exist</response>
+        /// <response code="500">Internal server error</response>
         /// <returns></returns>
         [HttpPatch("{collectionId}")]
         [Produces("application/json")]
