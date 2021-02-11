@@ -249,5 +249,17 @@ namespace JCS.Argon.Controllers
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
             return await _itemManager.GetItemVersionAsync(collection, item, versionId);
         }
+
+        [HttpPatch]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Item> UpdateItemProperties(Guid collectionId, Guid itemId)
+        {
+            LogMethodCall(_log);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+        }
     }
 }
