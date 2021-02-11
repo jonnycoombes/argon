@@ -216,7 +216,6 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <response code="200">Successful deletion of the item</response>
         /// <response code="500">Internal server error - check the response payload</response>
-        /// [HttpDelete]
         [HttpDelete]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
         [Produces("application/json")]
