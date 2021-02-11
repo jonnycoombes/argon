@@ -82,6 +82,13 @@ namespace JCS.Argon.Services.Core
         public Task<Collection> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands);
 
         /// <summary>
+        ///     Method which allows for the the last accessed timestamp for a collection to be updated
+        /// </summary>
+        /// <param name="collection">The collection to touch</param>
+        /// <returns></returns>
+        public Task<Collection> TouchCollection(Collection collection);
+
+        /// <summary>
         ///     Retrieves a list of currently configured <see cref="VirtualStorageBinding" /> instances
         /// </summary>
         /// <returns>
