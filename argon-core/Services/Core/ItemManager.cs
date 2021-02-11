@@ -176,6 +176,12 @@ namespace JCS.Argon.Services.Core
                 throw new IItemManager.ItemManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
+            catch (IItemManager.ItemManagerException ex)
+            {
+                LogWarning(_log, "Caught item manager exception whilst attempting to upload new item");
+                throw new IItemManager.ItemManagerException(ex.ResponseCodeHint,
+                    ex.Message, ex);
+            }
             catch (Exception ex)
             {
                 // roll back the entity changes
@@ -231,18 +237,6 @@ namespace JCS.Argon.Services.Core
                     "The specified item version does not exist");
             }
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
-        }
-
-        /// <summary>
-        ///     Checks whether a specific item version exists
-        /// </summary>
-        /// <param name="item">The parent <see cref="Item" /></param>
-        /// <param name="versionId">The id of the version to try and locate</param>
-        /// <returns></returns>
-        private async Task<bool> ItemVersionExists(Item item, Guid versionId)
-        {
-            LogMethodCall(_log);
-            return await DbContext.Versions.Where(v => v.Id == versionId && v.Item.Id == item.Id).AnyAsync();
         }
 
         /// <summary>
