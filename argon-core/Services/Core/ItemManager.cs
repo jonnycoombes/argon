@@ -110,9 +110,10 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             if (!await ItemVersionExists(item, versionId))
             {
-                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound, 
-                "The specified item version does not exist");
+                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound,
+                    "The specified item version does not exist");
             }
+
             return await DbContext.Versions
                 .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id);
         }
@@ -233,10 +234,23 @@ namespace JCS.Argon.Services.Core
         {
             if (!await ItemVersionExists(item, itemVersion.Id.Value))
             {
-                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound, 
+                throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound,
                     "The specified item version does not exist");
             }
+
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <summary>
+        ///     Checks whether a specific item version exists
+        /// </summary>
+        /// <param name="item">The parent <see cref="Item" /></param>
+        /// <param name="versionId">The id of the version to try and locate</param>
+        /// <returns></returns>
+        private async Task<bool> ItemVersionExists(Item item, Guid versionId)
+        {
+            LogMethodCall(_log);
+            return await DbContext.Versions.Where(v => v.Id == versionId && v.Item.Id == item.Id).AnyAsync();
         }
 
         /// <summary>
