@@ -79,6 +79,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="collectionId">The id for the collection to update</param>
         /// <param name="commands">A list of <see cref="CreateOrUpdateConstraintCommand" /> commands</param>
         /// <returns></returns>
+        /// <exception cref="CollectionManagerException">In the event of something going wrong during the update process</exception>
         public Task<Collection> UpdateCollectionConstraints(Guid collectionId, List<CreateOrUpdateConstraintCommand> commands);
 
         /// <summary>
@@ -96,6 +97,17 @@ namespace JCS.Argon.Services.Core
         ///     configuration
         /// </returns>
         public List<VirtualStorageBinding> GetStorageBindings();
+
+        /// <summary>
+        ///     Attempts the deletion of a collection.  If the collection is non-empty then the operation should fail.
+        /// </summary>
+        /// <param name="collectionId">The id for the <see cref="Collection" /> to be removed</param>
+        /// <returns>The total number of items deleted as a result of the operation</returns>
+        /// <exception cref="CollectionManagerException">
+        ///     In the event of something going wrong during the deletion process, or if the collection is
+        ///     non-empty
+        /// </exception>
+        public Task DeleteCollection(Guid collectionId);
 
         /// <summary>
         ///     Thrown in the event of a failure within the collection manager
