@@ -230,18 +230,29 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="collection">The collection to update</param>
         /// <returns>The updated collection</returns>
+        /// <exception cref="ICollectionManager.CollectionManagerException">Thrown in the event of a db commit fail</exception>
         private async Task<Collection> CommitCollectionAndUpdateLastAccessed(Collection collection)
         {
-            LogMethodCall(_log);
-            if (collection.PropertyGroup == null)
+            try
             {
-                return collection;
+                LogMethodCall(_log);
+                if (collection.PropertyGroup == null)
+                {
+                    return collection;
+                }
+
+                collection.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
+                    DateTime.Now);
+                DbContext.Collections.Update(collection);
+                await DbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                LogExceptionWarning(_log, ex);
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    "An exception occurred whilst attempting to commit a collection change");
             }
 
-            collection.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
-                DateTime.Now);
-            DbContext.Collections.Update(collection);
-            await DbContext.SaveChangesAsync();
             return collection;
         }
 
