@@ -60,12 +60,12 @@ namespace JCS.Argon.Model.Schema
         /// <summary>
         ///     The length of the collection in terms of number of collection items
         /// </summary>
-        public long Length { get; set; } = 0;
+        public long NumberOfItems { get; set; } = 0;
 
         /// <summary>
         ///     The aggregate size of the collection in bytes
         /// </summary>
-        public long Size { get; set; } = 0;
+        public long TotalSizeBytes { get; set; } = 0;
 
         /// <summary>
         ///     The tag associated with the VSP provider for this collection

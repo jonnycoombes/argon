@@ -164,8 +164,8 @@ namespace JCS.Argon.Services.Core
                 await DbContext.SaveChangesAsync();
                 item = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
-                collection.Length += 1;
-                collection.Size += version.Size;
+                collection.NumberOfItems += 1;
+                collection.TotalSizeBytes += version.Size;
                 DbContext.Collections.Update(collection);
                 await DbContext.SaveChangesAsync();
                 return item;
@@ -207,8 +207,8 @@ namespace JCS.Argon.Services.Core
                 await DbContext.SaveChangesAsync();
                 version = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
-                collection.Length += 1;
-                collection.Size += version.Size;
+                collection.NumberOfItems += 1;
+                collection.TotalSizeBytes += version.Size;
                 DbContext.Collections.Update(collection);
                 await DbContext.SaveChangesAsync();
                 return item;

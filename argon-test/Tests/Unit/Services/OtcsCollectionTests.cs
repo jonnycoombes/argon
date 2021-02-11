@@ -78,7 +78,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             var cmd = new CreateCollectionCommand {Name = name, Description = "Test description", ProviderTag = providerTag};
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
-            Assert.Equal(0, collection.Length);
+            Assert.Equal(0, collection.NumberOfItems);
         }
 
         [Theory(DisplayName = "Must not be able to create collections with a duplicate name")]
@@ -91,7 +91,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             var cmd = new CreateCollectionCommand {Name = name, Description = "Duplicate collection", ProviderTag = providerTag};
             var collection = await _collectionManager.CreateCollectionAsync(cmd);
             Assert.IsType<Guid>(collection.Id);
-            Assert.Equal(0, collection.Length);
+            Assert.Equal(0, collection.NumberOfItems);
             await Assert.ThrowsAsync<ICollectionManager.CollectionManagerException>(async () =>
             {
                 await _collectionManager.CreateCollectionAsync(cmd);
@@ -117,7 +117,10 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 new CreateCollectionCommand("Collection 9", providerTag, ""),
                 new CreateCollectionCommand("Collection 10", providerTag, "")
             };
-            foreach (var cmd in cmds) await _collectionManager.CreateCollectionAsync(cmd);
+            foreach (var cmd in cmds)
+            {
+                await _collectionManager.CreateCollectionAsync(cmd);
+            }
 
             var collectionCount = await _collectionManager.CountCollectionsAsync();
             Assert.Equal(10, collectionCount);
@@ -137,7 +140,10 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
                 new CreateCollectionCommand("Collection 4", providerTag, ""),
                 new CreateCollectionCommand("Collection 5", providerTag, "")
             };
-            foreach (var cmd in cmds) await _collectionManager.CreateCollectionAsync(cmd);
+            foreach (var cmd in cmds)
+            {
+                await _collectionManager.CreateCollectionAsync(cmd);
+            }
 
             var collections = await _collectionManager.ListCollectionsAsync();
             Assert.Equal(5, collections.Count);
