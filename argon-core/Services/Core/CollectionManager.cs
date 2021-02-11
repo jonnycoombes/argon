@@ -11,7 +11,6 @@ using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NSubstitute;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
@@ -214,9 +213,15 @@ namespace JCS.Argon.Services.Core
             }
 
             var collection = await GetCollectionAsync(collectionId);
-            collection = await ConstraintGroupManager.UpdateAndMergeCollectionConstraints(collection, commands); 
-            collection= await CommitCollectionAndUpdateLastAccessed(collection);
+            collection = await ConstraintGroupManager.UpdateAndMergeCollectionConstraints(collection, commands);
+            collection = await CommitCollectionAndUpdateLastAccessed(collection);
             return collection;
+        }
+
+        /// <inheritdoc cref="ICollectionManager.TouchCollection" />
+        public Task<Collection> TouchCollection(Collection collection)
+        {
+            return CommitCollectionAndUpdateLastAccessed(collection);
         }
 
         /// <summary>
