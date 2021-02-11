@@ -70,7 +70,7 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             try
             {
-                if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+                if (!await ItemExists(collection, itemId))
                 {
                     throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
                         "The specified item does not exist");
@@ -242,6 +242,17 @@ namespace JCS.Argon.Services.Core
             }
 
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <summary>
+        ///     Convenience function for checking the existence of a given <see cref="Item" /> against a specific parent <see cref="Collection" />
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /></param>
+        /// <param name="itemId">A <see cref="Guid" /> identifier for the item</param>
+        /// <returns></returns>
+        private async Task<bool> ItemExists(Collection collection, Guid itemId)
+        {
+            return await DbContext.Items.Where(i => i.Collection.Id == collection.Id && i.Id == itemId).AnyAsync();
         }
 
         /// <summary>
