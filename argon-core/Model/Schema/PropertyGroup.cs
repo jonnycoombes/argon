@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #endregion
@@ -48,7 +49,11 @@ namespace JCS.Argon.Model.Schema
             if (HasProperty(name))
             {
                 var prop = GetPropertyByName(name);
-                if (prop == null) return;
+                if (prop == null)
+                {
+                    return;
+                }
+
                 if (prop.Type != type)
                 {
                     prop.ClearValue();
@@ -58,14 +63,16 @@ namespace JCS.Argon.Model.Schema
                 switch (type)
                 {
                     case PropertyType.Boolean:
-                        prop.BooleanValue = (bool) value;
+                        prop.BooleanValue = bool.Parse(value.ToString());
                         break;
                     case PropertyType.Number:
-                        prop.NumberValue = Convert.ToDouble(value);
+                        prop.NumberValue = Convert.ToDouble(value.ToString());
                         break;
                     case PropertyType.DateTime:
-                        prop.DateTimeValue = (DateTime) value;
+                    {
+                        prop.DateTimeValue = DateTime.Parse(value.ToString());
                         break;
+                    }
                     case PropertyType.String:
                         prop.StringValue = value.ToString();
                         break;
@@ -137,29 +144,63 @@ namespace JCS.Argon.Model.Schema
                 foreach (var key in source.Keys)
                 {
                     var value = source[key];
-                    switch (value)
+                    if (value is JsonElement)
                     {
-                        case string s:
-                            AddOrReplaceProperty(key, PropertyType.String, value);
-                            break;
-                        case bool b:
-                            AddOrReplaceProperty(key, PropertyType.Boolean, value);
-                            break;
-                        case int i:
-                            AddOrReplaceProperty(key, PropertyType.Number, value);
-                            break;
-                        case float f:
-                            AddOrReplaceProperty(key, PropertyType.Number, value);
-                            break;
-                        case long l:
-                            AddOrReplaceProperty(key, PropertyType.Number, value);
-                            break;
-                        case DateTime dt:
-                            AddOrReplaceProperty(key, PropertyType.DateTime, value);
-                            break;
-                        default:
-                            AddOrReplaceProperty(key, PropertyType.String, value);
-                            break;
+                        switch (((JsonElement) value).ValueKind)
+                        {
+                            case JsonValueKind.String:
+                            {
+                                try
+                                {
+                                    AddOrReplaceProperty(key, PropertyType.DateTime, DateTime.Parse(value.ToString()));
+                                }
+                                catch (Exception ex)
+                                {
+                                    AddOrReplaceProperty(key, PropertyType.String, value);
+                                }
+
+                                break;
+                            }
+                            case JsonValueKind.False:
+                                AddOrReplaceProperty(key, PropertyType.Boolean, value);
+                                break;
+                            case JsonValueKind.True:
+                                AddOrReplaceProperty(key, PropertyType.Boolean, value);
+                                break;
+                            case JsonValueKind.Number:
+                                AddOrReplaceProperty(key, PropertyType.Number, value);
+                                break;
+                            default:
+                                AddOrReplaceProperty(key, PropertyType.String, value);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (value)
+                        {
+                            case string s:
+                                AddOrReplaceProperty(key, PropertyType.String, value);
+                                break;
+                            case bool b:
+                                AddOrReplaceProperty(key, PropertyType.Boolean, value);
+                                break;
+                            case int i:
+                                AddOrReplaceProperty(key, PropertyType.Number, value);
+                                break;
+                            case float f:
+                                AddOrReplaceProperty(key, PropertyType.Number, value);
+                                break;
+                            case long l:
+                                AddOrReplaceProperty(key, PropertyType.Number, value);
+                                break;
+                            case DateTime dt:
+                                AddOrReplaceProperty(key, PropertyType.DateTime, value);
+                                break;
+                            default:
+                                AddOrReplaceProperty(key, PropertyType.String, value);
+                                break;
+                        }
                     }
                 }
             }
