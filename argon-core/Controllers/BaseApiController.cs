@@ -37,7 +37,9 @@ namespace JCS.Argon.Controllers
             LogMethodCall(_log);
             Dictionary<string, object>? properties = null;
             if (Request.Form.ContainsKey("Properties"))
+            {
                 properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
+            }
 
             return properties;
         }
