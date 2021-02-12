@@ -109,6 +109,17 @@ namespace JCS.Argon.Services.Core
         public Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion);
 
         /// <summary>
+        ///     Will update the properties associated with a given <see cref="Item" /> by merging the supplied properties with any
+        ///     existing <see cref="PropertyGroup" /> associated with the <see cref="Item" />
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /> for the <see cref="Item" /></param>
+        /// <param name="item">The <see cref="Item" /> to update</param>
+        /// <param name="properties">A dictionary of string value pairs used during the update operation</param>
+        /// <returns>The updated <see cref="Item" /></returns>
+        /// <exception cref="IItemManager.ItemManagerException">Thrown in the event of the update failing</exception>
+        public Task<Item> UpdateItemProperties(Collection collection, Item item, Dictionary<string, object> properties);
+
+        /// <summary>
         ///     Exception type which may be thrown by methods across this interface
         /// </summary>
         public sealed class ItemManagerException : ResponseAwareException
