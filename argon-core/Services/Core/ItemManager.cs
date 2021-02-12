@@ -59,7 +59,7 @@ namespace JCS.Argon.Services.Core
             if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
             {
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                    "The specified item does not exist");
+                    "The specified collection item does not exist");
             }
 
             var item = await DbContext.Items
@@ -248,6 +248,30 @@ namespace JCS.Argon.Services.Core
             }
 
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
+        }
+
+        /// <inheritdoc cref="IItemManager.UpdateItemProperties" />
+        public async Task<Item> UpdateItemProperties(Collection collection, Item item, Dictionary<string, object> properties)
+        {
+            LogMethodCall(_log);
+            if (properties == null)
+            {
+                throw new IItemManager.ItemManagerException(StatusCodes.Status400BadRequest,
+                    "No properties have been specified for the update operation");
+            }
+
+            if (item.PropertyGroup == null)
+            {
+                LogWarning(_log, "Null property group located - creating new property group");
+                item.PropertyGroup = await PropertyGroupManager.CreatePropertyGroupAsync();
+            }
+
+            item.PropertyGroup.MergeDictionary(properties);
+            ValidatePropertiesAgainstConstraints(collection, item);
+            DbContext.PropertyGroups.Update(item.PropertyGroup);
+            DbContext.Items.Update(item);
+            await DbContext.SaveChangesAsync();
+            return item;
         }
 
         /// <summary>
