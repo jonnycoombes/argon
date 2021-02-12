@@ -236,6 +236,9 @@ namespace JCS.Argon.Controllers
         /// <param name="itemId">The unique identifier for the item</param>
         /// <param name="versionId">The unique identifier for the item version</param>
         /// <returns></returns>
+        /// <response code="200">Successful read</response>
+        /// <response code="404">Invalid item id provided</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         [Route("/api/v1/Collections/{collectionId}/Item/{itemId}/Versions/{versionId}/Properties")]
         [Produces("application/json")]
@@ -247,9 +250,23 @@ namespace JCS.Argon.Controllers
             LogMethodCall(_log);
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
             var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return await _itemManager.GetItemVersionAsync(collection, item, versionId);
         }
 
+        /// <summary>
+        ///     Updates the properties for a given collection item
+        /// </summary>
+        /// <remarks>
+        ///     The updated properties should be provided as a key-value pair within the request body as a multi-part form field with the name
+        ///     "Properties"
+        /// </remarks>
+        /// <param name="collectionId">The id for the parent collection</param>
+        /// <param name="itemId">The item id</param>
+        /// <returns></returns>
+        /// <response code="200">Successful update</response>
+        /// <response code="404">Invalid item id provided, or no properties present in the inbound request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPatch]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
         [Produces("application/json")]
@@ -259,7 +276,12 @@ namespace JCS.Argon.Controllers
         public async Task<Item> UpdateItemProperties(Guid collectionId, Guid itemId)
         {
             LogMethodCall(_log);
+            var properties = ExtractPropertiesFromRequest();
             var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            item = await _itemManager.UpdateItemProperties(collection, item, properties);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return item;
         }
     }
 }
