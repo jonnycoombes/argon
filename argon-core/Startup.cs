@@ -110,10 +110,11 @@ namespace JCS.Argon
             app.UseSwagger();
             var apiOptions = new ApiOptions();
             Configuration.GetSection(ApiOptions.ConfigurationSection).Bind(apiOptions);
-            if (apiOptions.ExternallyHosted)
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("./swagger/v1/swagger.json", "Argon v1"));
-            else
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Argon v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "Argon v1");
+                c.RoutePrefix = "swagger";
+            });
 
             app.UseSerilogRequestLogging();
             app.UseResponseCompression();
