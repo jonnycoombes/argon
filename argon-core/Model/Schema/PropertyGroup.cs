@@ -154,7 +154,7 @@ namespace JCS.Argon.Model.Schema
                                 {
                                     AddOrReplaceProperty(key, PropertyType.DateTime, DateTime.Parse(value.ToString()));
                                 }
-                                catch (Exception ex)
+                                catch (Exception)
                                 {
                                     AddOrReplaceProperty(key, PropertyType.String, value);
                                 }
