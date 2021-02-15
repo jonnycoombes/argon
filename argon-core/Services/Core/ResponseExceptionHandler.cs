@@ -3,7 +3,8 @@
 using JCS.Argon.Model.Responses;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 #endregion
 
@@ -11,22 +12,20 @@ namespace JCS.Argon.Services.Core
 {
     public class ResponseExceptionHandler : IResponseExceptionHandler
     {
-        protected ILogger _log;
-
-        public ResponseExceptionHandler(ILogger<ResponseExceptionHandler> log)
-        {
-            _log = log;
-        }
+        /// <summary>
+        ///     Static logger
+        /// </summary>
+        private static readonly ILogger _log = Log.ForContext<ResponseExceptionHandler>();
 
         public ExceptionResponse GenerateExceptionResponseFromContext(HttpContext context)
         {
-            _log.LogWarning("Handling a new exception");
-            _log.LogWarning("Extracting exception from the supplied context");
+            LogWarning(_log, "Handling a new exception");
+            LogWarning(_log, "Extracting exception from the supplied context");
             var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
             if (exceptionHandlerPathFeature.Error != null)
             {
                 var ex = exceptionHandlerPathFeature.Error;
-                _log.LogWarning($"Found an exception of type {ex.GetType()}");
+                LogWarning(_log, $"Found an exception of type {ex.GetType()}");
                 return ex switch
                 {
                     ICollectionManager.CollectionManagerException e => new ExceptionResponse
@@ -54,7 +53,7 @@ namespace JCS.Argon.Services.Core
                 };
             }
 
-            _log.LogWarning("Didn't locate an exception in the current context");
+            LogWarning(_log, "Didn't locate an exception in the current context");
             return new ExceptionResponse();
         }
     }
