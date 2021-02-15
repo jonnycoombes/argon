@@ -55,8 +55,6 @@ namespace JCS.Argon.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        /// <response code="200">Successful read</response>
-        /// <response code="400">Internal server error</response>
         public async Task<List<Collection>> ReadCollections()
         {
             LogMethodCall(_log);
