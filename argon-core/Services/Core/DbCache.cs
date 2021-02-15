@@ -44,7 +44,7 @@ namespace JCS.Argon.Services.Core
                 Key = key,
                 StringValue = value
             });
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return addOp.Entity;
         }
 
@@ -59,7 +59,7 @@ namespace JCS.Argon.Services.Core
                 Key = key,
                 LongValue = value
             });
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return addOp.Entity;
         }
 
@@ -74,7 +74,7 @@ namespace JCS.Argon.Services.Core
                 Key = key,
                 IntValue = value
             });
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return addOp.Entity;
         }
 
@@ -89,7 +89,7 @@ namespace JCS.Argon.Services.Core
                 Key = key,
                 StringValue = value.ToString()
             });
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return addOp.Entity;
         }
 
@@ -104,7 +104,7 @@ namespace JCS.Argon.Services.Core
                 Key = key,
                 DateTimeValue = value
             });
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return addOp.Entity;
         }
 
@@ -128,9 +128,13 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var entry = await LookupEntry(partition, key);
-            if (entry == null) return false;
+            if (entry == null)
+            {
+                return false;
+            }
+
             DbContext.CacheEntries.Remove(entry);
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return true;
         }
     }
