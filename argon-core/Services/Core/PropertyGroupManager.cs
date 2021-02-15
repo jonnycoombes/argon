@@ -14,7 +14,8 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 namespace JCS.Argon.Services.Core
 {
     /// <summary>
-    ///     Default implementation of a property manager
+    ///     Default implementation of a property manager.  Responsible for managing db changes relating to <see cref="PropertyGroup" />
+    ///     and <see cref="Property" /> schema entities
     /// </summary>
     public class PropertyGroupManager : BaseCoreService, IPropertyGroupManager
     {
@@ -41,7 +42,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 var addOp = await DbContext.AddAsync(new PropertyGroup());
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return addOp.Entity;
             }
             catch (Exception ex)

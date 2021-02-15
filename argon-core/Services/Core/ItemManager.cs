@@ -18,6 +18,9 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.Core
 {
+    /// <summary>
+    ///     Class which manages most of the operations associated with <see cref="Item" /> and <see cref="ItemVersion" /> schema entities
+    /// </summary>
     public class ItemManager : BaseCoreService, IItemManager
     {
         /// <summary>
@@ -93,7 +96,7 @@ namespace JCS.Argon.Services.Core
                     collection.TotalSizeBytes -= await GetItemTotalSize(item);
                     DbContext.Collections.Update(collection);
                     DbContext.Items.Remove(item);
-                    await DbContext.SaveChangesAsync();
+                    await CheckedContextSave();
                 }
             }
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
@@ -170,13 +173,13 @@ namespace JCS.Argon.Services.Core
                 var item = await CreateNewItemTemplate(collection, version, properties);
                 ValidatePropertiesAgainstConstraints(collection, item);
                 var op = await DbContext.Items.AddAsync(item);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 item = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.NumberOfItems += 1;
                 collection.TotalSizeBytes += version.Size;
                 DbContext.Collections.Update(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return item;
             }
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
@@ -213,13 +216,13 @@ namespace JCS.Argon.Services.Core
                 var version = await CreateNewVersionTemplate(inboundFile, maxVersion + 1);
                 version.Item = item;
                 var op = await DbContext.Versions.AddAsync(version);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 version = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
                 collection.NumberOfItems += 1;
                 collection.TotalSizeBytes += version.Size;
                 DbContext.Collections.Update(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return item;
             }
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
@@ -270,7 +273,7 @@ namespace JCS.Argon.Services.Core
             ValidatePropertiesAgainstConstraints(collection, item);
             DbContext.PropertyGroups.Update(item.PropertyGroup);
             DbContext.Items.Update(item);
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             return item;
         }
 
@@ -378,6 +381,7 @@ namespace JCS.Argon.Services.Core
         /// <exception cref="IItemManager.ItemManagerException"></exception>
         private async Task<Stream> PerformProviderVersionRetrievalActions(Collection collection, Item item, ItemVersion itemVersion)
         {
+            var retries = 5;
             LogMethodCall(_log);
             LogDebug(_log, $"Looking up a virtual storage provider with tag [{collection.ProviderTag}");
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
@@ -387,6 +391,7 @@ namespace JCS.Argon.Services.Core
                 return retrievalResult.Stream;
             }
 
+            LogWarning(_log, $"Failed to retrieve a specific item version - will retry after 1s (retries = {retries})");
             throw new IItemManager.ItemManagerException(StatusCodes.Status500InternalServerError,
                 "An unhandled error occurred whilst attempting to retrieve a version from storage");
         }
