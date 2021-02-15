@@ -17,6 +17,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <PackageVersion>1.0.1.5</PackageVersion>
+    <IsPackable>true</IsPackable>
+    <NuspecProperties>version=${Version}</NuspecProperties>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
