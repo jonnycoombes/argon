@@ -1,11 +1,17 @@
 #region
 
 using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using JCS.Argon.Contexts;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.VSP;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 #endregion
 
@@ -22,6 +28,11 @@ namespace JCS.Argon.Services.Core
     /// </summary>
     public abstract class BaseCoreService
     {
+        /// <summary>
+        ///     Static logger
+        /// </summary>
+        private static readonly ILogger _log = Log.ForContext<BaseCoreService>();
+
         /// <summary>
         ///     The current system configuration
         /// </summary>
@@ -65,6 +76,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="serviceProvider">An active <see cref="IServiceProvider" /> instance</param>
         protected BaseCoreService(IOptionsMonitor<ApiOptions> options, IServiceProvider serviceProvider)
         {
+            LogMethodCall(_log);
             _serviceProvider = serviceProvider;
             _options = options;
         }
@@ -111,6 +123,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private SqlDbContext ResolveDbContext()
         {
+            LogMethodCall(_log);
             return _dbContext ??= _serviceProvider.GetRequiredService<SqlDbContext>();
         }
 
@@ -120,6 +133,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private IConstraintGroupManager ResolveConstraintGroupManager()
         {
+            LogMethodCall(_log);
             return _constraintGroupManager ??= _serviceProvider.GetRequiredService<IConstraintGroupManager>();
         }
 
@@ -129,6 +143,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private IItemManager ResolveItemManager()
         {
+            LogMethodCall(_log);
             return _itemManager ??= _serviceProvider.GetRequiredService<IItemManager>();
         }
 
@@ -138,6 +153,7 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private IPropertyGroupManager ResolvePropertyGroupManager()
         {
+            LogMethodCall(_log);
             return _propertyGroupManager ??= _serviceProvider.GetRequiredService<IPropertyGroupManager>();
         }
 
@@ -147,7 +163,67 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         private IVirtualStorageManager ResolveVirtualStorageManager()
         {
+            LogMethodCall(_log);
             return _virtualStorageManager ??= _serviceProvider.GetRequiredService<IVirtualStorageManager>();
+        }
+
+        /// <summary>
+        ///     Method which makes a call to save changes to the underlying db context, and traps any concurrency exceptions.
+        /// </summary>
+        protected async Task CheckedContextSave()
+        {
+            LogMethodCall(_log);
+            var saved = false;
+            while (!saved)
+            {
+                try
+                {
+                    await DbContext.SaveChangesAsync();
+                    saved = true;
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    foreach (var entry in ex.Entries)
+                    {
+                        // check for a concurrency token and check its type
+                        if (entry.Properties.Any(p => p.Metadata.IsConcurrencyToken))
+                        {
+                            var tokenProperty = entry.Properties.Where(p => p.Metadata.IsConcurrencyToken).First();
+                            if (tokenProperty.Metadata.ClrType == typeof(byte[]))
+                            {
+                                var databaseValues = entry.GetDatabaseValues();
+                                var currentTimestamp = ConvertTimestamp((byte[]) entry.CurrentValues[tokenProperty.Metadata.Name]);
+                                var databaseTimestamp = ConvertTimestamp((byte[]) databaseValues[tokenProperty.Metadata.Name]);
+                                LogVerbose(_log, $"Concurrent conflict: (local: {currentTimestamp}, remote: {databaseTimestamp})");
+
+                                // currently cached copy is behind the database, so update with database values and attempt a 
+                                // re-save
+                                if (currentTimestamp < databaseTimestamp)
+                                {
+                                    entry.CurrentValues.SetValues(databaseValues);
+                                }
+
+                                // in-sync with or ahead of the underlying database - so completed
+                                if (currentTimestamp >= databaseTimestamp)
+                                {
+                                    saved = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Converts a ROWVERSION byte-array into a long value
+        /// </summary>
+        /// <param name="raw">The raw timestamp value (assumed to be equivalent to a SQL ROWVERSION stored in big endian)</param>
+        /// <returns>A <see cref="long" /> representing the timestamp</returns>
+        private long ConvertTimestamp(byte[] raw)
+        {
+            Debug.Assert(raw.Length == 8);
+            return BitConverter.ToInt64(raw.Reverse().ToArray(), 0);
         }
     }
 }
