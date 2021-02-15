@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -50,22 +49,12 @@ namespace JCS.Argon.Extensions
             LogHelpers.LogMethodCall(_log);
             try
             {
-                if (hostEnvironment.IsDevelopment())
+                services.AddDbContext<SqlDbContext>(options =>
                 {
-                    LogHelpers.LogInformation(_log, "In development so using default connection string");
-                    services.AddDbContext<SqlDbContext>(options =>
-                    {
-                        options.UseSqlServer(config.GetConnectionString("DefaultConnection"),
-                            sqlOptions => { });
-                        options.EnableDetailedErrors();
-                    });
-                }
-                else
-                {
-                    services.AddDbContext<SqlDbContext>(options =>
-                        options
-                            .UseSqlServer(config.GetConnectionString("DefaultConnection")));
-                }
+                    options.UseSqlServer(config.GetConnectionString("DefaultConnection"),
+                        sqlOptions => { sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); });
+                    options.EnableDetailedErrors();
+                });
             }
             catch (Exception ex)
             {
