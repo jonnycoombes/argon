@@ -18,6 +18,9 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.Core
 {
+    /// <summary>
+    ///     Class for managing most of the interactions relating to <see cref="ConstraintGroup" /> and <see cref="Constraint" /> schema entities
+    /// </summary>
     public class ConstraintGroupManager : BaseCoreService, IConstraintGroupManager
     {
         /// <summary>
@@ -42,7 +45,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 var op = await DbContext.AddAsync(new ConstraintGroup());
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return op.Entity;
             }
             catch (Exception ex)
@@ -69,7 +72,7 @@ namespace JCS.Argon.Services.Core
                 }
 
                 var op = await DbContext.AddAsync(constraintGroup);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return op.Entity;
             }
             catch (Exception ex)
@@ -127,7 +130,7 @@ namespace JCS.Argon.Services.Core
                 }
 
                 var op = await DbContext.AddAsync(constraint);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 return op.Entity;
             }
             catch (Exception ex)
