@@ -68,7 +68,11 @@ namespace JCS.Argon.Services.VSP.Providers
 
             _rootPathInfo = new DirectoryInfo(@$"{(string) _binding!.Properties[RootpathProperty]}");
             LogInformation(_log, $"{ProviderType}: Current root storage location set to be {_rootPathInfo}");
-            if (Directory.Exists(_rootPathInfo.FullName)) return;
+            if (Directory.Exists(_rootPathInfo.FullName))
+            {
+                return;
+            }
+
             try
             {
                 LogInformation(_log,
@@ -200,12 +204,23 @@ namespace JCS.Argon.Services.VSP.Providers
                     $"The specified version storage location doesn't exist, when it should: {versionStoragePath}");
             }
 
-            var stream = new FileStream(versionStoragePath, FileMode.Open);
-            return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+            try
             {
-                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
-                Stream = stream
-            });
+                var fs = new FileStream(versionStoragePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                    Stream = fs
+                });
+            }
+            catch (IOException ex)
+            {
+                LogWarning(_log, $"I/O exception whilst attempting to access file at \"{versionStoragePath}\"");
+                return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Failed
+                });
+            }
         }
 
         public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item
