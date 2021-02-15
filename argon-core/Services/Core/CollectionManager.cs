@@ -20,6 +20,9 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.Core
 {
+    /// <summary>
+    ///     Class which manages most of the entity-related operations on <see cref="Collection" /> schema entities
+    /// </summary>
     public class CollectionManager : BaseCoreService, ICollectionManager
     {
         /// <summary>
@@ -105,7 +108,7 @@ namespace JCS.Argon.Services.Core
                 PropertyGroup = propertyGroup
             });
 
-            await DbContext.SaveChangesAsync();
+            await CheckedContextSave();
             var collection = op.Entity;
 
             // grab the provider and then ask for the physical operations to be performed
@@ -113,14 +116,14 @@ namespace JCS.Argon.Services.Core
             {
                 collection = await PerformProviderCollectionCreationActions(command, collection);
                 DbContext.Update(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
             }
             catch (IVirtualStorageManager.VirtualStorageManagerException ex)
             {
                 // roll back the entity changes
                 LogWarning(_log, "Caught storage exception whilst attempting collection physical operation - rolling back db changes");
                 DbContext.Collections.Remove(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 throw new ICollectionManager.CollectionManagerException(ex.ResponseCodeHint,
                     ex.Message, ex);
             }
@@ -129,7 +132,7 @@ namespace JCS.Argon.Services.Core
                 // roll back the entity changes
                 LogWarning(_log, "Caught general exception whilst attempting collection physical operation - rolling back db changes");
                 DbContext.Collections.Remove(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
                     ex.Message, ex);
             }
@@ -244,7 +247,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 DbContext.Collections.Remove(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
             }
             catch (Exception ex)
             {
@@ -274,7 +277,7 @@ namespace JCS.Argon.Services.Core
                 collection.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
                     DateTime.Now);
                 DbContext.Collections.Update(collection);
-                await DbContext.SaveChangesAsync();
+                await CheckedContextSave();
             }
             catch (Exception ex)
             {
