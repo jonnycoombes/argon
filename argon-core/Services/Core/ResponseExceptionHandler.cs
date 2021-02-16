@@ -1,6 +1,7 @@
 #region
 
 using JCS.Argon.Model.Responses;
+using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -47,6 +48,12 @@ namespace JCS.Argon.Services.Core
                         Source = e.Source
                     },
                     IPropertyGroupManager.PropertyGroupManagerException e => new ExceptionResponse
+                    {
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
+                    IVirtualStorageManager.VirtualStorageManagerException e => new ExceptionResponse
                     {
                         HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
                         Message = e.Message,
