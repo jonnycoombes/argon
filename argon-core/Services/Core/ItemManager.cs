@@ -84,14 +84,14 @@ namespace JCS.Argon.Services.Core
         public async Task DeleteItemFromCollection(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
+            if (!await ItemExists(collection, itemId))
+            {
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                    "The specified item does not exist");
+            }
+
             try
             {
-                if (!await ItemExists(collection, itemId))
-                {
-                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                        "The specified item does not exist");
-                }
-
                 {
                     var item = await DbContext.Items
                         .Include(i => i.PropertyGroup)
