@@ -34,6 +34,12 @@ namespace JCS.Argon.Services.Core
                         Message = e.Message,
                         Source = e.Source
                     },
+                    IItemManager.ItemManagerException e => new ExceptionResponse
+                    {
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
                     IConstraintGroupManager.ConstraintGroupManagerException e => new ExceptionResponse
                     {
                         HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
