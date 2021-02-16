@@ -92,7 +92,7 @@ namespace JCS.Argon.Model.Schema
                         {
                             Name = name,
                             Type = type,
-                            BooleanValue = (bool) value
+                            BooleanValue = bool.Parse(value.ToString())
                         });
                         break;
                     case PropertyType.Number:
@@ -100,7 +100,7 @@ namespace JCS.Argon.Model.Schema
                         {
                             Name = name,
                             Type = PropertyType.Number,
-                            NumberValue = Convert.ToDouble(value)
+                            NumberValue = Convert.ToDouble(value.ToString())
                         });
                         break;
                     case PropertyType.DateTime:
@@ -108,7 +108,7 @@ namespace JCS.Argon.Model.Schema
                         {
                             Name = name,
                             Type = PropertyType.DateTime,
-                            DateTimeValue = (DateTime) value
+                            DateTimeValue = DateTime.Parse(value.ToString())
                         });
                         break;
                     case PropertyType.String:
