@@ -59,10 +59,17 @@ namespace JCS.Argon.Services.Core
         public async Task<Item> GetItemForCollectionAsync(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
-            if (!await DbContext.Items.AnyAsync(i => i.Id == itemId))
+            if (!await DbContext.Items.AnyAsync(i => i.Id == itemId && i.Collection.Id == collection.Id))
             {
+                if (await DbContext.Items.AnyAsync(i => i.Id == itemId))
+                {
+                    LogWarning(_log, "Aattempt to retrieve item with incorrect collection id");
+                    throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
+                        "The item exists, but isn't associated with this collection.  Please check the collection id.");
+                }
+
                 throw new ICollectionManager.CollectionManagerException(StatusCodes.Status404NotFound,
-                    "The specified collection item does not exist");
+                    "The specified collection item does not exist.");
             }
 
             var item = await DbContext.Items
@@ -120,14 +127,14 @@ namespace JCS.Argon.Services.Core
         public async Task<ItemVersion> GetItemVersionAsync(Collection collection, Item item, Guid versionId)
         {
             LogMethodCall(_log);
-            if (!await ItemVersionExists(item, versionId))
+            if (!await ItemVersionExists(collection, item, versionId))
             {
                 throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound,
                     "The specified item version does not exist");
             }
 
             return await DbContext.Versions
-                .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id);
+                .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id && v.Item.Collection.Id == collection.Id);
         }
 
         /// <inheritdoc cref="IItemManager.GetCurrentItemVersionAsync(Collection, Guid)" />
@@ -244,7 +251,7 @@ namespace JCS.Argon.Services.Core
         /// <inheritdoc cref="IItemManager.GetStreamForVersionAsync" />
         public async Task<Stream> GetStreamForVersionAsync(Collection collection, Item item, ItemVersion itemVersion)
         {
-            if (!await ItemVersionExists(item, itemVersion.Id.Value))
+            if (!await ItemVersionExists(collection, item, itemVersion.Id.Value))
             {
                 throw new IItemManager.ItemManagerException(StatusCodes.Status404NotFound,
                     "The specified item version does not exist");
@@ -302,13 +309,16 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         ///     Checks whether a specific item version exists
         /// </summary>
+        /// <param name="collection"></param>
         /// <param name="item">The parent <see cref="Item" /></param>
         /// <param name="versionId">The id of the version to try and locate</param>
         /// <returns></returns>
-        private async Task<bool> ItemVersionExists(Item item, Guid versionId)
+        private async Task<bool> ItemVersionExists(Collection collection, Item item, Guid versionId)
         {
             LogMethodCall(_log);
-            return await DbContext.Versions.Where(v => v.Id == versionId && v.Item.Id == item.Id).AnyAsync();
+            return await DbContext.Versions.AnyAsync(v => v.Id == versionId
+                                                          && v.Item.Id == item.Id
+                                                          && v.Item.Collection.Id == collection.Id);
         }
 
         /// <summary>
