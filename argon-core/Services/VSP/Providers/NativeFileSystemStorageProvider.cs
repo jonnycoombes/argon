@@ -213,7 +213,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     Stream = fs
                 });
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 LogWarning(_log, $"I/O exception whilst attempting to access file at \"{versionStoragePath}\"");
                 return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
