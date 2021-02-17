@@ -546,20 +546,30 @@ namespace JCS.Argon.Services.VSP.Providers
         public async Task<long?> CreatePath(string path, bool cache = true)
         {
             var cacheId = await GetCachedPathId(path);
-            if (cacheId != 0) return cacheId;
+            if (cacheId != 0)
+            {
+                return cacheId;
+            }
+
             long parentId = EnterpriseNodeId;
             var elements = path.Split('/');
             foreach (var element in elements)
             {
                 var childId = await GetChildId(parentId, element);
                 if (childId == 0)
+                {
                     parentId = await CreateFolder(parentId, element, $"Argon Managed Collection ({element})");
+                }
                 else
+                {
                     parentId = childId;
+                }
             }
 
             if (cache)
+            {
                 await Cache.AddOrReplaceLongValueAsync(CachePartition, GeneratePathCacheId(path), parentId);
+            }
 
             return parentId;
         }
