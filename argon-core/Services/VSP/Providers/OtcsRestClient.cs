@@ -31,7 +31,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     The expected OT authentication header field
         /// </summary>
-        private const string OtcsticketHeader = "OTCSTicket";
+        private const string OtcsTicketHeader = "OTCSTicket";
 
         /// <summary>
         ///     This never changes between CS instances
