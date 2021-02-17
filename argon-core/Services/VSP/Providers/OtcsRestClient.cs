@@ -106,7 +106,7 @@ namespace JCS.Argon.Services.VSP.Providers
             CachePartition = cachePartition;
             Cache = cache;
             EndpointAddress = endpointAddress.EndsWith('/') ? endpointAddress : $"{endpointAddress}/";
-            OtcsAuthenticationType = AuthenticationType.Ntlm;
+            OtcsAuthenticationType = AuthenticationType.Integrated;
         }
 
         /// <summary>
