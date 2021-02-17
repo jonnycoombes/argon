@@ -12,6 +12,7 @@ using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ParseHelpers;
 
 #endregion
 
@@ -150,15 +151,33 @@ namespace JCS.Argon.Services.VSP.Providers
         public string CachePartition { get; set; } = null!;
 
         /// <summary>
-        ///     Just check the current configuration
+        ///     Validate the current configuration
         /// </summary>
-        /// <exception cref="OpenTextRestClientException"></exception>
+        /// <exception cref="OpenTextRestClientException">
+        ///     This will be thrown if we don't currently have a valid configuration.  Will result in a 500
+        ///     error code being returned to the client
+        /// </exception>
         private void ValidateConfiguration()
         {
             LogMethodCall(_log);
+            var validated = false;
             if (OtcsAuthenticationType == AuthenticationType.Basic)
             {
-                if (EndpointAddress != null && UserName != null && Password != null) return;
+                if (!string.IsNullOrEmpty(EndpointAddress) && ParseUri(EndpointAddress).IsSome()
+                                                           && !string.IsNullOrEmpty(UserName)
+                                                           && !string.IsNullOrEmpty(Password))
+                {
+                    validated = true;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(EndpointAddress) && ParseUri(EndpointAddress).IsSome())
+            {
+                validated = true;
+            }
+
+            if (!validated)
+            {
                 LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     "OpenText REST Client is not currently configured correctly");
