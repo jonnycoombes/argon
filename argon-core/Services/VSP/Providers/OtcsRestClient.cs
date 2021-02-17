@@ -10,6 +10,7 @@ using JCS.Argon.Model.Schema;
 using JCS.Argon.Services.Core;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 using static JCS.Neon.Glow.Helpers.General.ParseHelpers;
@@ -58,7 +59,12 @@ namespace JCS.Argon.Services.VSP.Providers
         ///     A suffix which is appended to the endpoint address in order to try and extract a LLCookie value or ticket from a pass-thru
         ///     authentication request
         /// </summary>
-        private const string CookieExtractionSuffix = "";
+        private const string SmartViewEnterpriseSuffix = "app/nodes/2000";
+
+        /// <summary>
+        ///     The name of the Otcs cookie to look for
+        /// </summary>
+        private const string OtcsCookieName = "LLCookie";
 
         /// <summary>
         ///     Static logger
@@ -176,6 +182,12 @@ namespace JCS.Argon.Services.VSP.Providers
                 validated = true;
             }
 
+            // just make sure that we have a trailing slash on the endpoint address
+            if (validated)
+            {
+                EndpointAddress = EndpointAddress.EndsWith('/') ? EndpointAddress : $"{EndpointAddress}/";
+            }
+
             if (!validated)
             {
                 LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
@@ -192,7 +204,39 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             ValidateConfiguration();
-            if (OtcsAuthenticationType == AuthenticationType.Ntlm) return;
+
+            switch (OtcsAuthenticationType)
+            {
+                case AuthenticationType.Integrated:
+                {
+                    AuthenticationToken = await PerformIntegratedAuthentication();
+                    break;
+                }
+                default:
+                {
+                    AuthenticationToken = await PerformBasicAuthentication();
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Performs basic authentication using the Otcs REST authentication endpoint.  Note that this will still work in an integrated
+        ///     environment, however you will need to supply a valid username and password
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> PerformBasicAuthentication()
+        {
+            LogMethodCall(_log);
+            string token;
+            JObject json;
+
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Password))
+            {
+                throw new OpenTextRestClientException(StatusCodes.Status401Unauthorized,
+                    "No credentials supplied for OTCS authentication, please check system configuration");
+            }
+
             var content = CreateMultiPartFormTemplate(new[]
             {
                 ("username", UserName!),
@@ -201,27 +245,69 @@ namespace JCS.Argon.Services.VSP.Providers
 
             try
             {
-                var json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"),
+                json = await PostMultiPartRequestForJsonAsync(new Uri($"{EndpointAddress}{AuthEndpointSuffix}"),
                     new (string, string)[] { }, content);
-                if (!json.ContainsKey("ticket"))
-                {
-                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                        "Couldn't locate authentication ticket in OpenText response");
-                }
-
-                AuthenticationToken = (string) json["ticket"]!;
-                LogDebug(_log, $"{GetType()}: Authentication successful");
-                if (AuthenticationToken == null)
-                {
-                    throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                        "Couldn't locate authentication ticket in OpenText response");
-                }
             }
             catch (Exception ex)
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    $"An exception was caught during an OpenText outcall: {ex.GetBaseException().Message}", ex);
+                    $"An exception was caught during an OTCS out-call: \"{ex.GetBaseException().Message}\"", ex);
             }
+
+            if (!json.ContainsKey("ticket"))
+            {
+                throw new OpenTextRestClientException(StatusCodes.Status401Unauthorized,
+                    "Failed to authenticate against OTCS  - no ticket element returned in authentication response");
+            }
+
+            token = (string) json["ticket"]!;
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new OpenTextRestClientException(StatusCodes.Status401Unauthorized,
+                    "Failed to authenticate against OTCS - empty or invalid token returned in authentication response");
+            }
+
+
+            return token;
+        }
+
+        /// <summary>
+        ///     Attempts to perform integrated authentication by "sniffing" a valid authentication token from the Otcs endpoint.  Basically,
+        ///     this method will issue a GET request against a 16.x "Smart UI" URL, and then try to extract a valid authentication token from
+        ///     within the returned page body
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> PerformIntegratedAuthentication()
+        {
+            LogMethodCall(_log);
+            HttpResponseMessage response;
+            string token = null;
+            try
+            {
+                LogVerbose(_log, "Attempting integrated authentication into OTCS, using default network credentials");
+                response = await GetRequest(new Uri($"{EndpointAddress}{SmartViewEnterpriseSuffix}"), null, null);
+            }
+            catch (Exception ex)
+            {
+                throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
+                    $"Exception caught during OTCS integrated authentication request: \"{ex.Message}\"", ex);
+            }
+
+            LogVerbose(_log, "Attempting extraction of Otcs authentication ticket from integrated authentication response");
+            var payload = await response.Content.ReadAsStringAsync();
+            var lines = payload.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+            if (lines.Any(s => s.TrimStart().StartsWith("ticket:")))
+            {
+                token = lines.First(s => s.TrimStart().StartsWith("ticket:")).TrimStart().Split(":")[1].Replace("'", "");
+            }
+            else
+            {
+                LogError(_log, "Could not locate a valid OTCS ticket in integrated authentication response");
+                throw new OpenTextRestClientException(StatusCodes.Status401Unauthorized,
+                    "Failed to authenticate against OTCS, integrated response didn't contain valid ticket values");
+            }
+
+            return token;
         }
 
         /// <summary>
@@ -262,14 +348,12 @@ namespace JCS.Argon.Services.VSP.Providers
             catch
             {
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                    "An invalid response was returned by OpenText outcall - results element wasn't found");
+                    "An invalid response was returned by OpenText out-call - results element wasn't found");
             }
         }
 
         /// <summary>
-        ///     Generates the base header set for a new request.   If we are running with Basic authentication, then the OTCS
-        ///     authentication
-        ///     token will need to be injected into the headers
+        ///     Generates the base header set for a new request.  Basically just injects the Otcs authentication header
         /// </summary>
         /// <returns>An array of string pairs, containing zero or more headers to be added to a request</returns>
         private IEnumerable<(string, string)> GenerateHeaders()
