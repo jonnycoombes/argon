@@ -156,7 +156,7 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 client = new OtcsRestClient(_dbCache)
                 {
-                    OtcsAuthenticationType = OtcsRestClient.AuthenticationType.Ntlm,
+                    OtcsAuthenticationType = OtcsRestClient.AuthenticationType.Integrated,
                     CachePartition = Binding!.Tag,
                     EndpointAddress = Binding!.Properties["endpoint"].ToString(),
                     HttpClient = _httpClient
@@ -182,11 +182,20 @@ namespace JCS.Argon.Services.VSP.Providers
             long itemNodeId;
             var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
             if (item.PropertyGroup.HasProperty("nodeId"))
+            {
                 itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
-            else if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
-                itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
+            }
             else
-                itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
+            {
+                if (await _client.HasChildFolder(collectionNodeId, item.Id.ToString()) == false)
+                {
+                    itemNodeId = await _client.CreateFolder(collectionNodeId, item.Id.ToString(), item.Name);
+                }
+                else
+                {
+                    itemNodeId = await _client.GetChildId(collectionNodeId, item.Id.ToString());
+                }
+            }
 
             if (itemNodeId == 0)
             {
