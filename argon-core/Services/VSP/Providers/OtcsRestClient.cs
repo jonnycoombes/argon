@@ -182,11 +182,6 @@ namespace JCS.Argon.Services.VSP.Providers
                 throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
                     "OpenText REST Client is not currently configured correctly");
             }
-
-            if (EndpointAddress != null) return;
-            LogWarning(_log, $"{GetType()}: Failed to validate current configuration");
-            throw new OpenTextRestClientException(StatusCodes.Status500InternalServerError,
-                "OpenText REST Client is not currently configured correctly");
         }
 
         /// <summary>
