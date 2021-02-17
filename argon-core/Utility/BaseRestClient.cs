@@ -22,6 +22,11 @@ namespace JCS.Argon.Utility
     public abstract class BaseRestClient
     {
         /// <summary>
+        ///     Just a constant for the standard set cookie header
+        /// </summary>
+        protected const string SetCookieHeader = "Set-Cookie";
+
+        /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<BaseRestClient>();
@@ -57,7 +62,10 @@ namespace JCS.Argon.Utility
             var boundary = Guid.NewGuid().ToString();
             var template = new MultipartFormDataContent(boundary);
             template.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
-            foreach (var (item1, item2) in fields) template.Add(CreateStringFormField(item1, item2));
+            foreach (var (item1, item2) in fields)
+            {
+                template.Add(CreateStringFormField(item1, item2));
+            }
 
             return template;
         }
@@ -78,7 +86,11 @@ namespace JCS.Argon.Utility
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri) {Content = content};
             MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
-            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            if (checkResponseCodes)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             try
             {
@@ -101,9 +113,17 @@ namespace JCS.Argon.Utility
         private static Uri AppendQueryStringParametersToUri(Uri source, IEnumerable<(string, string)>? fields)
         {
             LogMethodCall(_log);
-            if (fields == null) return source;
+            if (fields == null)
+            {
+                return source;
+            }
+
             var sb = new StringBuilder();
-            foreach (var (item1, item2) in fields) sb.Append($"{item1}={item2}&");
+            foreach (var (item1, item2) in fields)
+            {
+                sb.Append($"{item1}={item2}&");
+            }
+
             var queryString = Uri.EscapeDataString(sb.ToString().TrimEnd('&'));
             return new Uri($"{source}?{queryString}");
         }
@@ -151,7 +171,11 @@ namespace JCS.Argon.Utility
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
             MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
-            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            if (checkResponseCodes)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+
             return response;
         }
 
@@ -172,7 +196,11 @@ namespace JCS.Argon.Utility
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
             MergeHeaders(requestMessage, headers);
             var response = await HttpClient.SendAsync(requestMessage);
-            if (checkResponseCodes) response.EnsureSuccessStatusCode();
+            if (checkResponseCodes)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+
             return response;
         }
 
@@ -199,8 +227,15 @@ namespace JCS.Argon.Utility
         /// <param name="headers">An array of string pairs</param>
         private static void MergeHeaders(HttpRequestMessage message, IEnumerable<(string, string)>? headers)
         {
-            if (headers == null) return;
-            foreach (var (item1, item2) in headers) message.Headers.Add(item1, item2);
+            if (headers == null)
+            {
+                return;
+            }
+
+            foreach (var (item1, item2) in headers)
+            {
+                message.Headers.Add(item1, item2);
+            }
         }
 
         /// <summary>
