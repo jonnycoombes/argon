@@ -41,12 +41,12 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     The REST api authentication endpoint suffix
         /// </summary>
-        private const string AuthEndpointSuffix = "v1/auth";
+        private const string AuthEndpointSuffix = "api/v1/auth";
 
         /// <summary>
         ///     The v2 nodes api suffix
         /// </summary>
-        private const string NodesV2Suffix = "v2/nodes";
+        private const string NodesV2Suffix = "api/v2/nodes";
 
         /// <summary>
         ///     The v1 nodes api suffix
