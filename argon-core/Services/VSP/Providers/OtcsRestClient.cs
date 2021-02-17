@@ -358,9 +358,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <returns>An array of string pairs, containing zero or more headers to be added to a request</returns>
         private IEnumerable<(string, string)> GenerateHeaders()
         {
-            return OtcsAuthenticationType == AuthenticationType.Basic
-                ? new (string, string)[] {("OTCSTicket", AuthenticationToken)}
-                : new (string, string)[] { };
+            return new (string, string)[] {(OtcsTicketHeader, AuthenticationToken)};
         }
 
         /// <summary>
