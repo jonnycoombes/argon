@@ -51,7 +51,13 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     The v1 nodes api suffix
         /// </summary>
-        private const string NodesV1Suffix = "v1/nodes";
+        private const string NodesV1Suffix = "api/v1/nodes";
+
+        /// <summary>
+        ///     A suffix which is appended to the endpoint address in order to try and extract a LLCookie value or ticket from a pass-thru
+        ///     authentication request
+        /// </summary>
+        private const string CookieExtractionSuffix = "";
 
         /// <summary>
         ///     Static logger
