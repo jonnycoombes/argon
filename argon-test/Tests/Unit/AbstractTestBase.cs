@@ -106,7 +106,11 @@ namespace JCS.Argon.Tests.Tests.Unit
         public void Dispose()
         {
             LogMethodCall(_log);
-            if (_dbContext == null) return;
+            if (_dbContext == null)
+            {
+                return;
+            }
+
             LogInformation(_log, "Tearing down current test database");
             _dbContext.Database.EnsureDeleted();
             _dbContext.Dispose();
@@ -177,12 +181,16 @@ namespace JCS.Argon.Tests.Tests.Unit
             // rather than just checking construction within tests, because most constructors
             // don't actually do a great deal (largely because of late-binding methods used to
             // access specific dependent services in the base)
+
+            // create a client handler that contains some windows credentials
             var handler = new HttpClientHandler
             {
                 UseDefaultCredentials = true,
-                Credentials = CredentialCache.DefaultNetworkCredentials,
+                Credentials = CredentialCache.DefaultCredentials,
                 PreAuthenticate = true
             };
+
+
             _virtualStorageManager = new VirtualStorageManager(_serviceProvider, new HttpClient(handler), _options);
             _serviceProvider.GetService(typeof(IVirtualStorageManager))
                 .Returns(_virtualStorageManager);
