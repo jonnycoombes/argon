@@ -25,7 +25,7 @@ namespace JCS.Argon.Services.VSP.Providers
         public enum AuthenticationType
         {
             Basic,
-            Ntlm
+            Integrated
         }
 
         /// <summary>
