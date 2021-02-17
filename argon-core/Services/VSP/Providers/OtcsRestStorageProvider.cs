@@ -215,7 +215,14 @@ namespace JCS.Argon.Services.VSP.Providers
             var fileId = await _client.UploadFile(versionNodeId, source.FileName, source.FileName, source.OpenReadStream());
             var result = new IVirtualStorageProvider.StorageOperationResult
             {
-                Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                Properties = new Dictionary<string, object>
+                {
+                    {$"{Collection.StockCollectionProperties.CreateDate}", DateTime.Now},
+                    {$"{Collection.StockCollectionProperties.LastAccessed}", DateTime.Now},
+                    {$"{Collection.StockCollectionProperties.Length}", source.Length},
+                    {$"{Collection.StockCollectionProperties.ContentType}", DetermineContentType(source)}
+                }
             };
             return result;
         }
