@@ -520,9 +520,17 @@ namespace JCS.Argon.Services.VSP.Providers
         private async Task<long> GetCachedPathId(string path)
         {
             LogMethodCall(_log);
-            if (Cache == null) return 0;
+            if (Cache == null)
+            {
+                return 0;
+            }
+
             var key = GeneratePathCacheId(path);
-            if (!await Cache.HasEntry(CachePartition, key)) return 0;
+            if (!await Cache.HasEntry(CachePartition, key))
+            {
+                return 0;
+            }
+
             var entry = await Cache.LookupEntry(CachePartition, key);
             return entry?.LongValue ?? 0;
         }
