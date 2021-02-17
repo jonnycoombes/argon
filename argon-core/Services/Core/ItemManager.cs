@@ -77,7 +77,7 @@ namespace JCS.Argon.Services.Core
                 .Include(i => i.PropertyGroup.Properties)
                 .Include(i => i.Versions)
                 .FirstAsync(i => i.Id == itemId);
-            return item;
+            return await CommitItemAndUpdateLastAccessed(item);
         }
 
         /// <inheritdoc cref="IItemManager.DeleteItemFromCollection" />
@@ -133,6 +133,7 @@ namespace JCS.Argon.Services.Core
                     "The specified item version does not exist");
             }
 
+            await CommitItemAndUpdateLastAccessed(item);
             return await DbContext.Versions
                 .SingleAsync(v => v.Id == versionId && v.Item.Id == item.Id && v.Item.Collection.Id == collection.Id);
         }
@@ -141,7 +142,9 @@ namespace JCS.Argon.Services.Core
         public async Task<ItemVersion> GetCurrentItemVersionAsync(Collection collection, Guid itemId)
         {
             LogMethodCall(_log);
+            var item = await GetItemForCollectionAsync(collection, itemId);
             var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == itemId).MaxAsync(v => v.Major);
+            await CommitItemAndUpdateLastAccessed(item);
             return await DbContext.Versions
                 .SingleAsync(v => v.Major == maxVersion && v.Item.Id == itemId);
         }
@@ -151,6 +154,7 @@ namespace JCS.Argon.Services.Core
         {
             LogMethodCall(_log);
             var maxVersion = await DbContext.Versions.Where(v => v.Item.Id == item.Id).MaxAsync(v => v.Major);
+            await CommitItemAndUpdateLastAccessed(item);
             return await DbContext.Versions
                 .SingleAsync(v => v.Major == maxVersion && v.Item.Id == item.Id);
         }
@@ -257,6 +261,7 @@ namespace JCS.Argon.Services.Core
                     "The specified item version does not exist");
             }
 
+            await CommitItemAndUpdateLastAccessed(item);
             return await PerformProviderVersionRetrievalActions(collection, item, itemVersion);
         }
 
@@ -280,8 +285,7 @@ namespace JCS.Argon.Services.Core
             ValidatePropertiesAgainstConstraints(collection, item);
             DbContext.PropertyGroups.Update(item.PropertyGroup);
             DbContext.Items.Update(item);
-            await CheckedContextSave();
-            return item;
+            return await CommitItemAndUpdateLastAccessed(item);
         }
 
         /// <summary>
@@ -450,6 +454,38 @@ namespace JCS.Argon.Services.Core
                 };
                 return version;
             });
+        }
+
+        /// <summary>
+        ///     Update the last accessed time for a given <see cref="Item" /> instance.  The current system (server-side) timestamp
+        ///     is used.
+        /// </summary>
+        /// <param name="item">The collection to update</param>
+        /// <returns>The updated collection</returns>
+        /// <exception cref="ICollectionManager.CollectionManagerException">Thrown in the event of a db commit fail</exception>
+        private async Task<Item> CommitItemAndUpdateLastAccessed(Item item)
+        {
+            try
+            {
+                LogMethodCall(_log);
+                if (item.PropertyGroup == null)
+                {
+                    return item;
+                }
+
+                item.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
+                    DateTime.Now);
+                DbContext.Items.Update(item);
+                await CheckedContextSave();
+            }
+            catch (Exception ex)
+            {
+                LogExceptionWarning(_log, ex);
+                throw new ICollectionManager.CollectionManagerException(StatusCodes.Status500InternalServerError,
+                    "An exception occurred whilst attempting to commit a collection change");
+            }
+
+            return item;
         }
     }
 }
