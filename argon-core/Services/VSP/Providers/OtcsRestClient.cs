@@ -473,7 +473,11 @@ namespace JCS.Argon.Services.VSP.Providers
                     ("where_name", name)
                 });
 
-                if (!json.ContainsKey("results") || !json["results"].HasValues) return 0;
+                if (!json.ContainsKey("results") || !json["results"].HasValues)
+                {
+                    return 0;
+                }
+
                 var node = json["results"][0];
                 return long.Parse(node["data"]["properties"]["id"].ToString());
             }
