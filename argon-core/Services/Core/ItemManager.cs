@@ -45,6 +45,8 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             var items = await DbContext.Items.Where(i => i.Collection.Id == collection.Id)
                 .Include(i => i.Versions)
+                .Include(i => i.PropertyGroup)
+                .Include(i => i.PropertyGroup.Properties)
                 .ToListAsync();
             // null out the collection so that it isn't repeated for each item in the JSON response
             items = items.Select(i =>
