@@ -285,5 +285,35 @@ namespace JCS.Argon.Controllers
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             return item;
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <param name="itemId"></param>
+        /// <param name="propertyNames"></param>
+        /// <returns></returns>
+        /// <response code="200">Successful deletion</response>
+        /// <response code="404">Invalid item id provided, or invalid collection</response>
+        /// <response code="400">
+        ///     Bad request - this will be returned if the constraints relating to the parent collection are violated by the
+        ///     deletion(s)
+        /// </response>
+        /// <response code="500">Internal server error</response>
+        [HttpDelete]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Properties")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<Item> DeleteItemProperties(Guid collectionId, Guid itemId, [FromQuery] string[] propertyNames)
+        {
+            LogMethodCall(_log);
+            var collection = await _collectionManager.GetCollectionAsync(collectionId);
+            var item = await _itemManager.GetItemForCollectionAsync(collection, itemId);
+            item = await _itemManager.DeleteItemProperties(collection, item, propertyNames);
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return item;
+        }
     }
 }
