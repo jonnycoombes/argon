@@ -269,7 +269,7 @@ namespace JCS.Argon.Controllers
         /// <response code="400">Bad request - this will be returned if the constraints relating to the parent collection are violated</response>
         /// <response code="500">Internal server error</response>
         [HttpPatch]
-        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}")]
+        [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Properties")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
