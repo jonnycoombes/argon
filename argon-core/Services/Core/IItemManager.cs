@@ -120,6 +120,15 @@ namespace JCS.Argon.Services.Core
         public Task<Item> UpdateItemProperties(Collection collection, Item item, Dictionary<string, object> properties);
 
         /// <summary>
+        ///     Removes the specified properties from a given item, but checks constraints prior to completion of the operation
+        /// </summary>
+        /// <param name="collection">The parent <see cref="Collection" /> for the item</param>
+        /// <param name="item">The <see cref="Item" /></param>
+        /// <param name="propertyNames">An array of property names.  Each will be removed, subject to constraints</param>
+        /// <returns>The updated <see cref="Item" /></returns>
+        public Task<Item> DeleteItemProperties(Collection collection, Item item, string[] propertyNames);
+
+        /// <summary>
         ///     Exception type which may be thrown by methods across this interface
         /// </summary>
         public sealed class ItemManagerException : ResponseAwareException
