@@ -296,6 +296,8 @@ namespace JCS.Argon.Services.VSP.Providers
 
             LogVerbose(_log, "Attempting extraction of Otcs authentication ticket from integrated authentication response");
             var payload = await response.Content.ReadAsStringAsync();
+            LogDebug(_log, "Dump of OTCS auth response payload follows:");
+            LogDebug(_log, payload);
             var lines = payload.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
             if (lines.Any(s => s.TrimStart().StartsWith("ticket:")))
             {
