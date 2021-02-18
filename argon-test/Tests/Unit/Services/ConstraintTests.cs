@@ -146,7 +146,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             {
                 await _itemManager.AddItemToCollectionAsync(collection, properties, formFile);
             }
-            catch (IItemManager.ItemManagerException ex)
+            catch (IItemManager.ItemManagerException)
             {
                 Assert.True(false);
             }
@@ -186,7 +186,7 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
             {
                 await _itemManager.AddItemToCollectionAsync(collection, properties, formFile);
             }
-            catch (IItemManager.ItemManagerException ex)
+            catch (IItemManager.ItemManagerException)
             {
                 Assert.True(false);
             }
