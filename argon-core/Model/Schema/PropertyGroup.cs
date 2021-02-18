@@ -197,12 +197,27 @@ namespace JCS.Argon.Model.Schema
                             case DateTime dt:
                                 AddOrReplaceProperty(key, PropertyType.DateTime, value);
                                 break;
+                            case null:
+                                RemoveProperty(key);
+                                break;
                             default:
                                 AddOrReplaceProperty(key, PropertyType.String, value);
                                 break;
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Removes a property from the current set of properties
+        /// </summary>
+        /// <param name="propertyName"></param>
+        public void RemoveProperty(string propertyName)
+        {
+            if (HasProperty(propertyName))
+            {
+                Properties.RemoveAll(p => p.Name.Equals(propertyName));
             }
         }
 
