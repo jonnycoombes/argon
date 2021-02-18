@@ -290,6 +290,23 @@ namespace JCS.Argon.Services.Core
             return await CommitItemAndUpdateLastAccessed(item);
         }
 
+        /// <inheritdoc cref="IItemManager.DeleteItemProperties" />
+        public async Task<Item> DeleteItemProperties(Collection collection, Item item, string[] propertyNames)
+        {
+            LogMethodCall(_log);
+            if (propertyNames.Length > 0)
+            {
+                foreach (var propertyName in propertyNames)
+                {
+                    item.PropertyGroup.RemoveProperty(propertyName);
+                }
+            }
+
+            ValidatePropertiesAgainstConstraints(collection, item);
+            DbContext.PropertyGroups.Update(item.PropertyGroup);
+            return await CommitItemAndUpdateLastAccessed(item);
+        }
+
         /// <summary>
         ///     Convenience function for checking the existence of a given <see cref="Item" /> against a specific parent <see cref="Collection" />
         /// </summary>
