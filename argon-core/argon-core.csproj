@@ -11,12 +11,12 @@
     <AssemblyName>Argon-Core</AssemblyName>
     <Company>JCS Software Ltd</Company>
     <Product>Argon Core</Product>
-    <AssemblyVersion>1.0.1.6</AssemblyVersion>
-    <FileVersion>1.0.1.6</FileVersion>
+    <AssemblyVersion>1.0.1.7</AssemblyVersion>
+    <FileVersion>1.0.1.7</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>1.0.1.6</PackageVersion>
+    <PackageVersion>1.0.1.7</PackageVersion>
     <IsPackable>true</IsPackable>
     <NuspecProperties>version=${Version}</NuspecProperties>
   </PropertyGroup>
