@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-workspace name="Projects" soapui-version="6.0.0" cid="6ffebc9a-0de9-4118-a814-2bd2f9f49085" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:project name="Project 1" lastOpened="2021-02-22T16:44:16.193Z">D:/Documents/Source/JCS/argon-jmeter/SOAPAuthenticationTest.xml</con:project>
+  <con:recentItemCollection>
+    <con:moduleId>SoapUiNGModule</con:moduleId>
+    <con:itemId>c3222bce-3add-42e2-ae15-089d27bc1b4d</con:itemId>
+    <con:itemId>c8a3c215-f5a2-4254-9071-9b8c0b95e7be</con:itemId>
+    <con:itemId>83514f84-dd4d-4a49-98bf-8851721a0747</con:itemId>
+    <con:itemId>0b3c2407-8688-4bf7-b57f-d6b701306776</con:itemId>
+    <con:itemId>5b25db91-d479-481b-8aa7-f5d4d00b6bf2</con:itemId>
+  </con:recentItemCollection>
+  <con:expandedTreeNodes>
+    <con:project path="D:\Documents\Source\JCS\argon-jmeter\SOAPAuthenticationTest.xml">
+      <nodeId>56ae4064-771a-4ebb-9b26-b6628b0e3e10soapui</nodeId>
+      <nodeId>5b25db91-d479-481b-8aa7-f5d4d00b6bf2</nodeId>
+      <nodeId>56ae4064-771a-4ebb-9b26-b6628b0e3e10</nodeId>
+      <nodeId>0b3c2407-8688-4bf7-b57f-d6b701306776</nodeId>
+    </con:project>
+  </con:expandedTreeNodes>
+  <con:dashboardTileCollection>
+    <con:dashboardTiles>
+      <con:dashboardTile tileId="659184ea-bf8f-4e84-bc8b-7868d68561a8" tileType="NEW_TEST"/>
+      <con:dashboardTile tileId="860936c1-c2e4-4507-bfdf-15ade6a15c3b" tileType="TEST_SUITE_STATUS">
+        <con:settings xsi:type="con:TestStatusTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="5b419464-67c4-4f4d-bf68-7ea9de0bfe94" tileType="TEST_CASE_STATUS_TILE">
+        <con:settings xsi:type="con:TestCaseStatusTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="c16ef15c-bc5f-4515-b680-19978955bd2f" tileType="SECURE_TILE">
+        <con:settings xsi:type="con:SecureTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:scan>All Scans</con:scan>
+          <con:project>All Projects</con:project>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="e29a2240-6be7-4278-8f3f-96dbeb18d9ad" tileType="LOADUI_HISTORY_TILE">
+        <con:settings xsi:type="con:LoadHistoryTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:mode>
+            <con:today>true</con:today>
+          </con:mode>
+          <con:project>All Projects</con:project>
+          <con:filter/>
+        </con:settings>
+      </con:dashboardTile>
+      <con:dashboardTile tileId="806ce162-e90d-44f5-845e-ca688a5ddd69" tileType="SERVICEV">
+        <con:settings xsi:type="con:ServiceVTileSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:tableSettings>
+            <con:column>Name</con:column>
+            <con:column>Status</con:column>
+            <con:column>Location</con:column>
+            <con:column>Port</con:column>
+          </con:tableSettings>
+        </con:settings>
+      </con:dashboardTile>
+    </con:dashboardTiles>
+    <con:recentDashboardTiles/>
+  </con:dashboardTileCollection>
+  <con:overridenPropertyValuesCollection/>
+</con:soapui-workspace>
