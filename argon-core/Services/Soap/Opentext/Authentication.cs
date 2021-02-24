@@ -405,6 +405,13 @@ namespace JCS.Argon.Services.Soap.Opentext
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
+
+        public AuthenticationClient(string remoteAddress) 
+                : base(AuthenticationClient.GetDefaultBinding(), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_Authentication.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
         
         public AuthenticationClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
                 base(AuthenticationClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))

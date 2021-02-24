@@ -9694,7 +9694,12 @@ namespace JCS.Argon.Services.Soap.Opentext
             this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_DocumentManagement.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
-        
+         public DocumentManagementClient(string remoteAddress) : 
+                        base(DocumentManagementClient.GetDefaultBinding(), new System.ServiceModel.EndpointAddress(remoteAddress))
+                {
+                    this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_DocumentManagement.ToString();
+                    ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+                }
         public DocumentManagementClient(EndpointConfiguration endpointConfiguration) : 
                 base(DocumentManagementClient.GetBindingForEndpoint(endpointConfiguration), DocumentManagementClient.GetEndpointAddress(endpointConfiguration))
         {

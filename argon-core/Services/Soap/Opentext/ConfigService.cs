@@ -249,6 +249,14 @@ namespace JCS.Argon.Services.Soap.Opentext
             this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_ConfigService.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
+
+        public ConfigServiceClient(string remoteAddress)
+                   : base(ConfigServiceClient.GetDefaultBinding(), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            
+            this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_ConfigService.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
         
         public ConfigServiceClient(EndpointConfiguration endpointConfiguration) : 
                 base(ConfigServiceClient.GetBindingForEndpoint(endpointConfiguration), ConfigServiceClient.GetEndpointAddress(endpointConfiguration))

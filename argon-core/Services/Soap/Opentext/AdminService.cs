@@ -596,6 +596,13 @@ namespace JCS.Argon.Services.Soap.Opentext
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
+
+        public AdminServiceClient(string remoteAddress)
+                : base(AdminServiceClient.GetDefaultBinding(), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_AdminService.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
         
         public AdminServiceClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
                 base(AdminServiceClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
