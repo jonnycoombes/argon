@@ -53,8 +53,9 @@ namespace JCS.Argon.Services.VSP.Providers
             return Path.Combine(_rootPathInfo!.FullName, collection.Id.ToString()!);
         }
 
-        /// Validate and check for any mandatory binding configuraton properties.
-        /// On failure, throw a
+        /// <summary>
+        ///     Validate and check for any mandatory binding configuration properties.
+        /// </summary>
         /// <see cref="IVirtualStorageProvider.VirtualStorageProviderException" />
         /// <inheritdoc cref="BaseVirtualStorageProvider.AfterBind" />
         public override void AfterBind()
@@ -192,6 +193,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
+        /// <inheritdoc cref="IVirtualStorageProvider.ReadCollectionItemVersionAsync" />
         public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
             Item item, ItemVersion itemVersion)
         {
@@ -223,6 +225,7 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
+        /// <inheritdoc cref="IVirtualStorageProvider.DeleteCollectionItemAsync" />
         public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item
             item)
         {
