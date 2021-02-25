@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Schema;
@@ -60,7 +61,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     The document management service suffix
         /// </summary>
-        private const string DocumentManagementServiceSuffix = "DocumentManagment.svc";
+        private const string DocumentManagementServiceSuffix = "DocumentManagement.svc";
 
         /// <summary>
         ///     The content service suffix
@@ -78,6 +79,11 @@ namespace JCS.Argon.Services.VSP.Providers
         private const string ConfigServiceSuffix = "ConfigService.svc";
 
         /// <summary>
+        ///     The never changing enterprise workspace node id
+        /// </summary>
+        private const long EnterpriseRootId = 2000;
+
+        /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<OtcsSoapStorageProvider>();
@@ -86,6 +92,11 @@ namespace JCS.Argon.Services.VSP.Providers
         ///     Used to cache groups of services against a specific endpoint base address
         /// </summary>
         private static readonly Dictionary<string, EndpointServices> endpointServiceCache = new();
+
+        /// <summary>
+        ///     The currently (per instance) active authentication token
+        /// </summary>
+        private OTAuthentication activeToken;
 
         /// <summary>
         ///     The current type of authentication to use.  The default is set to be integrated (IWA), so that no user or password information
@@ -192,6 +203,55 @@ namespace JCS.Argon.Services.VSP.Providers
         }
 
         /// <summary>
+        ///     Attempts to retrieve or create a folder node based on a path relative to the Enterprise workspace
+        /// </summary>
+        /// <returns>The <see cref="Node" /> instance representing the root collections folder</returns>
+        public async Task<Node> GetOrCreateFolder(string[] pathElements)
+        {
+            var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+            Node folder = null;
+            try
+            {
+                var currentFolderId = EnterpriseRootId;
+                var existing = (await dm.GetNodeByPathAsync(new GetNodeByPathRequest(activeToken, currentFolderId, pathElements)))
+                    .GetNodeByPathResult;
+
+                if (existing == null)
+                {
+                    foreach (var element in pathElements)
+                    {
+                        folder = (await dm.GetNodeByNameAsync(new GetNodeByNameRequest(activeToken, currentFolderId, element)))
+                            .GetNodeByNameResult;
+                        if (folder == null)
+                        {
+                            folder = (await dm.CreateFolderAsync(new CreateFolderRequest(activeToken, currentFolderId, element,
+                                    "Created by Argon", null)))
+                                .CreateFolderResult;
+                        }
+
+                        currentFolderId = folder.ID;
+                    }
+                }
+                else
+                {
+                    folder = existing;
+                }
+            }
+            catch (FaultException ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
+            }
+            catch (Exception ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"Unexpected exception during folder creation: {ex.Message}");
+            }
+
+            return folder;
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="collection">The <see cref="Collection" /> instance to create the underlying collection location/folder for</param>
         /// <returns>A valid <see cref="IVirtualStorageProvider.StorageOperationResult" /></returns>
@@ -200,9 +260,90 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
 
-            var authenticationToken = await Authenticate();
+            LogVerbose(_log, $"Creating new collection folder with id \"{collection.Id}\"");
 
-            throw new NotImplementedException();
+            // authenticate to get an initial OtAuthentication instance
+            await Authenticate();
+
+            try
+            {
+                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+                var collectionPath = $"{rootCollectionPath}/{collection.Id.ToString()}";
+                var collectionFolderNode = await GetOrCreateFolder(collectionPath.Split("/"));
+                if (collectionFolderNode != null)
+                {
+                    var result = new IVirtualStorageProvider.StorageOperationResult
+                    {
+                        Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                        Properties = new Dictionary<string, object>
+                        {
+                            {$"{Collection.StockCollectionProperties.Path}", collectionPath},
+                            {$"{Collection.StockCollectionProperties.CreateDate}", DateTime.Now},
+                            {$"{Collection.StockCollectionProperties.LastAccessed}", DateTime.Now},
+                            {"nodeId", collectionFolderNode.ID}
+                        }
+                    };
+                    return result;
+                }
+
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    "Failed to create a new collection folder");
+            }
+            catch (FaultException ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
+            }
+            catch (Exception ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"Unexpected exception during collection creation: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        ///     Uploads a new item to Content Server.  Note that this method uses the standard "attachment" method due to lack of support
+        ///     for MTOM within the .NET Core version of WCF.
+        /// </summary>
+        /// <param name="parentId">The parent id which will either be a folder (for a new document) or an actual document id (for a new version)</param>
+        /// <param name="source">The <see cref="IFormFile" /> containing the source document material</param>
+        /// <param name="addVersion">If set to true, the passed in id is interpreted as an existing document node</param>
+        /// <returns></returns>
+        /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
+        private async Task<long> UploadContent(long parentId, IFormFile source, bool addVersion = false)
+        {
+            try
+            {
+                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+                var buffer = new MemoryStream();
+                await source.CopyToAsync(buffer);
+                await buffer.FlushAsync();
+                var attachment = new Attachment
+                {
+                    CreatedDate = DateTime.Now,
+                    FileName = source.FileName,
+                    FileSize = source.Length,
+                    ModifiedDate = DateTime.Now,
+                    Contents = buffer.ToArray()
+                };
+
+                if (!addVersion)
+                {
+                    var document = (await dm.CreateDocumentAsync(new CreateDocumentRequest(activeToken, parentId,
+                        source.FileName, "Created by Argon", false, null, attachment))).CreateDocumentResult;
+                    return document.ID;
+                }
+
+                var version = (await dm.AddVersionAsync(new AddVersionRequest(activeToken, parentId, null, attachment)))
+                    .AddVersionResult;
+                return parentId;
+            }
+            catch (FaultException ex)
+            {
+                LogExceptionWarning(_log, ex);
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"OTCS item version creation failed \"{ex.Message}\"");
+            }
         }
 
         /// <summary>
@@ -213,11 +354,72 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="source"></param>
         /// <returns>A valid <see cref="IVirtualStorageProvider.StorageOperationResult" /></returns>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
-        public override Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection,
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection,
             Item item, ItemVersion itemVersion, IFormFile source)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+            var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+            var cs = ResolveEndpointServices(baseEndpointAddress).ContentService;
+
+            // check we have the node id cached for the parent folder
+            if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
+                    "Unable to locate cached node id for collection");
+            }
+
+            await Authenticate();
+
+            long cachedNodeId;
+            long itemId;
+            // check whether we already have an underlying CS document associated with this item
+            if (item.PropertyGroup.HasProperty("nodeId"))
+            {
+                try
+                {
+                    // add a version
+                    LogVerbose(_log, "Adding version to an existing OTCS item");
+                    cachedNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                    itemId = await UploadContent(cachedNodeId, source, true);
+                }
+                catch (FaultException ex)
+                {
+                    LogExceptionWarning(_log, ex);
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                        $"OTCS item version creation failed \"{ex.Message}\"");
+                }
+            }
+            else
+            {
+                try
+                {
+                    // add a new document 
+                    LogVerbose(_log, "Creating a new OTCS item");
+                    var itemFolderPath = $"{rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
+                    var itemFolderNode = await GetOrCreateFolder(itemFolderPath.Split("/"));
+                    itemId = await UploadContent(itemFolderNode.ID, source);
+                }
+                catch (FaultException ex)
+                {
+                    LogExceptionWarning(_log, ex);
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                        $"OTCS item creation failed \"{ex.Message}\"");
+                }
+            }
+
+            item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemId);
+            var result = new IVirtualStorageProvider.StorageOperationResult
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                Properties = new Dictionary<string, object>
+                {
+                    {$"{Collection.StockCollectionProperties.CreateDate}", DateTime.Now},
+                    {$"{Collection.StockCollectionProperties.LastAccessed}", DateTime.Now},
+                    {$"{Collection.StockCollectionProperties.Length}", source.Length},
+                    {$"{Collection.StockCollectionProperties.ContentType}", DetermineContentType(source)}
+                }
+            };
+            return result;
         }
 
         /// <summary>
@@ -226,23 +428,60 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="item"></param>
         /// <returns>A valid <see cref="IVirtualStorageProvider.StorageOperationResult" /></returns>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
-        public override Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection,
+            Item item)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+            if (item.PropertyGroup.HasProperty("nodeId"))
+            {
+                try
+                {
+                    var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+                    await Authenticate();
+                    var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                    var itemNode = (await dm.GetNodeAsync(new GetNodeRequest(activeToken, itemNodeId))).GetNodeResult;
+                    await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, itemNodeId));
+                    await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, itemNode.ParentID));
+                    var result = new IVirtualStorageProvider.StorageOperationResult
+                    {
+                        Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+                    };
+                    return result;
+                }
+                catch (FaultException ex)
+                {
+                    LogExceptionWarning(_log, ex);
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                        $"OTCS item deletion failed \"{ex.Message}\"");
+                }
+            }
+
+            throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                "Specified item version doesn't appear to have a valid OTCS node id");
         }
 
         /// <summary>
-        ///     Performs authentication using the CWS authentication service, and caches the authentication token material for subsequent calls
+        ///     Performs authentication using the CWS authentication service, and returns a newly constructed <see cref="OTAuthentication" /> instance
         /// </summary>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException">Thrown if the authentication fails for any reason</exception>
-        public async Task<OTAuthentication> Authenticate()
+        public async Task Authenticate()
         {
             var services = ResolveEndpointServices(baseEndpointAddress);
             try
             {
-                var token = await services.Authentication.AuthenticateUserAsync(userName, password);
-                return new OTAuthentication {AuthenticationToken = token};
+                string token;
+                switch (authenticationType)
+                {
+                    case AuthenticationType.Basic:
+                        token = await services.Authentication.AuthenticateUserAsync(userName, password);
+                        break;
+                    default:
+                        // pass in null user and password if the system is configured for integrated authentication
+                        token = await services.Authentication.AuthenticateUserAsync(null, null);
+                        break;
+                }
+
+                activeToken = new OTAuthentication {AuthenticationToken = token};
             }
             catch (FaultException ex)
             {
@@ -263,11 +502,38 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="itemVersion"></param>
         /// <returns>A valid <see cref="IVirtualStorageProvider.StorageOperationResult" /></returns>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
-        public override Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
             Item item, ItemVersion itemVersion)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+
+            if (item.PropertyGroup.HasProperty("nodeId"))
+            {
+                try
+                {
+                    var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+                    await Authenticate();
+                    var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                    var attachment =
+                        (await dm.GetVersionContentsAsync(new GetVersionContentsRequest(activeToken, itemNodeId, itemVersion.Major)))
+                        .GetVersionContentsResult;
+                    var result = new IVirtualStorageProvider.StorageOperationResult
+                    {
+                        Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
+                        Stream = new MemoryStream(attachment.Contents)
+                    };
+                    return result;
+                }
+                catch (FaultException ex)
+                {
+                    LogExceptionWarning(_log, ex);
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                        $"OTCS item deletion failed \"{ex.Message}\"");
+                }
+            }
+
+            throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                "Specified item version doesn't appear to have a valid OTCS node id");
         }
 
         /// <summary>
@@ -352,6 +618,8 @@ namespace JCS.Argon.Services.VSP.Providers
                         {
                             LogWarning(_log, "Missing user or password for basic authentication - may not authenticate successfully");
                         }
+
+                        authenticationType = AuthenticationType.Basic;
                     }
                     else
                     {
