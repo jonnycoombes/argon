@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ServiceModel;
+
 namespace JCS.Argon.Services.Soap.Opentext
 {
     
@@ -554,7 +556,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_Authentication))
             {
-                System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
+                System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding(BasicHttpSecurityMode.Transport);
                 result.MaxBufferSize = int.MaxValue;
                 result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
                 result.MaxReceivedMessageSize = int.MaxValue;
