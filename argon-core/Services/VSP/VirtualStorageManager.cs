@@ -34,7 +34,7 @@ namespace JCS.Argon.Services.VSP
         /// <summary>
         ///     Internal cache of the types associated with different <see cref="IVirtualStorageProvider" /> implementations
         /// </summary>
-        private readonly Dictionary<string, Type> _providerTypesMap = new();
+        private readonly Dictionary<string, Type> _providerTypesMap = new Dictionary<string, Type>();
 
         /// <summary>
         ///     The current IoC <see cref="IServiceProvider" />
@@ -52,7 +52,11 @@ namespace JCS.Argon.Services.VSP
         {
             LogMethodCall(_log);
             _virtualStorageOptions = apiOptions.CurrentValue.VirtualStorageOptions;
-            if (_virtualStorageOptions == null) LogWarning(_log, "No virtual storage options found - expect problems");
+            if (_virtualStorageOptions == null)
+            {
+                LogWarning(_log, "No virtual storage options found - expect problems");
+            }
+
             _serviceProvider = serviceProvider;
             _httpClient = httpClient;
             ResolveProviders();
@@ -137,10 +141,10 @@ namespace JCS.Argon.Services.VSP
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Request for a virtual storage provider which doesn't appear to exist: [{providerType}]");
             }
-            #pragma warning disable 8600
+#pragma warning disable 8600
             var instance =
                 (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
-            #pragma warning restore 8600
+#pragma warning restore 8600
             if (instance == null)
             {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
@@ -166,9 +170,9 @@ namespace JCS.Argon.Services.VSP
                     .Where(t => !t.IsAbstract && !t.IsInterface);
                 foreach (var providerType in providerTypes)
                 {
-                    #pragma warning disable 8600
+#pragma warning disable 8600
                     var instance = (IVirtualStorageProvider) ReflectionHelper.InstantiateType(providerType);
-                    #pragma warning restore 8600
+#pragma warning restore 8600
                     if (instance != null)
                     {
                         LogInformation(_log, $"Found VSP provider implementation: ({providerType.Name},{instance.ProviderType})");
@@ -197,7 +201,9 @@ namespace JCS.Argon.Services.VSP
             LogMethodCall(_log);
             LogVerbose(_log, $"Scanning for binding with tag \"{tag}\"");
             foreach (var binding in _virtualStorageOptions.Bindings.Where(binding => binding.Tag == tag))
+            {
                 return binding;
+            }
 
             LogWarning(_log, $"Couldn't locate a binding with tag \"{tag}\"");
             return null;

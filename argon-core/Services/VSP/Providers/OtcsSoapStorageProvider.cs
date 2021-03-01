@@ -91,7 +91,7 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <summary>
         ///     Used to cache groups of services against a specific endpoint base address
         /// </summary>
-        private static readonly Dictionary<string, EndpointServices> endpointServiceCache = new();
+        private static readonly Dictionary<string, EndpointServices> endpointServiceCache = new Dictionary<string, EndpointServices>();
 
         /// <summary>
         ///     The currently (per instance) active authentication token
