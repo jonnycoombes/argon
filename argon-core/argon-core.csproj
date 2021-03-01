@@ -15,10 +15,10 @@
     <FileVersion>1.0.1.7</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8</LangVersion>
     <PackageVersion>1.0.1.7</PackageVersion>
     <IsPackable>true</IsPackable>
-    <NuspecProperties>version=${Version}</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);version=$(Version)</NuspecProperties>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PlatformTarget>x64</PlatformTarget>
