@@ -556,6 +556,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_Authentication))
             {
+                System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
+                result.MaxBufferSize = int.MaxValue;
+                result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                result.MaxReceivedMessageSize = int.MaxValue;
+                result.AllowCookies = true;
+                return result;
+            }
+
+            if ((endpointConfiguration == EndpointConfiguration.BasicHttpsBinding_Authentication))
+            {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding(BasicHttpSecurityMode.Transport);
                 result.MaxBufferSize = int.MaxValue;
                 result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
@@ -563,6 +573,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                 result.AllowCookies = true;
                 return result;
             }
+                
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
@@ -589,6 +600,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             
             BasicHttpBinding_Authentication,
+            BasicHttpsBinding_Authentication
         }
     }
 }

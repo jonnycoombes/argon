@@ -11186,6 +11186,15 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_DocumentManagement))
             {
+                System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
+                result.MaxBufferSize = int.MaxValue;
+                result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                result.MaxReceivedMessageSize = int.MaxValue;
+                result.AllowCookies = true;
+                return result;
+            }
+            if ((endpointConfiguration == EndpointConfiguration.BasicHttpsBinding_DocumentManagement))
+            {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding(BasicHttpSecurityMode.Transport);
                 result.MaxBufferSize = int.MaxValue;
                 result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
@@ -11219,6 +11228,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             
             BasicHttpBinding_DocumentManagement,
+            BasicHttpsBinding_DocumentManagement
         }
     }
 }
