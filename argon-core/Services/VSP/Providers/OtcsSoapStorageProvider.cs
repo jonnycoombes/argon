@@ -143,28 +143,31 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 try
                 {
+                    var scheme = new Uri(baseAddress).Scheme;
                     if (!endpointServiceCache.ContainsKey(baseAddress))
                     {
                         LogVerbose(_log, $"No bound services found for base endpoint address \"{baseAddress}\" - binding");
-                        var endpointServices = new EndpointServices
+                        var endpointServices = new EndpointServices();
+                        switch (scheme)
                         {
-                            Authentication =
-                                new AuthenticationClient(AuthenticationClient.EndpointConfiguration.BasicHttpBinding_Authentication,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.AuthenticationService)),
-                            DocumentManagement =
-                                new DocumentManagementClient(
+                            case "https":
+                                endpointServices.Authentication = new AuthenticationClient(
+                                    AuthenticationClient.EndpointConfiguration.BasicHttpsBinding_Authentication,
+                                    GenerateEndpointAddress(baseAddress, ServiceType.AuthenticationService));
+                                endpointServices.DocumentManagement = new DocumentManagementClient(
+                                    DocumentManagementClient.EndpointConfiguration.BasicHttpsBinding_DocumentManagement,
+                                    GenerateEndpointAddress(baseAddress, ServiceType.DocumentManagementService));
+                                break;
+                            default:
+                                endpointServices.Authentication = new AuthenticationClient(
+                                    AuthenticationClient.EndpointConfiguration.BasicHttpBinding_Authentication,
+                                    GenerateEndpointAddress(baseAddress, ServiceType.AuthenticationService));
+                                endpointServices.DocumentManagement = new DocumentManagementClient(
                                     DocumentManagementClient.EndpointConfiguration.BasicHttpBinding_DocumentManagement,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.DocumentManagementService)),
-                            AdminService =
-                                new AdminServiceClient(AdminServiceClient.EndpointConfiguration.BasicHttpBinding_AdminService,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.AdminService)),
-                            ContentService =
-                                new ContentServiceClient(ContentServiceClient.EndpointConfiguration.BasicHttpBinding_ContentService,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.ContentService)),
-                            ConfigService =
-                                new ConfigServiceClient(ConfigServiceClient.EndpointConfiguration.BasicHttpBinding_ConfigService,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.ConfigService))
-                        };
+                                    GenerateEndpointAddress(baseAddress, ServiceType.DocumentManagementService));
+                                break;
+                        }
+
                         endpointServiceCache.Add(baseAddress, endpointServices);
                         return endpointServices;
                     }
@@ -272,6 +275,9 @@ namespace JCS.Argon.Services.VSP.Providers
                 var collectionFolderNode = await GetOrCreateFolder(collectionPath.Split("/"));
                 if (collectionFolderNode != null)
                 {
+                    collectionFolderNode.Comment = collection.Name;
+                    await dm.UpdateNodeAsync(new UpdateNodeRequest(activeToken, collectionFolderNode));
+
                     var result = new IVirtualStorageProvider.StorageOperationResult
                     {
                         Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
@@ -359,7 +365,6 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
             var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
-            var cs = ResolveEndpointServices(baseEndpointAddress).ContentService;
 
             // check we have the node id cached for the parent folder
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
@@ -659,21 +664,6 @@ namespace JCS.Argon.Services.VSP.Providers
             ///     The <see cref="DocumentManagement" /> service
             /// </summary>
             public DocumentManagement DocumentManagement { get; set; }
-
-            /// <summary>
-            ///     The <see cref="ContentService" /> service
-            /// </summary>
-            public ContentService ContentService { get; set; }
-
-            /// <summary>
-            ///     The <see cref="AdminService" /> service
-            /// </summary>
-            public AdminService AdminService { get; set; }
-
-            /// <summary>
-            ///     The <see cref="ConfigService" /> service
-            /// </summary>
-            public ConfigService ConfigService { get; set; }
         }
 
         /// <summary>
