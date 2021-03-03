@@ -258,6 +258,18 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
+        ///     Interact with the appropriate <see cref="IVirtualStorageProvider" /> in order to delete a given collection
+        /// </summary>
+        /// <param name="collection">The <see cref="Collection" /> to be deleted </param>
+        /// <returns></returns>
+        private async Task PerformProviderItemDeletionActions(Collection collection)
+        {
+            LogMethodCall(_log);
+            var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);
+            await provider.DeleteCollectionAsync(collection);
+        }
+
+        /// <summary>
         ///     Update the last accessed time for a given <see cref="Collection" /> instance.  The current system (server-side) timestamp
         ///     is used.
         /// </summary>
