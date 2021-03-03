@@ -246,6 +246,7 @@ namespace JCS.Argon.Services.Core
 
             try
             {
+                await PerformProviderCollectionDeletionActions(collection);
                 DbContext.Collections.Remove(collection);
                 await CheckedContextSave();
             }
@@ -262,7 +263,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="collection">The <see cref="Collection" /> to be deleted </param>
         /// <returns></returns>
-        private async Task PerformProviderItemDeletionActions(Collection collection)
+        private async Task PerformProviderCollectionDeletionActions(Collection collection)
         {
             LogMethodCall(_log);
             var provider = VirtualStorageManager.GetProviderByTag(collection.ProviderTag);

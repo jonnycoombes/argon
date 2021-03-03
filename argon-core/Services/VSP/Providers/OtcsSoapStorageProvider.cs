@@ -289,6 +289,42 @@ namespace JCS.Argon.Services.VSP.Providers
             }
         }
 
+        /// <inheritdoc cref="IVirtualStorageProvider.DeleteCollectionAsync" />
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionAsync(Collection collection)
+        {
+            LogMethodCall(_log);
+
+            await Authenticate();
+
+            try
+            {
+                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
+                if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
+                {
+                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
+                        "Unable to locate cached node id for collection");
+                }
+
+                var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
+                await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, collectionNodeId));
+            }
+            catch (FaultException ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
+            }
+            catch (Exception ex)
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
+                    $"Unexpected exception during collection deletion operation: {ex.Message}");
+            }
+
+            return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+            });
+        }
+
         /// <summary>
         ///     Uploads a new item to Content Server.  Note that this method uses the standard "attachment" method due to lack of support
         ///     for MTOM within the .NET Core version of WCF.
