@@ -384,6 +384,8 @@ namespace JCS.Argon.Services.VSP.Providers
                     LogVerbose(_log, "Creating a new OTCS item");
                     var itemFolderPath = $"{rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
                     var itemFolderNode = await GetOrCreateFolder(itemFolderPath.Split("/"));
+                    itemFolderNode.Comment = item.Name;
+                    await dm.UpdateNodeAsync(new UpdateNodeRequest(activeToken, itemFolderNode));
                     itemId = await UploadContent(itemFolderNode.ID, source);
                 }
                 catch (FaultException ex)
