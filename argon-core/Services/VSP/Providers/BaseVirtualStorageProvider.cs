@@ -76,6 +76,9 @@ namespace JCS.Argon.Services.VSP.Providers
         public abstract Task<IVirtualStorageProvider.StorageOperationResult> ReadCollectionItemVersionAsync(Collection collection,
             Item item, ItemVersion itemVersion);
 
+        /// <inheritdoc cref="IVirtualStorageProvider.DeleteCollectionAsync" />
+        public abstract Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionAsync(Collection collection);
+
         /// <summary>
         ///     Called after a bind operation - subclasses should perform initialisation logic in
         ///     here
@@ -103,7 +106,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     contentType = "text/plain";
                 }
                 else
+                {
                     contentType = source.ContentType;
+                }
             }
 
             return contentType;
