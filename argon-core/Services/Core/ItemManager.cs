@@ -232,7 +232,6 @@ namespace JCS.Argon.Services.Core
                 await CheckedContextSave();
                 version = op.Entity;
                 await PerformProviderItemCreationActions(collection, item, version, inboundFile);
-                collection.NumberOfItems += 1;
                 collection.TotalSizeBytes += version.Size;
                 DbContext.Collections.Update(collection);
                 await CheckedContextSave();
@@ -494,6 +493,7 @@ namespace JCS.Argon.Services.Core
 
                 item.PropertyGroup.AddOrReplaceProperty($"{Collection.StockCollectionProperties.LastAccessed}", PropertyType.DateTime,
                     DateTime.Now);
+                item.LastModified = DateTime.Now;
                 DbContext.Items.Update(item);
                 await CheckedContextSave();
             }
