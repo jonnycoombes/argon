@@ -64,21 +64,6 @@ namespace JCS.Argon.Services.VSP.Providers
         private const string DocumentManagementServiceSuffix = "DocumentManagement.svc";
 
         /// <summary>
-        ///     The content service suffix
-        /// </summary>
-        private const string ContentServiceSuffix = "ContentService.svc";
-
-        /// <summary>
-        ///     The admin service suffix
-        /// </summary>
-        private const string AdminServiceSuffix = "AdminService.svc";
-
-        /// <summary>
-        ///     The config service suffix
-        /// </summary>
-        private const string ConfigServiceSuffix = "ConfigService.svc";
-
-        /// <summary>
         ///     The never changing enterprise workspace node id
         /// </summary>
         private const long EnterpriseRootId = 2000;
@@ -198,9 +183,6 @@ namespace JCS.Argon.Services.VSP.Providers
             return serviceType switch
             {
                 ServiceType.DocumentManagementService => $"{sanitisedBaseAddress}{DocumentManagementServiceSuffix}",
-                ServiceType.AdminService => $"{sanitisedBaseAddress}{AdminServiceSuffix}",
-                ServiceType.ConfigService => $"{sanitisedBaseAddress}{ConfigServiceSuffix}",
-                ServiceType.ContentService => $"{sanitisedBaseAddress}{ContentServiceSuffix}",
                 _ => $"{sanitisedBaseAddress}{AuthenticationServiceSuffix}"
             };
         }
