@@ -257,5 +257,36 @@ namespace JCS.Argon.Services.VSP.Providers
                 Status = IVirtualStorageProvider.StorageOperationStatus.Ok
             });
         }
+
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionAsync(Collection collection)
+        {
+            LogMethodCall(_log);
+            var collectionPath = GenerateCollectionPath(collection);
+            if (!Directory.Exists(collectionPath))
+            {
+                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
+                    "The specified collection folder does not exist");
+            }
+
+            try
+            {
+                LogVerbose(_log, $"Attempting deletion of collection folder \"{collectionPath}\"");
+                Directory.Delete(collectionPath);
+            }
+            catch (IOException ex)
+            {
+                LogWarning(_log, $"Caught an I/O exception whilst attempting to delete a collection directory \"{collectionPath}\"");
+                LogExceptionWarning(_log, ex);
+                return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+                {
+                    Status = IVirtualStorageProvider.StorageOperationStatus.Failed
+                });
+            }
+
+            return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
+            {
+                Status = IVirtualStorageProvider.StorageOperationStatus.Ok
+            });
+        }
     }
 }
