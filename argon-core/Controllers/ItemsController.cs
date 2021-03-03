@@ -266,7 +266,10 @@ namespace JCS.Argon.Controllers
         /// <returns></returns>
         /// <response code="200">Successful update</response>
         /// <response code="404">Invalid item id provided, or no properties present in the inbound request</response>
-        /// <response code="400">Bad request - this will be returned if the constraints relating to the parent collection are violated</response>
+        /// <response code="400">
+        ///     Bad request - this will be returned if the constraints relating to the parent collection are violated, or if no
+        ///     properties are provided within the payload
+        /// </response>
         /// <response code="500">Internal server error</response>
         [HttpPatch]
         [Route("/api/v1/Collections/{collectionId}/Items/{itemId}/Properties")]
