@@ -77,6 +77,14 @@ namespace JCS.Argon.Services.VSP
         /// <returns></returns>
         public Task<StorageOperationResult> DeleteCollectionItemAsync(Collection collection, Item item);
 
+
+        /// <summary>
+        ///     Given a reference to a <see cref="Collection" />, attempts to delete the underlying storage structures associated with it
+        /// </summary>
+        /// <param name="collection">The <see cref="Collection" /> to delete</param>
+        /// <returns>A <see cref="StorageOperationResult" /></returns>
+        public Task<StorageOperationResult> DeleteCollectionAsync(Collection collection);
+
         /// <summary>
         ///     Reads a specific item version from a collection
         /// </summary>
