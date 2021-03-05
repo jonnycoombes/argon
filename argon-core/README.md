@@ -1,7 +1,5 @@
 ﻿# Argon Content Service Layer
 
-### Storage abstraction layer for OpenText Content Server 16
-
 ### Overview
 
 ### Installation and Deployment
@@ -18,7 +16,6 @@
 
 #### Running Unit Tests
 
-### Known Issues
 
 
 
