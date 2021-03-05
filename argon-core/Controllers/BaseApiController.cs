@@ -38,7 +38,14 @@ namespace JCS.Argon.Controllers
             Dictionary<string, object>? properties = null;
             if (Request.Form.ContainsKey("Properties"))
             {
-                properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
+                var payloadProperties = Request.Form["Properties"];
+                if (payloadProperties.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(payloadProperties[0]))
+                    {
+                        properties = JsonSerializer.Deserialize<Dictionary<string, object>>(Request.Form["Properties"]);
+                    }
+                }
             }
 
             return properties;
