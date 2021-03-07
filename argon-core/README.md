@@ -53,16 +53,108 @@ Launch profiles are provided for both self-hosted (Kestrel) or IIS-dependent dep
 using the standard .NET Core `launch.json` file.
 
 ### Standard Configuration Options
+The CSL utilises the standard .NET core application settings mechanism for configuration.  Default values may be configured within the
+`appsettings.json` file, and then overridden on a per-environment basis using a separate `appsettings.<ENVIRONMENT>.json` file.
+
+#### `appsettings.json` General Structure
+
+The general structure of the CSL configuration file follows .NET Core standards.  In order to allow for the configuration of the various dependent components, it is split into three main sections:
+
+| Section Root Key | Description                   |
+|------------------|-------------------------------|
+|Serilog           | Serilog configuration settings|
+|ConnectionStrings | Standard .NET connection string settings.  By default, "DefaultConnection" is used |
+|Argon             | Section containing the various bindings for the Argon virtual storage providers (see below)|
+|RoleBasedPermissions| Section specific to Glencore role-based authentication settings|
+
+#### Glencore-Specific Octopus Placeholders
+
+Given that Argon is deployed via Octopus within Glencore, the default `appsettings.json` file contains a number of placeholders which are statically re-written during deployment.
+The placeholders of note are given in the table below:
+
+|Placeholder | Description|
+|------------|------------|
+|CONTENTSERVERSERVICELAYER_CONNECTIONSTRING | Replaced by the current environmental connection string|
+| CONTENTSERVERSERVICELAYER_BINDING_FS|Contains the name/tag for a given Native FS provider|
+|CONTENTSERVERSERVICELAYER_BINDING_FS_ROOTPATH|For native FS providers, this will contain the root path for the storage of collections|
+|CONTENTSERVERSERVICELAYER_BINDING_OTCS_ENDPOINT|For OTCS providers, this must contain the endpoint (address) of the root CWS (Content Web Services) application on the target system|
+
+*Note that because the Octopus binding mechanism is static rather than dynamic, the exact number and designation of replacement tags may change, based on the number of configured providers. 
+
+**Octopus placeholders are all surrounded by braces `{}` and prefixed with a '$' character. 
+
+
+The Content Service Layer configuration may contain an arbitrary list of specific storage/collection bindings which can be of two main types:
+
+1. OTCS Storage Binding (collections are stored relative to a OTCS root location)
+2. Native FS Storage Binding (collections are stored on filesystem relative to a provider FS path).
+
+Depending on the type of binding being specified, there are different options which may be included within each binding configuration.  
+The array of binding configurations should be given as children of the `argon.virtualStorageOptions.bindings` section of the configuration file.
 
 #### OTCS Storage Provider
 
+The available OTCS storage provider configuration options are summarised below:
+
+| Configuration Key | Description | Example                   |
+|:------------------|:------------|:--------------------------|
+|`tag` |The user-defined identifier for the storage binding | `"tag" : "Test OTCS Provider"`|
+|`providerType`|The type of the provider, must be `openTextSoap`|`"providerType" : "openTextSoap"`|
+|`description`|An optional description for the binding|`"description" : "This is a sample binding"`|
+|`properties.endpoint`|The CWS endpoint for the binding|`"endpoint":"https://otcs.host/cws"`|
+|`properties.rootCollectionPath`|The path to the collection root storage folder within OTCS.  This path is taken to be relative to the Enterprise Workspace|`"rootCollectionPath":"/Argon/Collections"`|
+|`properties.authType`|The authentication type to use|Two authentication types are supported.  `integrated` or `basic`. (See below).|
+|`properties.user`|The user to be authenticated against OTCS if the `authType` is set to `basic`|Note that this username will reside within the configuration file unencrypted.|
+|`properties.password`|The password to be used during authentication against OTCS if the `authType` is set to `basic`|Note that this password will reside within the configuration file unencrypted.|
+
+The Content Service Layer currently supports two modes of authentication into any underlying OTCS instance:
+
+1. `integrated` This method will utilise a **HTTPS** connection through to CWS (Content Server Web Services) and utilise Integrated Windows Authentication in order to negotiate a valid OTCS token for subsequent use in outcalls to the OTCS SOAP layer.  
+When `integrated` authentication is configured, the `user` and `password` configuration settings for a binding are *not* required.
+2. `basic` This method will utilise a **HTTP** (plaintext) connection through to the underlying CWS layer, and will present username and password credentials to the CWS authentication endpoint 
+using the values provided within the `user` and `password` configuration settings.  *Empty or null passwords are not supported*.
+
 #### Native Filesystem Storage Provider
+The available native filesystem storage provider configuration options are summarised below:
+
+| Configuration Key | Description | Example                   |
+|:------------------|:------------|:--------------------------|
+|`tag`|The user-defined identifier for the storage binding|`"tag": "Test Native FS Provider"`|
+|`providerType`|The type of the provider.  Must be `nativeFileSystem`||
+|`description`|An optional description for the binding|`"description" : "This is a test native filesystem provider"`|
+|`properties.rootPath`|The root path for the storage of collections and their items/versions|`"properties.rootPath" : "/var/opt/argon"`|
+
 
 ## Building
 
-#### Default Development Build
+Build of the Content Service Layer is standard and can be performed (subject to satisfying all necessary dependencies) with the standard
+`dotnet build` command. The basic steps are:
+
+1. Clone the Argon repository to you build environment in a suitable location.
+2. Execute `dotnet build` for a default, *Debug* build.
+
+Build has been testsed against .NET Core 3.x in the following environments:
+
+1. `Windows 10`
+2. `Mac OSX Catalina`
+3. `Mac OSX Big Sur`
+4. `Ubuntu 16.04 LTS`
+5. `Ubuntu 18.04 LTS`
+6. `Kali Linux 2020.4`
 
 #### Running Unit Tests
+
+Content Service Layer unit tests may be executed using the standard `dotnet test` command, however several of the unit tests also perform limited 
+integration tests against a nominated development/build OTCS instance.  A seperate configuration file for test purposes is provided and is named
+`appsettings.Test.json`.  In order to disable integration tests within the test suite, utilise the built-in test filtering capability of 
+`dotnet test` by passing through a suitable filter.  The available test categories are as follows:
+
+|Tag|Description|
+|--------|-----------|
+|`Category=Unit`|All unit tests belong to this category.|
+|`Provider=XXXX`|Unit tests against a specific provider.  The valid values are `OTCS` for OTCS tests, `VSP` for default native filesystem tests.|
+
+For example, in order to *not run* any OTCS-related unit tests (i.e. those dependent on an external OTCS instance) the following test command may be used: `dotnet test --filter="Provider=VSP"`.
 
 
 
