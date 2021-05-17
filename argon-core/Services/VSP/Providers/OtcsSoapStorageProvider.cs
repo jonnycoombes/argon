@@ -18,15 +18,6 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public class OtcsSoapStorageProvider : BaseVirtualStorageProvider
     {
-        /// <summary>
-        ///     The authentication type to be used. Two are supported, basic authentication (with username and password) or integrated
-        ///     if the CWS endpoints are configured for IWA-based authentication
-        /// </summary>
-        public enum AuthenticationType
-        {
-            Basic,
-            Integrated
-        }
 
         /// <summary>
         ///     Key in the binding properties which must contain the base endpoint address
@@ -54,16 +45,6 @@ namespace JCS.Argon.Services.VSP.Providers
         private const string PasswordPropertyKey = "password";
 
         /// <summary>
-        ///     The authentication service suffix
-        /// </summary>
-        private const string AuthenticationServiceSuffix = "Authentication.svc";
-
-        /// <summary>
-        ///     The document management service suffix
-        /// </summary>
-        private const string DocumentManagementServiceSuffix = "DocumentManagement.svc";
-
-        /// <summary>
         ///     The never changing enterprise workspace node id
         /// </summary>
         private const long EnterpriseRootId = 2000;
@@ -79,35 +60,9 @@ namespace JCS.Argon.Services.VSP.Providers
         private static readonly Dictionary<string, EndpointServices> endpointServiceCache = new Dictionary<string, EndpointServices>();
 
         /// <summary>
-        ///     The currently (per instance) active authentication token
-        /// </summary>
-        private OTAuthentication activeToken;
-
-        /// <summary>
-        ///     The current type of authentication to use.  The default is set to be integrated (IWA), so that no user or password information
-        ///     is required within the binding information for the provider
-        /// </summary>
-        private AuthenticationType authenticationType = AuthenticationType.Integrated;
-
-        /// <summary>
-        ///     The current base endpoint address
-        /// </summary>
-        private string baseEndpointAddress;
-
-        /// <summary>
-        ///     The current password (basic authentication only)
-        /// </summary>
-        private string password;
-
-        /// <summary>
         ///     The root path.  All collections are stored underneath this location relative to the Enterprise workspace within OTCS
         /// </summary>
         private string rootCollectionPath;
-
-        /// <summary>
-        ///     The current user name (basic authentication only)
-        /// </summary>
-        private string userName;
 
         /// <summary>
         ///     The provider type tag for this type of provider - should correlate to settings within the appsettings.json file
