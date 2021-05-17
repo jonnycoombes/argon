@@ -47,8 +47,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         [InlineData(65536, "TestOTCSCollection")]
         [InlineData(100000, "TestOTCSCollection")]
         [InlineData(150000, "TestOTCSCollection")]
-        [InlineData(644440, "TestOTCSCollection")]
-        [InlineData(33333333, "TestOTCSCollection")]
         public async void CreateCollectionItems(int sizeInBytes, string providerTag)
         {
             LogMethodCall(_log);
@@ -77,8 +75,6 @@ namespace JCS.Argon.Tests.Tests.Unit.Services
         [InlineData(65536, "TestOTCSCollection")]
         [InlineData(100000, "TestOTCSCollection")]
         [InlineData(150000, "TestOTCSCollection")]
-        [InlineData(644440, "TestOTCSCollection")]
-        [InlineData(33333333, "TestOTCSCollection")]
         public async void AddAndRetrieveItems(int sizeInBytes, string providerTag)
         {
             LogMethodCall(_log);
