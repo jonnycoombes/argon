@@ -65,7 +65,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Creating new client configured for basic authentication against \"{endpoint}\"");
-            BaseEndpointAddress = endpoint;
+            BaseEndpointAddress = PreconditionEndpoint(endpoint);
             User = username;
             Password = password;
             Authentication = AuthenticationType.Basic;
@@ -80,7 +80,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Creating new client configured for integrated authentication against \"{endpoint}\"");
-            BaseEndpointAddress = endpoint;
+            BaseEndpointAddress = PreconditionEndpoint(endpoint);
             Authentication = AuthenticationType.Integrated;
         }
 
@@ -114,6 +114,21 @@ namespace JCS.Argon.Services.Soap.Opentext
         ///     Late-bound accessor for an instance of <see cref="Authentication" />
         /// </summary>
         private Authentication AuthenticationService => ResolveEndpointServices().Authentication;
+
+        /// <summary>
+        ///     Just makes sure that there's a trailing slash on the end of the specified endpoint
+        /// </summary>
+        /// <param name="endpoint">The raw endpoint</param>
+        /// <returns></returns>
+        private static string PreconditionEndpoint(string endpoint)
+        {
+            if (!endpoint.EndsWith("/"))
+            {
+                endpoint = $"{endpoint}/";
+            }
+
+            return endpoint;
+        }
 
         /// <summary>
         ///     Generates a full endpoint address, based on a given base address and a specified service type

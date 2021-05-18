@@ -59,6 +59,12 @@ namespace JCS.Argon.Services.Core
                         Message = e.Message,
                         Source = e.Source
                     },
+                    ArchiveManagerException e => new ExceptionResponse
+                    {
+                        HttpResponseCode = e.ResponseCodeHint ?? StatusCodes.Status500InternalServerError,
+                        Message = e.Message,
+                        Source = e.Source
+                    },
                     _ => new ExceptionResponse
                     {
                         HttpResponseCode = StatusCodes.Status500InternalServerError, Message = ex.Message, Source = ex.Source

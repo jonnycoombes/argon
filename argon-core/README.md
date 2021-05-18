@@ -115,19 +115,22 @@ When `integrated` authentication is configured, the `user` and `password` config
 using the values provided within the `user` and `password` configuration settings.  *Empty or null passwords are not supported*.
 
 #### Native Filesystem Storage Provider
+
 The available native filesystem storage provider configuration options are summarised below:
 
 | Configuration Key | Description | Example                   |
 |:------------------|:------------|:--------------------------|
 |`tag`|The user-defined identifier for the storage binding|`"tag": "Test Native FS Provider"`|
-|`providerType`|The type of the provider.  Must be `nativeFileSystem`||
+|`providerType`|The type of the provider. Must be `nativeFileSystem`||
 |`description`|An optional description for the binding|`"description" : "This is a test native filesystem provider"`|
 |`properties.rootPath`|The root path for the storage of collections and their items/versions|`"properties.rootPath" : "/var/opt/argon"`|
 
+## Archiving Support
 
 ## Building
 
-Build of the Content Service Layer is standard and can be performed (subject to satisfying all necessary dependencies) with the standard
+Build of the Content Service Layer is standard and can be performed (subject to satisfying all necessary dependencies)
+with the standard
 `dotnet build` command. The basic steps are:
 
 1. Clone the Argon repository to you build environment in a suitable location.
