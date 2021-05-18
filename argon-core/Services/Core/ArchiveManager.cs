@@ -149,9 +149,9 @@ namespace JCS.Argon.Services.Core
             {
                 writer.WritePropertyName(group.DisplayName);
                 writer.WriteStartObject();
-                for (var i = 0; i < group.Values.Length; i++)
+                foreach (var t in group.Values)
                 {
-                    writer.WriteString(group.Values[i].Key, DataValueToString(group.Values[i]));
+                    writer.WriteString(t.Key, DataValueToString(t));
                 }
 
                 writer.WriteEndObject();
