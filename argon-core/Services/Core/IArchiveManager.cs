@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Soap.Opentext;
@@ -28,6 +27,6 @@ namespace JCS.Argon.Services.Core
         /// <param name="path">The path to the archived item</param>
         /// <returns></returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
-        public Task<JsonDocument> DownloadArchivedMetadata(string tag, string path);
+        public Task<string> DownloadArchivedMetadata(string tag, string path);
     }
 }

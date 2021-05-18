@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using JCS.Argon.Services.Core;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,7 @@ namespace JCS.Argon.Controllers
         /// </remarks>
         /// <param name="tag">The tag for the archive provider</param>
         /// <param name="path">The path to the item to be retrieved</param>
+        /// <param name="meta">Whether or not the meta-data should be retrieved</param>
         /// <returns></returns>
         /// <response code="200">Successful</response>
         /// <response code="400">An invalid tag or path has been supplied</response>
@@ -54,14 +56,23 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("/api/v1/[controller]/{tag}/{*path}")]
-        public async Task<IActionResult> DownloadArchivedDocument(string tag, string path)
+        public async Task<IActionResult> DownloadArchivedDocument(string tag, string path, [FromQuery]
+            bool meta = false)
         {
             LogMethodCall(_log);
-            var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path));
-            return new FileStreamResult(response.Item2, response.Item1.MimeType)
+            if (!meta)
             {
-                FileDownloadName = response.Item1.Name
-            };
+                var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path));
+                return new FileStreamResult(response.Item2, response.Item1.MimeType)
+                {
+                    FileDownloadName = response.Item1.Name
+                };
+            }
+            else
+            {
+                var response = await _archiveManager.DownloadArchivedMetadata(tag, Uri.UnescapeDataString(path));
+                return new JsonResult(JsonDocument.Parse(response));
+            }
         }
     }
 }

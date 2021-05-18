@@ -147,6 +147,7 @@ namespace JCS.Argon.Services.Soap.Opentext
             };
         }
 
+
         /// <summary>
         ///     Attempts to resolve a set of bound services.   If the services haven't already been created and cached, they are bound
         ///     and then returned.  Sets of service implementations are cached against a base endpoint address
@@ -233,6 +234,31 @@ namespace JCS.Argon.Services.Soap.Opentext
             catch (Exception ex)
             {
                 throw new WebServiceClientException($"Unexpected exception during OTCS authentication: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        ///     Wrapper around the CWS ListNodes operation.  Just retrieves *one* level of child nodes
+        /// </summary>
+        /// <param name="parentId">The id for the parent node</param>
+        /// <returns>An array of child <see cref="Node" /> instances</returns>
+        /// <exception cref="WebServiceClientException">Thrown in the event of a fault</exception>
+        public async Task<Node[]> GetChildren(long parentId)
+        {
+            try
+            {
+                await Authenticate();
+                var response = await DocumentManagementService.ListNodesAsync(new ListNodesRequest
+                {
+                    OTAuthentication = _currentAuthentication,
+                    parentID = parentId
+                });
+                _currentAuthentication = response.OTAuthentication;
+                return response.ListNodesResult;
+            }
+            catch (Exception ex)
+            {
+                throw new WebServiceClientException(SOAPErrorMessage, ex);
             }
         }
 
