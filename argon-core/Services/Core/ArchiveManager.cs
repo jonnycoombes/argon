@@ -58,7 +58,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 var elements = path.Split(PathSeperator);
-                var node = await client.GetNodeByPath(2000, elements);
+                var node = await client.GetNodeByPath(RootId, elements);
                 if (node == null)
                 {
                     throw new ArchiveManagerException(StatusCodes.Status404NotFound, "The specified item cannot be found in the archive");
