@@ -18,5 +18,10 @@ namespace JCS.Argon.Model.Configuration
         ///     The current virtual storage options
         /// </summary>
         public VirtualStorageOptions VirtualStorageOptions { get; set; } = null!;
+
+        /// <summary>
+        ///     The current archive storage options
+        /// </summary>
+        public ArchiveStorageOptions ArchiveStorageOptions { get; set; } = null!;
     }
 }

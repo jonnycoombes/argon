@@ -273,6 +273,26 @@ namespace JCS.Argon.Services.Soap.Opentext
             }
         }
 
+        public async Task<Version> GetItemVersion(long nodeId, long version)
+        {
+            try
+            {
+                await Authenticate();
+                var response = await DocumentManagementService.GetVersionAsync(new GetVersionRequest
+                {
+                    OTAuthentication = _currentAuthentication,
+                    ID = nodeId,
+                    versionNum = version
+                });
+                _currentAuthentication = response.OTAuthentication;
+                return response.GetVersionResult;
+            }
+            catch (Exception ex)
+            {
+                throw new WebServiceClientException(SOAPErrorMessage, ex);
+            }
+        }
+
         /// <summary>
         ///     Wrapper around the CWS GetNodeByName operation
         /// </summary>

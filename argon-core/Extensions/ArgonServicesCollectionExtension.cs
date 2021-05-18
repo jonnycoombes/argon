@@ -179,6 +179,8 @@ namespace JCS.Argon.Extensions
             LogHelpers.LogMethodCall(_log);
             LogHelpers.LogInformation(_log, "Registering a scoped VSP factory");
             services.AddSingleton<IVirtualStorageManager, VirtualStorageManager>();
+            LogHelpers.LogInformation(_log, "Registering a scoped instance of IArchiveManager");
+            services.AddScoped<IArchiveManager, ArchiveManager>();
             LogHelpers.LogInformation(_log, "Registering a scoped property group manager");
             services.AddScoped<IPropertyGroupManager, PropertyGroupManager>();
             LogHelpers.LogInformation(_log, "Registering a scoped constraint group manager");

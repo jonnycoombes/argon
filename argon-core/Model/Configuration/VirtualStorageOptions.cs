@@ -14,7 +14,7 @@ namespace JCS.Argon.Model.Configuration
         /// <summary>
         ///     Section of the configuration file to which these options may be bound
         /// </summary>
-        public const string ConfigurationSection = "vsp";
+        public const string ConfigurationSection = "virtualStorageOptions";
 
         /// <summary>
         ///     The list of all <see cref="VirtualStorageBinding" /> instances
