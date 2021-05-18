@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -18,7 +19,6 @@ namespace JCS.Argon.Services.VSP.Providers
     /// </summary>
     public class OtcsSoapStorageProvider : BaseVirtualStorageProvider
     {
-
         /// <summary>
         ///     Key in the binding properties which must contain the base endpoint address
         /// </summary>
@@ -55,9 +55,9 @@ namespace JCS.Argon.Services.VSP.Providers
         private static readonly ILogger _log = Log.ForContext<OtcsSoapStorageProvider>();
 
         /// <summary>
-        ///     Used to cache groups of services against a specific endpoint base address
+        ///     The <see cref="WebServiceClient" /> instance used to make outcalls through the various CWS services
         /// </summary>
-        private static readonly Dictionary<string, EndpointServices> endpointServiceCache = new Dictionary<string, EndpointServices>();
+        private WebServiceClient _client;
 
         /// <summary>
         ///     The root path.  All collections are stored underneath this location relative to the Enterprise workspace within OTCS
@@ -70,105 +70,22 @@ namespace JCS.Argon.Services.VSP.Providers
         public override string ProviderType => "openTextSoap";
 
         /// <summary>
-        ///     Attempts to resolve a set of bound services.   If the services haven't already been created and cached, they are bound
-        ///     and then returned.  Sets of service implementations are cached against a base endpoint address
-        /// </summary>
-        /// <param name="baseAddress">The base address, which acts as a key into the cache</param>
-        /// <returns>A new populated <see cref="EndpointServices" /> instance</returns>
-        /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException">Thrown if an error occurs during service binding</exception>
-        private static EndpointServices ResolveEndpointServices(string baseAddress)
-        {
-            LogMethodCall(_log);
-            lock (endpointServiceCache)
-            {
-                try
-                {
-                    var scheme = new Uri(baseAddress).Scheme;
-                    if (!endpointServiceCache.ContainsKey(baseAddress))
-                    {
-                        LogVerbose(_log, $"No bound services found for base endpoint address \"{baseAddress}\" - binding");
-                        var endpointServices = new EndpointServices();
-                        switch (scheme)
-                        {
-                            case "https":
-                                endpointServices.Authentication = new AuthenticationClient(
-                                    AuthenticationClient.EndpointConfiguration.BasicHttpsBinding_Authentication,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.AuthenticationService));
-                                endpointServices.DocumentManagement = new DocumentManagementClient(
-                                    DocumentManagementClient.EndpointConfiguration.BasicHttpsBinding_DocumentManagement,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.DocumentManagementService));
-                                break;
-                            default:
-                                endpointServices.Authentication = new AuthenticationClient(
-                                    AuthenticationClient.EndpointConfiguration.BasicHttpBinding_Authentication,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.AuthenticationService));
-                                endpointServices.DocumentManagement = new DocumentManagementClient(
-                                    DocumentManagementClient.EndpointConfiguration.BasicHttpBinding_DocumentManagement,
-                                    GenerateEndpointAddress(baseAddress, ServiceType.DocumentManagementService));
-                                break;
-                        }
-
-                        endpointServiceCache.Add(baseAddress, endpointServices);
-                        return endpointServices;
-                    }
-
-                    LogVerbose(_log, $"Using pre-cached bound services for base endpoint address \"{baseAddress}\"");
-                    return endpointServiceCache[baseAddress];
-                }
-                catch (Exception ex)
-                {
-                    LogWarning(_log, "Caught an exception whilst attempting to bind a new set of services");
-                    LogExceptionWarning(_log, ex);
-                    throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                        $"Exception whilst attempting to bind services \"{ex.Message}\" - check logs for more information");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Generates a full endpoint address, based on a given base address and a specified service type
-        /// </summary>
-        /// <param name="baseAddress">The base address to use (should be a valid URI in it's own right)</param>
-        /// <param name="serviceType">An element taken from the <see cref="ServiceType" /> enumeration</param>
-        /// <returns>A complete endpoint address which may then be passed through to service client creation constructors</returns>
-        private static string GenerateEndpointAddress(string baseAddress, ServiceType serviceType)
-        {
-            LogMethodCall(_log);
-            var sanitisedBaseAddress = baseAddress;
-            return serviceType switch
-            {
-                ServiceType.DocumentManagementService => $"{sanitisedBaseAddress}{DocumentManagementServiceSuffix}",
-                _ => $"{sanitisedBaseAddress}{AuthenticationServiceSuffix}"
-            };
-        }
-
-        /// <summary>
         ///     Attempts to retrieve or create a folder node based on a path relative to the Enterprise workspace
         /// </summary>
         /// <returns>The <see cref="Node" /> instance representing the root collections folder</returns>
-        public async Task<Node> GetOrCreateFolder(string[] pathElements)
+        public async Task<Node?> GetOrCreateFolder(string[] pathElements)
         {
-            var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
             Node folder = null;
             try
             {
                 var currentFolderId = EnterpriseRootId;
-                var existing = (await dm.GetNodeByPathAsync(new GetNodeByPathRequest(activeToken, currentFolderId, pathElements)))
-                    .GetNodeByPathResult;
-
+                var existing = await _client.GetNodeByPath(EnterpriseRootId, pathElements);
                 if (existing == null)
                 {
                     foreach (var element in pathElements)
                     {
-                        folder = (await dm.GetNodeByNameAsync(new GetNodeByNameRequest(activeToken, currentFolderId, element)))
-                            .GetNodeByNameResult;
-                        if (folder == null)
-                        {
-                            folder = (await dm.CreateFolderAsync(new CreateFolderRequest(activeToken, currentFolderId, element,
-                                    "Created by Argon", null)))
-                                .CreateFolderResult;
-                        }
-
+                        folder = await _client.GetNodeByName(currentFolderId, element) ??
+                                 await _client.CreateFolder(currentFolderId, element);
                         currentFolderId = folder.ID;
                     }
                 }
@@ -177,15 +94,10 @@ namespace JCS.Argon.Services.VSP.Providers
                     folder = existing;
                 }
             }
-            catch (FaultException ex)
+            catch (WebServiceClientException ex)
             {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
-            }
-            catch (Exception ex)
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"Unexpected exception during folder creation: {ex.Message}");
+                    $"OTCS Fault exception: {ex.Message}");
             }
 
             return folder;
@@ -199,21 +111,16 @@ namespace JCS.Argon.Services.VSP.Providers
         public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionAsync(Collection collection)
         {
             LogMethodCall(_log);
-
             LogVerbose(_log, $"Creating new collection folder with id \"{collection.Id}\"");
-
-            // authenticate to get an initial OtAuthentication instance
-            await Authenticate();
 
             try
             {
-                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
                 var collectionPath = $"{rootCollectionPath}/{collection.Id.ToString()}";
                 var collectionFolderNode = await GetOrCreateFolder(collectionPath.Split("/"));
                 if (collectionFolderNode != null)
                 {
                     collectionFolderNode.Comment = collection.Name;
-                    await dm.UpdateNodeAsync(new UpdateNodeRequest(activeToken, collectionFolderNode));
+                    await _client.UpdateNode(collectionFolderNode);
 
                     var result = new IVirtualStorageProvider.StorageOperationResult
                     {
@@ -232,28 +139,19 @@ namespace JCS.Argon.Services.VSP.Providers
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
                     "Failed to create a new collection folder");
             }
-            catch (FaultException ex)
+            catch (WebServiceClientException ex)
             {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
-            }
-            catch (Exception ex)
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"Unexpected exception during collection creation: {ex.Message}");
+                    $"OTCS Fault exception: {ex.Message}");
             }
         }
 
         /// <inheritdoc cref="IVirtualStorageProvider.DeleteCollectionAsync" />
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionAsync(Collection collection)
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionAsync(Collection? collection)
         {
             LogMethodCall(_log);
-
-            await Authenticate();
-
             try
             {
-                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
                 if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
                 {
                     throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
@@ -261,17 +159,12 @@ namespace JCS.Argon.Services.VSP.Providers
                 }
 
                 var collectionNodeId = (long) collection.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
-                await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, collectionNodeId));
+                await _client.DeleteNode(collectionNodeId);
             }
-            catch (FaultException ex)
+            catch (WebServiceClientException ex)
             {
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
-            }
-            catch (Exception ex)
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
-                    $"Unexpected exception during collection deletion operation: {ex.Message}");
+                    $"OTCS Fault exception: {ex.Message}");
             }
 
             return await Task.Run(() => new IVirtualStorageProvider.StorageOperationResult
@@ -284,16 +177,15 @@ namespace JCS.Argon.Services.VSP.Providers
         ///     Uploads a new item to Content Server.  Note that this method uses the standard "attachment" method due to lack of support
         ///     for MTOM within the .NET Core version of WCF.
         /// </summary>
-        /// <param name="parentId">The parent id which will either be a folder (for a new document) or an actual document id (for a new version)</param>
+        /// <param name="parentOrExistingId">The parent id which will either be a folder (for a new document) or an actual document id (for a new version)</param>
         /// <param name="source">The <see cref="IFormFile" /> containing the source document material</param>
         /// <param name="addVersion">If set to true, the passed in id is interpreted as an existing document node</param>
         /// <returns></returns>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
-        private async Task<long> UploadContent(long parentId, IFormFile source, bool addVersion = false)
+        private async Task<long> UploadContent(long parentOrExistingId, IFormFile source, bool addVersion = false)
         {
             try
             {
-                var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
                 var buffer = new MemoryStream();
                 await source.CopyToAsync(buffer);
                 await buffer.FlushAsync();
@@ -308,16 +200,14 @@ namespace JCS.Argon.Services.VSP.Providers
 
                 if (!addVersion)
                 {
-                    var document = (await dm.CreateDocumentAsync(new CreateDocumentRequest(activeToken, parentId,
-                        source.FileName, "Created by Argon", false, null, attachment))).CreateDocumentResult;
+                    var document = await _client.CreateDocument(parentOrExistingId, source.FileName, attachment);
                     return document.ID;
                 }
 
-                var version = (await dm.AddVersionAsync(new AddVersionRequest(activeToken, parentId, null, attachment)))
-                    .AddVersionResult;
-                return parentId;
+                var version = await _client.AddVersion(parentOrExistingId, attachment);
+                return parentOrExistingId;
             }
-            catch (FaultException ex)
+            catch (WebServiceClientException ex)
             {
                 LogExceptionWarning(_log, ex);
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
@@ -333,11 +223,10 @@ namespace JCS.Argon.Services.VSP.Providers
         /// <param name="source"></param>
         /// <returns>A valid <see cref="IVirtualStorageProvider.StorageOperationResult" /></returns>
         /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException"></exception>
-        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection collection,
+        public override async Task<IVirtualStorageProvider.StorageOperationResult> CreateCollectionItemVersionAsync(Collection? collection,
             Item item, ItemVersion itemVersion, IFormFile source)
         {
             LogMethodCall(_log);
-            var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
 
             // check we have the node id cached for the parent folder
             if (collection != null && !collection.PropertyGroup.HasProperty("nodeId"))
@@ -345,8 +234,6 @@ namespace JCS.Argon.Services.VSP.Providers
                 throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status400BadRequest,
                     "Unable to locate cached node id for collection");
             }
-
-            await Authenticate();
 
             long cachedNodeId;
             long itemId;
@@ -371,13 +258,16 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 try
                 {
-                    // add a new document 
                     LogVerbose(_log, "Creating a new OTCS item");
                     var itemFolderPath = $"{rootCollectionPath}/{collection.Id.ToString()}/{item.Id.ToString()}";
                     var itemFolderNode = await GetOrCreateFolder(itemFolderPath.Split("/"));
-                    itemFolderNode.Comment = item.Name;
-                    await dm.UpdateNodeAsync(new UpdateNodeRequest(activeToken, itemFolderNode));
-                    itemId = await UploadContent(itemFolderNode.ID, source);
+                    if (itemFolderNode != null)
+                    {
+                        itemFolderNode.Comment = item.Name;
+                        await _client.UpdateNode(itemFolderNode);
+                        itemId = await UploadContent(itemFolderNode.ID, source);
+                        item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemId);
+                    }
                 }
                 catch (FaultException ex)
                 {
@@ -387,7 +277,6 @@ namespace JCS.Argon.Services.VSP.Providers
                 }
             }
 
-            item.PropertyGroup.AddOrReplaceProperty("nodeId", PropertyType.Number, itemId);
             var result = new IVirtualStorageProvider.StorageOperationResult
             {
                 Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
@@ -411,17 +300,16 @@ namespace JCS.Argon.Services.VSP.Providers
         public override async Task<IVirtualStorageProvider.StorageOperationResult> DeleteCollectionItemAsync(Collection collection,
             Item item)
         {
+            Debug.Assert(_client != null);
             LogMethodCall(_log);
             if (item.PropertyGroup.HasProperty("nodeId"))
             {
                 try
                 {
-                    var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
-                    await Authenticate();
                     var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
-                    var itemNode = (await dm.GetNodeAsync(new GetNodeRequest(activeToken, itemNodeId))).GetNodeResult;
-                    await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, itemNodeId));
-                    await dm.DeleteNodeAsync(new DeleteNodeRequest(activeToken, itemNode.ParentID));
+                    var itemNode = await _client.GetNode(itemNodeId);
+                    await _client.DeleteNode(itemNodeId);
+                    await _client.DeleteNode(itemNode.ParentID);
                     var result = new IVirtualStorageProvider.StorageOperationResult
                     {
                         Status = IVirtualStorageProvider.StorageOperationStatus.Ok
@@ -440,40 +328,6 @@ namespace JCS.Argon.Services.VSP.Providers
                 "Specified item version doesn't appear to have a valid OTCS node id");
         }
 
-        /// <summary>
-        ///     Performs authentication using the CWS authentication service, and returns a newly constructed <see cref="OTAuthentication" /> instance
-        /// </summary>
-        /// <exception cref="IVirtualStorageProvider.VirtualStorageProviderException">Thrown if the authentication fails for any reason</exception>
-        public async Task Authenticate()
-        {
-            var services = ResolveEndpointServices(baseEndpointAddress);
-            try
-            {
-                string token;
-                switch (authenticationType)
-                {
-                    case AuthenticationType.Basic:
-                        token = await services.Authentication.AuthenticateUserAsync(userName, password);
-                        break;
-                    default:
-                        // pass in null user and password if the system is configured for integrated authentication
-                        token = await services.Authentication.AuthenticateUserAsync(null, null);
-                        break;
-                }
-
-                activeToken = new OTAuthentication {AuthenticationToken = token};
-            }
-            catch (FaultException ex)
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status401Unauthorized,
-                    $"OTCS Fault exception: {ex.Message},{ex.Code}");
-            }
-            catch (Exception ex)
-            {
-                throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status401Unauthorized,
-                    $"Unexpected exception during OTCS authentication: {ex.Message}");
-            }
-        }
 
         /// <summary>
         /// </summary>
@@ -491,12 +345,8 @@ namespace JCS.Argon.Services.VSP.Providers
             {
                 try
                 {
-                    var dm = ResolveEndpointServices(baseEndpointAddress).DocumentManagement;
-                    await Authenticate();
                     var itemNodeId = (long) item.PropertyGroup.GetPropertyByName("nodeId").NumberValue;
-                    var attachment =
-                        (await dm.GetVersionContentsAsync(new GetVersionContentsRequest(activeToken, itemNodeId, itemVersion.Major)))
-                        .GetVersionContentsResult;
+                    var attachment = await _client.GetVersionContents(itemNodeId, itemVersion.Major);
                     var result = new IVirtualStorageProvider.StorageOperationResult
                     {
                         Status = IVirtualStorageProvider.StorageOperationStatus.Ok,
@@ -504,7 +354,7 @@ namespace JCS.Argon.Services.VSP.Providers
                     };
                     return result;
                 }
-                catch (FaultException ex)
+                catch (WebServiceClientException ex)
                 {
                     LogExceptionWarning(_log, ex);
                     throw new IVirtualStorageProvider.VirtualStorageProviderException(StatusCodes.Status500InternalServerError,
@@ -525,7 +375,8 @@ namespace JCS.Argon.Services.VSP.Providers
         {
             LogMethodCall(_log);
 
-            // check that we have a valid base endpoint address
+            string baseEndpointAddress;
+
             if (_binding.Properties.ContainsKey(EndpointPropertyKey))
             {
                 baseEndpointAddress = (string) _binding.Properties[EndpointPropertyKey];
@@ -567,6 +418,9 @@ namespace JCS.Argon.Services.VSP.Providers
                     "No collection root has been specified.  An OTCS collection root location must be specified, relative to Enterprise");
             }
 
+            string user = null;
+            string password = null;
+
             // check the authentication type, and default to integrated if nothing sensible has been configured 
             if (_binding.Properties.ContainsKey(AuthTypePropertyKey))
             {
@@ -578,7 +432,7 @@ namespace JCS.Argon.Services.VSP.Providers
                         LogVerbose(_log, "Setting current authentication method to basic...checking for user and password");
                         if (_binding.Properties.ContainsKey(UserPropertyKey))
                         {
-                            userName = (string) _binding.Properties[UserPropertyKey];
+                            user = (string) _binding.Properties[UserPropertyKey];
                         }
                         else
                         {
@@ -594,63 +448,34 @@ namespace JCS.Argon.Services.VSP.Providers
                             LogWarning(_log, "Basic authentication set, but no password specified");
                         }
 
-                        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+                        if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
                         {
                             LogWarning(_log, "Missing user or password for basic authentication - may not authenticate successfully");
                         }
 
-                        authenticationType = AuthenticationType.Basic;
+                        _client = new WebServiceClient(baseEndpointAddress, user!, password!);
                     }
                     else
                     {
-                        authenticationType = AuthenticationType.Integrated;
                         LogVerbose(_log, "Setting authentication to \"integrated\"");
+                        _client = new WebServiceClient(baseEndpointAddress);
                     }
                 }
                 else
                 {
                     LogWarning(_log,
                         "No authentication type has been specified within the binding configuration, so defaulting to \"Integrated\"");
-                    authenticationType = AuthenticationType.Integrated;
                     LogVerbose(_log, "Setting authentication to \"integrated\"");
+                    _client = new WebServiceClient(baseEndpointAddress);
                 }
             }
             else
             {
                 LogWarning(_log,
                     "No authentication type has been specified within the binding configuration, so defaulting to \"Integrated\"");
-                authenticationType = AuthenticationType.Integrated;
                 LogVerbose(_log, "Setting authentication to \"integrated\"");
+                _client = new WebServiceClient(baseEndpointAddress);
             }
-        }
-
-        /// <summary>
-        ///     Placeholder class which is used to statically cache a group of services (which are expensive to create) against a specific
-        ///     endpoint base address
-        /// </summary>
-        private class EndpointServices
-        {
-            /// <summary>
-            ///     The <see cref="Authentication" /> service
-            /// </summary>
-            public Authentication Authentication { get; set; }
-
-            /// <summary>
-            ///     The <see cref="DocumentManagement" /> service
-            /// </summary>
-            public DocumentManagement DocumentManagement { get; set; }
-        }
-
-        /// <summary>
-        ///     An enumeration of the possible SOAP service endpoints (used to construct new endpoint addresses from a base endpoint address)
-        /// </summary>
-        private enum ServiceType
-        {
-            AuthenticationService,
-            DocumentManagementService,
-            ContentService,
-            AdminService,
-            ConfigService
         }
     }
 }
