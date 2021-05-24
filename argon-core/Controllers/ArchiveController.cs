@@ -43,15 +43,14 @@ namespace JCS.Argon.Controllers
         /// </remarks>
         /// <param name="tag">The tag for the archive provider</param>
         /// <param name="path">The path to the item to be retrieved</param>
-        /// <param name="meta">Whether or not the meta-data should be retrieved</param>
-        /// <param name="bulkType">
+        /// <param name="meta">Whether or not the meta-data should be retrieved. Default value is <i>false</i></param>
+        /// <param name="archive">
         ///     The type of archive to be generated during bulk downloads.  Can be either "zip" or "pdf". Note that this
-        ///     parameter only makes sense if the path provided corresponds to a container (e.g. folder) location within the archive
+        ///     parameter only makes sense if the path provided corresponds to a container (e.g. folder) location within the archive.
         /// </param>
         /// <returns></returns>
         /// <response code="200">Successful</response>
         /// <response code="400">An invalid tag or path has been supplied</response>
-        /// <response code="400">The specified item is actually a non-document</response>
         /// <response code="404">The specified item couldn't be found in the archive</response>
         /// <response code="500">Internal server error - check the response payload</response>
         [HttpGet]
