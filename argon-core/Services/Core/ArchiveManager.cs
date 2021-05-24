@@ -120,7 +120,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="v">The actual <see cref="DataValue" /> instance.  May be one of several different types</param>
         /// <returns></returns>
-        private string DataValueToString(DataValue v)
+        private static string DataValueToString(DataValue v)
         {
             switch (v)
             {
@@ -147,7 +147,7 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="source">The source <see cref="Node" /></param>
         /// <param name="writer">The <see cref="Utf8JsonWriter" /> being used to serialise the Json</param>
-        private void DefaultNodeSerialisationFunction(Node source, Utf8JsonWriter writer)
+        private static void DefaultNodeSerialisationFunction(Node source, Utf8JsonWriter writer)
         {
             writer.WriteNumber("id", source.ID);
             writer.WriteNumber("parentId", source.ParentID);
@@ -182,7 +182,7 @@ namespace JCS.Argon.Services.Core
         /// <param name="children">An optional array of children for the node</param>
         /// <param name="nodeSerialisationFunction">A function which knows how to serialise a node to JSON, without the outer object braces</param>
         /// <returns>A string representation of the node and potentially its children</returns>
-        public string NodeToJson(Node source, Node[]? children, Action<Node, Utf8JsonWriter>? nodeSerialisationFunction)
+        private static string NodeToJson(Node source, Node[]? children, Action<Node, Utf8JsonWriter>? nodeSerialisationFunction)
         {
             var options = new JsonWriterOptions
             {
