@@ -13,7 +13,7 @@ namespace JCS.Argon.Services.Core
         /// <summary>
         ///     The type of content to be generated during a bulk download operation
         /// </summary>
-        public enum ArchiveDownloadType
+        public enum ArchiveType
         {
             /// <summary>
             ///     All the items within a container should be extracted as a zip archive
@@ -32,13 +32,13 @@ namespace JCS.Argon.Services.Core
         /// <param name="tag">The archive tag - links to the <see cref="ArchiveStorageBinding.Tag" /> property</param>
         /// <param name="path">The path to the element to be downloaded</param>
         /// <param name="archiveType">
-        ///     The <see cref="ArchiveDownloadType" /> specified (defaults to
-        ///     <see cref="ArchiveDownloadType.ZipArchive" />
+        ///     The <see cref="ArchiveType" /> specified (defaults to
+        ///     <see cref="ArchiveType.ZipArchive" />
         /// </param>
         /// <returns>A tuple, where the first element is the MIME type of the returned content, the second is a stream over the content</returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
         public Task<DownloadContentResult> DownloadArchivedDocument(string tag, string path,
-            ArchiveDownloadType archiveType = ArchiveDownloadType.ZipArchive);
+            ArchiveType archiveType = ArchiveType.ZipArchive);
 
         /// <summary>
         ///     Downloads a JSON representation of the meta-data associated with an existing archive object.  (Either a document or a folder).
