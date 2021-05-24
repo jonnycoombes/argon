@@ -13,6 +13,11 @@ namespace JCS.Argon.Model.Configuration
         public const string ConfigurationSection = "archiveStorageOptions";
 
         /// <summary>
+        ///     The maximum number of concurrent requests to be executed for a single archive operation
+        /// </summary>
+        public uint MaxConcurrentRequests = 4;
+
+        /// <summary>
         ///     All the currently configured bindings
         /// </summary>
         public List<ArchiveStorageBinding> Bindings { get; set; }
