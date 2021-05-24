@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading;
 using System.Threading.Tasks;
 using JCS.Argon.Services.VSP;
 using Microsoft.AspNetCore.Http;
@@ -44,6 +45,11 @@ namespace JCS.Argon.Services.Soap.Opentext
         ///     Static logger for this class
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<WebServiceClient>();
+
+        /// <summary>
+        ///     Mutex used for preventing unsynchronised updates to things such as the current authentication token
+        /// </summary>
+        private readonly Mutex _stateMutex = new Mutex();
 
         /// <summary>
         ///     Used to cache groups of services against a specific endpoint base address
@@ -226,7 +232,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                             break;
                     }
 
-                    _currentAuthentication = new OTAuthentication {AuthenticationToken = token};
+                    UpdateAuthenticationToken(new OTAuthentication {AuthenticationToken = token});
                 }
 
                 LogVerbose(_log, "Currently authenticated, so using cached credentials");
@@ -235,6 +241,17 @@ namespace JCS.Argon.Services.Soap.Opentext
             {
                 throw new WebServiceClientException($"Unexpected exception during OTCS authentication: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        ///     Synchronised (mutex'd) method for updating the current <see cref="OTAuthentication" /> instance
+        /// </summary>
+        /// <param name="authentication">An <see cref="OTAuthentication" /> instance</param>
+        private void UpdateAuthenticationToken(OTAuthentication authentication)
+        {
+            _stateMutex.WaitOne();
+            _currentAuthentication = authentication;
+            _stateMutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -253,7 +270,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     OTAuthentication = _currentAuthentication,
                     parentID = parentId
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.ListNodesResult;
             }
             catch (Exception ex)
@@ -278,7 +295,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     OTAuthentication = _currentAuthentication,
                     ID = nodeId
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetNodeResult;
             }
             catch (Exception ex)
@@ -305,7 +322,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     rootID = rootId,
                     pathElements = elements
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetNodeByPathResult;
             }
             catch (Exception ex)
@@ -325,7 +342,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     ID = nodeId,
                     versionNum = version
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetVersionResult;
             }
             catch (Exception ex)
@@ -353,7 +370,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                         parentID = parentId,
                         name = name
                     });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetNodeByNameResult;
             }
             catch (Exception ex)
@@ -384,7 +401,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     comment = comments,
                     metadata = metadata
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.CreateFolderResult;
             }
             catch (Exception ex)
@@ -404,7 +421,7 @@ namespace JCS.Argon.Services.Soap.Opentext
             {
                 await Authenticate();
                 var response = await DocumentManagementService.DeleteNodeAsync(new DeleteNodeRequest(_currentAuthentication, nodeId));
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
             }
             catch (FaultException ex)
             {
@@ -440,7 +457,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     name = filename,
                     metadata = metadata
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.CreateDocumentResult;
             }
             catch (WebServiceClientException ex)
@@ -468,7 +485,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     attach = attachment,
                     metadata = metadata
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.AddVersionResult;
             }
             catch (WebServiceClientException ex)
@@ -495,7 +512,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     ID = documentId,
                     versionNum = versionNumber
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetVersionContentsResult;
             }
             catch (WebServiceClientException ex)
@@ -519,7 +536,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     OTAuthentication = _currentAuthentication,
                     node = node
                 });
-                _currentAuthentication = response.OTAuthentication;
+                UpdateAuthenticationToken(response.OTAuthentication);
             }
             catch (FaultException ex)
             {
