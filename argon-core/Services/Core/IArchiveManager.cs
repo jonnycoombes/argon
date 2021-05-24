@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
-using JCS.Argon.Services.Soap.Opentext;
 
 namespace JCS.Argon.Services.Core
 {
@@ -16,9 +15,9 @@ namespace JCS.Argon.Services.Core
         /// </summary>
         /// <param name="tag">The archive tag - links to the <see cref="ArchiveStorageBinding.Tag" /> property</param>
         /// <param name="path">The path to the element to be downloaded</param>
-        /// <returns></returns>
+        /// <returns>A tuple, where the first element is the MIME type of the returned content, the second is a stream over the content</returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
-        public Task<(Version, Stream)> DownloadArchivedDocument(string tag, string path);
+        public Task<DownloadContentResult> DownloadArchivedDocument(string tag, string path);
 
         /// <summary>
         ///     Downloads a JSON representation of the meta-data associated with an existing archive object.  (Either a document or a folder).
@@ -28,5 +27,26 @@ namespace JCS.Argon.Services.Core
         /// <returns></returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
         public Task<string> DownloadArchivedMetadata(string tag, string path);
+
+        /// <summary>
+        ///     Class used to represent the result of a download operation within the archive
+        /// </summary>
+        public class DownloadContentResult
+        {
+            /// <summary>
+            ///     The <see cref="Stream" /> associated with the content
+            /// </summary>
+            public Stream Stream { get; set; }
+
+            /// <summary>
+            ///     The filename to be associated with the downloaded content
+            /// </summary>
+            public string Filename { get; set; }
+
+            /// <summary>
+            ///     The MIMEType associated with the content
+            /// </summary>
+            public string MimeType { get; set; }
+        }
     }
 }

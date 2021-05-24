@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using Version = JCS.Argon.Services.Soap.Opentext.Version;
 
 namespace JCS.Argon.Services.Core
 {
@@ -51,7 +50,7 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IArchiveManager.DownloadArchivedDocument" />
-        public async Task<(Version, Stream)> DownloadArchivedDocument(string tag, string path)
+        public async Task<IArchiveManager.DownloadContentResult> DownloadArchivedDocument(string tag, string path)
         {
             LogMethodCall(_log);
             var client = BindWebServiceClient(tag);
@@ -71,7 +70,12 @@ namespace JCS.Argon.Services.Core
 
                 var version = await client.GetItemVersion(node.ID, node.VersionInfo.VersionNum);
                 var attachment = await client.GetVersionContents(node.ID, node.VersionInfo.VersionNum);
-                return (version, new MemoryStream(attachment.Contents));
+                return new IArchiveManager.DownloadContentResult
+                {
+                    Stream = new MemoryStream(attachment.Contents),
+                    Filename = version.Filename,
+                    MimeType = version.MimeType
+                };
             }
             catch (WebServiceClientException ex)
             {

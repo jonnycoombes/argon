@@ -63,9 +63,9 @@ namespace JCS.Argon.Controllers
             if (!meta)
             {
                 var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path));
-                return new FileStreamResult(response.Item2, response.Item1.MimeType)
+                return new FileStreamResult(response.Stream, response.MimeType)
                 {
-                    FileDownloadName = response.Item1.Name
+                    FileDownloadName = response.Filename
                 };
             }
             else

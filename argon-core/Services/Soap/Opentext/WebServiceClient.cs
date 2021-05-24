@@ -331,7 +331,7 @@ namespace JCS.Argon.Services.Soap.Opentext
             }
         }
 
-        public async Task<Version> GetItemVersion(long nodeId, long version)
+        public async Task<String> GetItemVersion(long nodeId, long version)
         {
             try
             {
@@ -343,7 +343,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     versionNum = version
                 });
                 UpdateAuthenticationToken(response.OTAuthentication);
-                return response.GetVersionResult;
+                return response.GetStringResult;
             }
             catch (Exception ex)
             {
@@ -472,9 +472,9 @@ namespace JCS.Argon.Services.Soap.Opentext
         /// <param name="documentId">The id of an existing document</param>
         /// <param name="attachment">The actual <see cref="Attachment" /> containing the contents of the new version</param>
         /// <param name="metadata">Optional <see cref="Metadata" /> structure</param>
-        /// <returns>A new <see cref="Version" /> instance</returns>
+        /// <returns>A new <see cref="String" /> instance</returns>
         /// <exception cref="WebServiceClientException"></exception>
-        public async Task<Version> AddVersion(long documentId, Attachment attachment, Metadata metadata = null)
+        public async Task<String> AddVersion(long documentId, Attachment attachment, Metadata metadata = null)
         {
             try
             {
@@ -486,7 +486,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                     metadata = metadata
                 });
                 UpdateAuthenticationToken(response.OTAuthentication);
-                return response.AddVersionResult;
+                return response.AddStringResult;
             }
             catch (WebServiceClientException ex)
             {
