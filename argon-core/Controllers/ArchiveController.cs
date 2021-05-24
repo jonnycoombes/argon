@@ -37,13 +37,17 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        ///     This operation can be used in order to retrieve a single document item from the archive specified by the "tag" parameter
+        ///     This operation can be used in order to retrieve either single or multiple documents from the archive specified by the "tag" parameter
         /// </summary>
         /// <remarks>
         /// </remarks>
         /// <param name="tag">The tag for the archive provider</param>
         /// <param name="path">The path to the item to be retrieved</param>
         /// <param name="meta">Whether or not the meta-data should be retrieved</param>
+        /// <param name="bulkType">
+        ///     The type of archive to be generated during bulk downloads.  Can be either "zip" or "pdf". Note that this
+        ///     parameter only makes sense if the path provided corresponds to a container (e.g. folder) location within the archive
+        /// </param>
         /// <returns></returns>
         /// <response code="200">Successful</response>
         /// <response code="400">An invalid tag or path has been supplied</response>
@@ -57,12 +61,19 @@ namespace JCS.Argon.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("/api/v1/[controller]/{tag}/{*path}")]
         public async Task<IActionResult> DownloadArchivedDocument(string tag, string path, [FromQuery]
-            bool meta = false)
+            bool meta = false, [FromQuery]
+            string archive = "zip")
         {
             LogMethodCall(_log);
             if (!meta)
             {
-                var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path));
+                var archiveType = IArchiveManager.ArchiveDownloadType.ZipArchive;
+                if (archive.Equals("pdf"))
+                {
+                    archiveType = IArchiveManager.ArchiveDownloadType.PdfArchive;
+                }
+
+                var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path), archiveType);
                 return new FileStreamResult(response.Stream, response.MimeType)
                 {
                     FileDownloadName = response.Filename

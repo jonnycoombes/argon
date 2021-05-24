@@ -50,7 +50,8 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IArchiveManager.DownloadArchivedDocument" />
-        public async Task<IArchiveManager.DownloadContentResult> DownloadArchivedDocument(string tag, string path)
+        public async Task<IArchiveManager.DownloadContentResult> DownloadArchivedDocument(string tag, string path,
+            IArchiveManager.ArchiveDownloadType archiveType = IArchiveManager.ArchiveDownloadType.ZipArchive)
         {
             LogMethodCall(_log);
             var client = BindWebServiceClient(tag);
@@ -114,6 +115,11 @@ namespace JCS.Argon.Services.Core
             }
         }
 
+        /// <summary>
+        ///     Converts a <see cref="DataValue" /> into a string representation for serialisation to JSON
+        /// </summary>
+        /// <param name="v">The actual <see cref="DataValue" /> instance.  May be one of several different types</param>
+        /// <returns></returns>
         private string DataValueToString(DataValue v)
         {
             switch (v)
@@ -136,6 +142,11 @@ namespace JCS.Argon.Services.Core
             }
         }
 
+        /// <summary>
+        ///     The default function for the serialisation of <see cref="Node" /> instances to Json
+        /// </summary>
+        /// <param name="source">The source <see cref="Node" /></param>
+        /// <param name="writer">The <see cref="Utf8JsonWriter" /> being used to serialise the Json</param>
         private void DefaultNodeSerialisationFunction(Node source, Utf8JsonWriter writer)
         {
             writer.WriteNumber("id", source.ID);
