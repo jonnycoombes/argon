@@ -15,7 +15,7 @@ namespace JCS.Argon.Model.Configuration
         /// <summary>
         ///     The maximum number of concurrent requests to be executed for a single archive operation
         /// </summary>
-        public uint MaxConcurrentRequests = 4;
+        public int MaxConcurrentRequests = 4;
 
         /// <summary>
         ///     All the currently configured bindings

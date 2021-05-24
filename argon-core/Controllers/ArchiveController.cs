@@ -66,10 +66,10 @@ namespace JCS.Argon.Controllers
             LogMethodCall(_log);
             if (!meta)
             {
-                var archiveType = IArchiveManager.ArchiveDownloadType.ZipArchive;
+                var archiveType = IArchiveManager.ArchiveType.ZipArchive;
                 if (archive.Equals("pdf"))
                 {
-                    archiveType = IArchiveManager.ArchiveDownloadType.PdfArchive;
+                    archiveType = IArchiveManager.ArchiveType.PdfArchive;
                 }
 
                 var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path), archiveType);

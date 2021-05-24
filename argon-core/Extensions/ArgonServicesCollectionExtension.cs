@@ -94,8 +94,10 @@ namespace JCS.Argon.Extensions
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] {"application/pdf"});
             });
-            services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
-            services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
+            services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest;
+             });
+            services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest;
+             });
         }
 
         /// <summary>

@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
 using JCS.Argon.Services.Soap.Opentext;
+using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using NSubstitute.Routing.Handlers;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
@@ -51,7 +56,7 @@ namespace JCS.Argon.Services.Core
 
         /// <inheritdoc cref="IArchiveManager.DownloadArchivedDocument" />
         public async Task<IArchiveManager.DownloadContentResult> DownloadArchivedDocument(string tag, string path,
-            IArchiveManager.ArchiveDownloadType archiveType = IArchiveManager.ArchiveDownloadType.ZipArchive)
+            IArchiveManager.ArchiveType archiveType = IArchiveManager.ArchiveType.ZipArchive)
         {
             LogMethodCall(_log);
             var client = BindWebServiceClient(tag);
@@ -66,17 +71,14 @@ namespace JCS.Argon.Services.Core
 
                 if (node.IsContainer)
                 {
-                    throw new ArchiveManagerException(StatusCodes.Status400BadRequest, "The specified item is a container");
+                    LogVerbose(_log, $"Processing archive download request for path location \"{path}\"");
+                    var items = (await client.GetChildren(node.ID))
+                        .Where(n => n.IsContainer == false)
+                        .Select(n => (n.ID, n.VersionInfo.VersionNum)).ToArray();
+                    return await DownloadNodeArchive(client, items, archiveType);
                 }
 
-                var version = await client.GetItemVersion(node.ID, node.VersionInfo.VersionNum);
-                var attachment = await client.GetVersionContents(node.ID, node.VersionInfo.VersionNum);
-                return new IArchiveManager.DownloadContentResult
-                {
-                    Stream = new MemoryStream(attachment.Contents),
-                    Filename = version.Filename,
-                    MimeType = version.MimeType
-                };
+                return await DownloadNodeVersion(client, node.ID, node.VersionInfo.VersionNum);
             }
             catch (WebServiceClientException ex)
             {
@@ -106,7 +108,7 @@ namespace JCS.Argon.Services.Core
                     children = await client.GetChildren(node.ID);
                 }
 
-                return NodeToJson(node, children, DefaultNodeSerialisationFunction);
+                return JsonHelper.OpenTextNodeToJson(node, children, JsonHelper.OpenTextDefaultNodeSerialisationFunction);
             }
             catch (WebServiceClientException ex)
             {
@@ -116,105 +118,66 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <summary>
-        ///     Converts a <see cref="DataValue" /> into a string representation for serialisation to JSON
+        ///     Downloads multiple node versions.  This is done through the use of a semaphore in order to control the number of concurrent
+        ///     tasks (requests) executing at any one time.
         /// </summary>
-        /// <param name="v">The actual <see cref="DataValue" /> instance.  May be one of several different types</param>
-        /// <returns></returns>
-        private static string DataValueToString(DataValue v)
+        /// <param name="client">The <see cref="WebServiceClient" /> instance to use</param>
+        /// <param name="items">A list of pairs, consisting of a node identifier and a version number</param>
+        /// <param name="archiveType">The type of archive file to produce</param>
+        /// <returns>
+        ///     A <see cref="IArchiveManager.DownloadContentResult" /> which contains information and payload associated with
+        ///     the resultant archive file
+        /// </returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private async Task<IArchiveManager.DownloadContentResult> DownloadNodeArchive(WebServiceClient client, (long, long)[] items,
+            IArchiveManager.ArchiveType archiveType)
         {
-            switch (v)
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Starting bulk download request with maximum concurrency of {_options.MaxConcurrentRequests}");
+            var throttleSemaphore = new SemaphoreSlim(_options.MaxConcurrentRequests);
+            var results = new List<IArchiveManager.DownloadContentResult>();
+            var tasks = new List<Task>();
+            
+            foreach(var item in items)
             {
-                case IntegerValue iv:
-                    return $"{iv.Values[0]}";
-                case StringValue sv:
-                    return $"{sv.Values[0]}";
-                case DateValue dv:
-                    if (dv.Values[0] != null)
-                    {
-                        return $"{dv.Values[0]}";
-                    }
-                    else
-                    {
-                        return "";
-                    }
-                default:
-                    return v.ToString() ?? string.Empty;
-            }
-        }
-
-        /// <summary>
-        ///     The default function for the serialisation of <see cref="Node" /> instances to Json
-        /// </summary>
-        /// <param name="source">The source <see cref="Node" /></param>
-        /// <param name="writer">The <see cref="Utf8JsonWriter" /> being used to serialise the Json</param>
-        private static void DefaultNodeSerialisationFunction(Node source, Utf8JsonWriter writer)
-        {
-            writer.WriteNumber("id", source.ID);
-            writer.WriteNumber("parentId", source.ParentID);
-            writer.WriteNumber("volumeId", source.VolumeID);
-            writer.WriteString("name", source.Name);
-            writer.WriteString("comments", source.Comment);
-            writer.WriteString("nickname", source.Nickname);
-            writer.WriteString("type", source.Type);
-            writer.WriteString("createdDate", source.CreateDate.Value);
-            writer.WriteString("modifiedDate", source.ModifyDate.Value);
-            writer.WritePropertyName("meta");
-            writer.WriteStartObject();
-            foreach (var group in source.Metadata.AttributeGroups)
-            {
-                writer.WritePropertyName(group.DisplayName);
-                writer.WriteStartObject();
-                foreach (var t in group.Values)
+                tasks.Add(Task.Run(async () =>
                 {
-                    writer.WriteString(t.Key, DataValueToString(t));
-                }
-
-                writer.WriteEndObject();
+                    await throttleSemaphore.WaitAsync();
+                    var result = await DownloadNodeVersion(client, item.Item1, item.Item2);
+                    results.Add(result);
+                    throttleSemaphore.Release();
+                }) );    
             }
 
-            writer.WriteEndObject();
+            Task.WaitAll(tasks.ToArray());
+            
+            throw new NotImplementedException();
         }
 
         /// <summary>
-        ///     Emits a JSON serialisation of a given node
+        ///     Downloads a single <see cref="Node" /> version
         /// </summary>
-        /// <param name="source">The source <see cref="Node" /></param>
-        /// <param name="children">An optional array of children for the node</param>
-        /// <param name="nodeSerialisationFunction">A function which knows how to serialise a node to JSON, without the outer object braces</param>
-        /// <returns>A string representation of the node and potentially its children</returns>
-        private static string NodeToJson(Node source, Node[]? children, Action<Node, Utf8JsonWriter>? nodeSerialisationFunction)
+        /// <param name="client">The <see cref="WebServiceClient" /> instance to use (should be pre-initialised)</param>
+        /// <param name="id">The id of the node to retrieve</param>
+        /// <param name="versionNum">The version number of the node to retrieve</param>
+        /// <returns>A new instance of <see cref="IArchiveManager.DownloadContentResult" /></returns>
+        private async Task<IArchiveManager.DownloadContentResult> DownloadNodeVersion(WebServiceClient client, long id, long versionNum)
         {
-            var options = new JsonWriterOptions
+            var version = await client.GetItemVersion(id, versionNum);
+            var attachment = await client.GetVersionContents(id, versionNum);
+            return new IArchiveManager.DownloadContentResult
             {
-                Indented = false
+                Stream = new MemoryStream(attachment.Contents),
+                Filename = version.Filename,
+                MimeType = version.MimeType
             };
-
-            nodeSerialisationFunction ??= DefaultNodeSerialisationFunction;
-
-            using var stream = new MemoryStream();
-            using (var writer = new Utf8JsonWriter(stream, options))
-            {
-                writer.WriteStartObject();
-                nodeSerialisationFunction(source, writer);
-                if (children != null)
-                {
-                    writer.WritePropertyName("children");
-                    writer.WriteStartArray();
-                    foreach (var child in children)
-                    {
-                        writer.WriteStartObject();
-                        nodeSerialisationFunction(child, writer);
-                        writer.WriteEndObject();
-                    }
-
-                    writer.WriteEndArray();
-                }
-
-                writer.WriteEndObject();
-            }
-
-            return Encoding.UTF8.GetString(stream.ToArray());
         }
+
+        
+
+        
+
+        
 
         /// <summary>
         ///     Resolves and instantiates a new instance of <see cref="WebServiceClient" /> based on the binding tag supplied

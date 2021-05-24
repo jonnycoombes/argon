@@ -195,7 +195,7 @@ namespace JCS.Argon.Services.Core
                 // iterate over the supplied commands and merge in the new or updated constraints
                 foreach (var command in commands)
                 {
-                    if (collection.ConstraintGroup.Constraints.Any(c => c.Name == command.Name))
+                    if (collection.ConstraintGroup.Constraints!.Any(c => c.Name == command.Name))
                     {
                         var existingConstraint = (collection.ConstraintGroup.Constraints ?? null)!.First(c => c.Name == command.Name);
                         if (existingConstraint == null)
