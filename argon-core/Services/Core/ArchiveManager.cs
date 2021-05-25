@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Argon.Model.Configuration;
@@ -12,7 +10,6 @@ using JCS.Argon.Services.Soap.Opentext;
 using JCS.Argon.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using NSubstitute.Routing.Handlers;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
@@ -75,7 +72,7 @@ namespace JCS.Argon.Services.Core
                     var items = (await client.GetChildren(node.ID))
                         .Where(n => n.IsContainer == false)
                         .Select(n => (n.ID, n.VersionInfo.VersionNum)).ToArray();
-                    return await DownloadNodeArchive(client, items, archiveType);
+                    return await DownloadNodeArchive(client, path, items, archiveType);
                 }
 
                 return await DownloadNodeVersion(client, node.ID, node.VersionInfo.VersionNum);
@@ -122,6 +119,7 @@ namespace JCS.Argon.Services.Core
         ///     tasks (requests) executing at any one time.
         /// </summary>
         /// <param name="client">The <see cref="WebServiceClient" /> instance to use</param>
+        /// <param name="path">The original path in the request</param>
         /// <param name="items">A list of pairs, consisting of a node identifier and a version number</param>
         /// <param name="archiveType">The type of archive file to produce</param>
         /// <returns>
@@ -129,36 +127,129 @@ namespace JCS.Argon.Services.Core
         ///     the resultant archive file
         /// </returns>
         /// <exception cref="NotImplementedException"></exception>
-        private async Task<IArchiveManager.DownloadContentResult> DownloadNodeArchive(WebServiceClient client, (long, long)[] items,
+        private async Task<IArchiveManager.DownloadContentResult> DownloadNodeArchive(WebServiceClient client, string path,
+            (long, long)[] items,
             IArchiveManager.ArchiveType archiveType)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Starting bulk download request with maximum concurrency of {_options.MaxConcurrentRequests}");
             var throttleSemaphore = new SemaphoreSlim(_options.MaxConcurrentRequests);
-            var results = new List<string>();
+            var files = new List<string>();
             var tasks = new List<Task>();
             var tempDirectory = FileHelper.CreateTempDirectory();
-            
-            foreach(var item in items)
+
+            try
             {
-                tasks.Add(Task.Run(async () =>
+                foreach (var item in items)
                 {
-                    await throttleSemaphore.WaitAsync();
-                    var result = await DownloadNodeVersion(client, item.Item1, item.Item2);
-                    var tempFile = Path.Combine(tempDirectory.FullName, result.Filename);
-                    LogVerbose(_log, $"Writing to temp location \"{tempFile}\"");
-                    await using (var outStream = File.OpenWrite(tempFile))
+                    tasks.Add(Task.Run(async () =>
                     {
-                        await result.Stream.CopyToAsync(outStream);
-                    }
-                    results.Add(tempFile);
-                    throttleSemaphore.Release();
-                }) );    
+                        await throttleSemaphore.WaitAsync();
+                        var version = await DownloadNodeVersion(client, item.Item1, item.Item2);
+                        var tempFile = Path.Combine(tempDirectory.FullName, version.Filename);
+                        LogVerbose(_log, $"Writing to temp location \"{tempFile}\"");
+                        await using (var outStream = File.OpenWrite(tempFile))
+                        {
+                            await version.Stream.CopyToAsync(outStream);
+                        }
+
+                        files.Add(tempFile);
+                        throttleSemaphore.Release();
+                    }));
+                }
+
+                LogVerbose(_log, "Awaiting completion parallel tasks");
+                Task.WaitAll(tasks.ToArray());
+                LogVerbose(_log, "All parallel tasks completed");
+            }
+            catch (Exception ex)
+            {
+                LogExceptionWarning(_log, ex);
+                throw new ArchiveManagerException(StatusCodes.Status500InternalServerError,
+                    $"A downstream exception was caught whilst attempting bulk download of items: \"{ex.Message}\"");
             }
 
-            Task.WaitAll(tasks.ToArray());
-            
-            throw new NotImplementedException();
+            try
+            {
+                IArchiveManager.DownloadContentResult result;
+                switch (archiveType)
+                {
+                    case IArchiveManager.ArchiveType.PdfArchive:
+                        LogVerbose(_log, $"Creating zip new zip archive based on \"{tempDirectory.FullName}\"");
+                        result = await CreatePdfArchive(path, tempDirectory.FullName, files);
+                        break;
+                    default:
+                        result = await CreateZipArchive(path, tempDirectory.FullName);
+                        break;
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                LogExceptionWarning(_log, ex);
+                throw new ArchiveManagerException(StatusCodes.Status500InternalServerError,
+                    $"An exception was caught whilst attempting create archive: \"{ex.Message}\"");
+            }
+        }
+
+        /// <summary>
+        ///     Creates a single zip archive containing the contents of the supplied directory, and then returns the contents as an instance
+        ///     of <see cref="IArchiveManager.DownloadContentResult" />
+        /// </summary>
+        /// <param name="path">The original path from the originating request</param>
+        /// <param name="sourceDirectory">The entire contents of the supplied directory will be zipped and returned in the response</param>
+        /// <returns>An instance of <see cref="IArchiveManager.DownloadContentResult" /></returns>
+        private static async Task<IArchiveManager.DownloadContentResult> CreateZipArchive(string path, string sourceDirectory)
+        {
+            LogMethodCall(_log);
+            var zipDirectory = FileHelper.CreateTempDirectory();
+            var zipLocation = Path.Combine(zipDirectory.FullName, Path.GetRandomFileName());
+            LogVerbose(_log, $"Creating temporary zip archive in the following location: \"{zipLocation}\"");
+
+            ZipFile.CreateFromDirectory(sourceDirectory, zipLocation);
+            MemoryStream outStream;
+            await using (var inStream = File.OpenRead(zipLocation))
+            {
+                outStream = new MemoryStream();
+                await inStream.CopyToAsync(outStream);
+                await inStream.FlushAsync();
+                await outStream.FlushAsync();
+            }
+
+            try
+            {
+                File.Delete(zipLocation);
+                Directory.Delete(zipDirectory.FullName);
+            }
+            catch (Exception)
+            {
+                LogWarning(_log, "Caught an unexpected exception whilst attempting to clean up temp locations");
+            }
+
+            outStream.Seek(0, SeekOrigin.Begin);
+            return new IArchiveManager.DownloadContentResult
+            {
+                Stream = outStream,
+                MimeType = "application/zip",
+                Filename = $"{path.Replace('/', '_')}.zip"
+            };
+        }
+
+        /// <summary>
+        ///     Creates a single PDF archive formed from the concatenation/attachment of all the files specified, and then returns the result
+        ///     as an instance of <see cref="IArchiveManager.DownloadContentResult" />
+        /// </summary>
+        /// <param name="path">The original path from the originating request</param>
+        /// <param name="sourceDirectory">The source or working directory</param>
+        /// <param name="files">A list of filenames (fully qualified) to be used in order to form the archive</param>
+        /// <returns>An instance of <see cref="IArchiveManager.DownloadContentResult" /></returns>
+        private static async Task<IArchiveManager.DownloadContentResult> CreatePdfArchive(string path, string sourceDirectory,
+            IEnumerable<string>
+                files)
+        {
+            LogMethodCall(_log);
+            return null;
         }
 
         /// <summary>
@@ -179,12 +270,6 @@ namespace JCS.Argon.Services.Core
                 MimeType = version.MimeType
             };
         }
-
-        
-
-        
-
-        
 
         /// <summary>
         ///     Resolves and instantiates a new instance of <see cref="WebServiceClient" /> based on the binding tag supplied
