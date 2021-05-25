@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using JCS.Argon.Services.Soap.Opentext;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Utility
 {
@@ -13,12 +15,18 @@ namespace JCS.Argon.Utility
     public static class JsonHelper
     {
         /// <summary>
+        ///     Static logger for this class
+        /// </summary>
+        private static readonly ILogger _log = Log.ForContext(typeof(JsonHelper));
+
+        /// <summary>
         ///     Converts a <see cref="DataValue" /> into a string representation for serialisation to JSON
         /// </summary>
         /// <param name="v">The actual <see cref="DataValue" /> instance.  May be one of several different types</param>
         /// <returns></returns>
         private static string OpenTextDataValueToString(DataValue v)
         {
+            LogMethodCall(_log);
             switch (v)
             {
                 case IntegerValue iv:
@@ -46,6 +54,7 @@ namespace JCS.Argon.Utility
         /// <param name="writer">The <see cref="Utf8JsonWriter" /> being used to serialise the Json</param>
         public static void OpenTextDefaultNodeSerialisationFunction(Node source, Utf8JsonWriter writer)
         {
+            LogMethodCall(_log);
             writer.WriteNumber("id", source.ID);
             writer.WriteNumber("parentId", source.ParentID);
             writer.WriteNumber("volumeId", source.VolumeID);
@@ -81,6 +90,7 @@ namespace JCS.Argon.Utility
         /// <returns>A string representation of the node and potentially its children</returns>
         public static string OpenTextNodeToJson(Node source, Node[]? children, Action<Node, Utf8JsonWriter>? nodeSerialisationFunction)
         {
+            LogMethodCall(_log);
             var options = new JsonWriterOptions
             {
                 Indented = false
