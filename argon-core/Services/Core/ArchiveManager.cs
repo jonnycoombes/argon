@@ -135,8 +135,9 @@ namespace JCS.Argon.Services.Core
             LogMethodCall(_log);
             LogVerbose(_log, $"Starting bulk download request with maximum concurrency of {_options.MaxConcurrentRequests}");
             var throttleSemaphore = new SemaphoreSlim(_options.MaxConcurrentRequests);
-            var results = new List<IArchiveManager.DownloadContentResult>();
+            var results = new List<string>();
             var tasks = new List<Task>();
+            var tempDirectory = FileHelper.CreateTempDirectory();
             
             foreach(var item in items)
             {
@@ -144,7 +145,13 @@ namespace JCS.Argon.Services.Core
                 {
                     await throttleSemaphore.WaitAsync();
                     var result = await DownloadNodeVersion(client, item.Item1, item.Item2);
-                    results.Add(result);
+                    var tempFile = Path.Combine(tempDirectory.FullName, result.Filename);
+                    LogVerbose(_log, $"Writing to temp location \"{tempFile}\"");
+                    await using (var outStream = File.OpenWrite(tempFile))
+                    {
+                        await result.Stream.CopyToAsync(outStream);
+                    }
+                    results.Add(tempFile);
                     throttleSemaphore.Release();
                 }) );    
             }

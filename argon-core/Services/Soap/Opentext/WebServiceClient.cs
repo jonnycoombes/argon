@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -331,7 +332,7 @@ namespace JCS.Argon.Services.Soap.Opentext
             }
         }
 
-        public async Task<String> GetItemVersion(long nodeId, long version)
+        public async Task<String> GetItemVersion(long nodeId, long versionNum)
         {
             try
             {
@@ -340,7 +341,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                 {
                     OTAuthentication = _currentAuthentication,
                     ID = nodeId,
-                    versionNum = version
+                    versionNum = 0 
                 });
                 UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetStringResult;
