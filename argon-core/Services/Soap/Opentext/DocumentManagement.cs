@@ -1184,7 +1184,7 @@ namespace JCS.Argon.Services.Soap.Opentext
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(NodeAuditRecord))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(CategoryItemsUpgradeInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(NodeRightUpdateInfo))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(String))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Version))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(NodeVersionInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(NodeReservationInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(NodeReferenceInfo))]
@@ -2473,7 +2473,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         
         private long versionNumField;
         
-        private String[] versionsField;
+        private Version[] versionsField;
         
         private System.Nullable<int> versionsToKeepField;
         
@@ -2577,7 +2577,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Versions", Order=7)]
-        public String[] Versions
+        public Version[] Versions
         {
             get
             {
