@@ -2608,7 +2608,7 @@ namespace JCS.Argon.Services.Soap.Opentext
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:DocMan.service.livelink.opentext.com")]
-    public partial class String : ServiceDataObject
+    public partial class Version : ServiceDataObject
     {
         
         private string commentField;
@@ -5784,16 +5784,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String String;
+        public JCS.Argon.Services.Soap.Opentext.Version version;
         
         public UpdateVersionRequest()
         {
         }
         
-        public UpdateVersionRequest(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String @string)
+        public UpdateVersionRequest(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version version)
         {
             this.OTAuthentication = OTAuthentication;
-            this.String = @string;
+            this.version = version;
         }
     }
     
@@ -6971,16 +6971,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String GetStringResult;
+        public JCS.Argon.Services.Soap.Opentext.Version GetVersionResult;
         
         public GetVersionResponse()
         {
         }
         
-        public GetVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String getStringResult)
+        public GetVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version GetVersionResult)
         {
             this.OTAuthentication = OTAuthentication;
-            this.GetStringResult = getStringResult;
+            this.GetVersionResult = GetVersionResult;
         }
     }
     
@@ -7019,16 +7019,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String GetStringByGuidResult;
+        public JCS.Argon.Services.Soap.Opentext.Version GetVersionByGUIDResult;
         
         public GetVersionByGUIDResponse()
         {
         }
         
-        public GetVersionByGUIDResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String getStringByGuidResult)
+        public GetVersionByGUIDResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version GetVersionByGUIDResult)
         {
             this.OTAuthentication = OTAuthentication;
-            this.GetStringByGuidResult = getStringByGuidResult;
+            this.GetVersionByGUIDResult = GetVersionByGUIDResult;
         }
     }
     
@@ -7532,13 +7532,13 @@ namespace JCS.Argon.Services.Soap.Opentext
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute("ListRenditionsResult", IsNullable=true)]
-        public JCS.Argon.Services.Soap.Opentext.String[] ListRenditionsResult;
+        public JCS.Argon.Services.Soap.Opentext.Version[] ListRenditionsResult;
         
         public ListRenditionsResponse()
         {
         }
         
-        public ListRenditionsResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String[] ListRenditionsResult)
+        public ListRenditionsResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version[] ListRenditionsResult)
         {
             this.OTAuthentication = OTAuthentication;
             this.ListRenditionsResult = ListRenditionsResult;
@@ -7744,16 +7744,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String PromoteStringResult;
+        public JCS.Argon.Services.Soap.Opentext.Version PromoteVersionResult;
         
         public PromoteVersionResponse()
         {
         }
         
-        public PromoteVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String promoteStringResult)
+        public PromoteVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version PromoteVersionResult)
         {
             this.OTAuthentication = OTAuthentication;
-            this.PromoteStringResult = promoteStringResult;
+            this.PromoteVersionResult = PromoteVersionResult;
         }
     }
     
@@ -7844,16 +7844,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String AddMajorStringResult;
+        public JCS.Argon.Services.Soap.Opentext.Version AddMajorVersionResult;
         
         public AddMajorVersionResponse()
         {
         }
         
-        public AddMajorVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String addMajorStringResult)
+        public AddMajorVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version AddMajorVersionResult)
         {
             this.OTAuthentication = OTAuthentication;
-            this.AddMajorStringResult = addMajorStringResult;
+            this.AddMajorVersionResult = AddMajorVersionResult;
         }
     }
     
@@ -8049,16 +8049,16 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String AddStringResult;
+        public JCS.Argon.Services.Soap.Opentext.Version AddVersionResult;
         
         public AddVersionResponse()
         {
         }
         
-        public AddVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String addStringResult)
+        public AddVersionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version AddVersionResult)
         {
             this.OTAuthentication = OTAuthentication;
-            this.AddStringResult = addStringResult;
+            this.AddVersionResult = AddVersionResult;
         }
     }
     
@@ -8682,13 +8682,13 @@ namespace JCS.Argon.Services.Soap.Opentext
         public JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:DocMan.service.livelink.opentext.com", Order=0)]
-        public JCS.Argon.Services.Soap.Opentext.String CreateRenditionResult;
+        public JCS.Argon.Services.Soap.Opentext.Version CreateRenditionResult;
         
         public CreateRenditionResponse()
         {
         }
         
-        public CreateRenditionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String CreateRenditionResult)
+        public CreateRenditionResponse(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version CreateRenditionResult)
         {
             this.OTAuthentication = OTAuthentication;
             this.CreateRenditionResult = CreateRenditionResult;
@@ -10048,11 +10048,11 @@ namespace JCS.Argon.Services.Soap.Opentext
             return base.Channel.UpdateVersionAsync(request);
         }
         
-        public System.Threading.Tasks.Task<JCS.Argon.Services.Soap.Opentext.UpdateVersionResponse> UpdateVersionAsync(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.String @string)
+        public System.Threading.Tasks.Task<JCS.Argon.Services.Soap.Opentext.UpdateVersionResponse> UpdateVersionAsync(JCS.Argon.Services.Soap.Opentext.OTAuthentication OTAuthentication, JCS.Argon.Services.Soap.Opentext.Version version)
         {
             JCS.Argon.Services.Soap.Opentext.UpdateVersionRequest inValue = new JCS.Argon.Services.Soap.Opentext.UpdateVersionRequest();
             inValue.OTAuthentication = OTAuthentication;
-            inValue.String = @string;
+            inValue.version = version;
             return ((JCS.Argon.Services.Soap.Opentext.DocumentManagement)(this)).UpdateVersionAsync(inValue);
         }
         
