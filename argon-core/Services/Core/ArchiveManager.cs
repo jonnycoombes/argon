@@ -220,6 +220,7 @@ namespace JCS.Argon.Services.Core
             try
             {
                 File.Delete(zipLocation);
+                LogVerbose(_log, $"Removing \"{zipDirectory.FullName}\"");
                 Directory.Delete(zipDirectory.FullName);
             }
             catch (Exception)
@@ -249,7 +250,41 @@ namespace JCS.Argon.Services.Core
                 files)
         {
             LogMethodCall(_log);
-            return null;
+            var filename = $"{path.Replace('/', '_')}.pdf";
+            var fileDirectory = FileHelper.CreateTempDirectory();
+            var filepath = Path.Combine(fileDirectory.FullName, filename);
+
+            if (PdfHelper.CombineFilesToPdf(filepath, files))
+            {
+                await using var inStream = new FileStream(filepath, FileMode.Open);
+                var outStream = new MemoryStream();
+                await inStream.CopyToAsync(outStream);
+                outStream.Seek(0, SeekOrigin.Begin);
+
+                try
+                {
+                    LogVerbose(_log, "Performing post PDF archive clean up");
+                    File.Delete(filepath);
+                    LogVerbose(_log, $"Removing \"{fileDirectory.FullName}\"");
+                    Directory.Delete(fileDirectory.FullName);
+                    LogVerbose(_log, $"Removing \"{sourceDirectory}\"");
+                    Directory.Delete(sourceDirectory);
+                }
+                catch (Exception)
+                {
+                    LogWarning(_log, "Caught an unexpected exception whilst attempting to clean up temp locations");
+                }
+
+                return new IArchiveManager.DownloadContentResult
+                {
+                    Stream = outStream,
+                    Filename = filename,
+                    MimeType = "application/pdf"
+                };
+            }
+
+            throw new ArchiveManagerException(StatusCodes.Status500InternalServerError,
+                "Pdf archiving operation failed - please check logs for further information");
         }
 
         /// <summary>
