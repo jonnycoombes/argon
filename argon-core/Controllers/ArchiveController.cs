@@ -38,12 +38,14 @@ namespace JCS.Argon.Controllers
         }
 
         /// <summary>
-        ///     This operation can be used in order to retrieve either single or multiple documents from the archive specified by the "tag" parameter
+        ///     This endpoint can be used to retrieve either single or multiple documents from the archive identified by the "tag"
+        /// parameter.  The value of this parameter should correspond to a configured archive provider hosted by the Argon endpoint.
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="tag">The tag for the archive provider</param>
-        /// <param name="path">The path to the item to be retrieved</param>
+        /// <param name="tag">A tag value which must relate to a configured archived provider</param>
+        /// <param name="path">The path to the item to be retrieved.  This path should be relative to the Enterprise Volume, and should
+        /// utilise the '/' character as a path delimeter</param>
         /// <param name="meta">Whether or not the meta-data should be retrieved. Default value is <i>false</i></param>
         /// <param name="archive">
         ///     The type of archive to be generated during bulk downloads.  Can be either "zip" or "pdf". Note that this

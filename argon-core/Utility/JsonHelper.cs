@@ -64,21 +64,24 @@ namespace JCS.Argon.Utility
             writer.WriteString("type", source.Type);
             writer.WriteString("createdDate", source.CreateDate.Value);
             writer.WriteString("modifiedDate", source.ModifyDate.Value);
-            writer.WritePropertyName("meta");
-            writer.WriteStartObject();
-            foreach (var group in source.Metadata.AttributeGroups)
+            if (source.Metadata.AttributeGroups != null)
             {
-                writer.WritePropertyName(group.DisplayName);
+                writer.WritePropertyName("meta");
                 writer.WriteStartObject();
-                foreach (var t in group.Values)
+                foreach (var group in source.Metadata.AttributeGroups)
                 {
-                    writer.WriteString(t.Key, OpenTextDataValueToString(t));
+                    writer.WritePropertyName(group.DisplayName);
+                    writer.WriteStartObject();
+                    foreach (var t in group.Values)
+                    {
+                        writer.WriteString(t.Key, OpenTextDataValueToString(t));
+                    }
+
+                    writer.WriteEndObject();
                 }
 
                 writer.WriteEndObject();
             }
-
-            writer.WriteEndObject();
         }
 
         /// <summary>
