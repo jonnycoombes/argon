@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,7 +78,25 @@ namespace JCS.Argon.Services.Soap.Opentext
         }
 
         /// <summary>
-        ///     Instantiates an instance of the binder and configures it for <see cref="AuthenticationType.Integrated" />
+        ///     A constructor that allows for the specification of an <i>impersonation</i> user to use across all outcalls. If such a user is
+        ///     specified, then during post initial authentication, an outcall is made to request impersonation based on this identity
+        /// </summary>
+        /// <param name="endpoint">The endpoint prefix for the services to be bound</param>
+        /// <param name="username">The user name to be used for initial authentication</param>
+        /// <param name="password">The password to be used for initial authentication</param>
+        /// <param name="impersonationUser">The impersonation identity</param>
+        public WebServiceClient(string endpoint, string username, string password, string impersonationUser)
+        {
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Creating new client configured for basic authentication against \"{endpoint}\"");
+            BaseEndpointAddress = PreconditionEndpoint(endpoint);
+            User = username;
+            Password = password;
+            Authentication = AuthenticationType.Basic;
+        }
+
+        /// <summary>
+        ///     Instantiates an instance of the client and configures it for <see cref="AuthenticationType.Integrated" />
         ///     authentication
         /// </summary>
         /// <param name="endpoint">The endpoint prefix for the services to be bound</param>
@@ -89,6 +106,22 @@ namespace JCS.Argon.Services.Soap.Opentext
             LogVerbose(_log, $"Creating new client configured for integrated authentication against \"{endpoint}\"");
             BaseEndpointAddress = PreconditionEndpoint(endpoint);
             Authentication = AuthenticationType.Integrated;
+        }
+
+        /// <summary>
+        ///     Instantiates an instance of the client and configures it for <see cref="AuthenticationType.Integrated" />
+        ///     authentication, with
+        ///     impersonation enabled for a specified named account
+        /// </summary>
+        /// <param name="endpoint">The endpoint prefix for the services to be bound</param>
+        /// <param name="impersonationUser">The user to impersonate</param>
+        public WebServiceClient(string endpoint, string impersonationUser)
+        {
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Creating new client configured for integrated authentication against \"{endpoint}\"");
+            BaseEndpointAddress = PreconditionEndpoint(endpoint);
+            Authentication = AuthenticationType.Integrated;
+            ImpersonationUser = impersonationUser;
         }
 
         /// <summary>
@@ -111,6 +144,12 @@ namespace JCS.Argon.Services.Soap.Opentext
         ///     The current password
         /// </summary>
         private string? Password { get; }
+
+        /// <summary>
+        ///     An optional impersonation user, which (in the case of GC tactical auth for example) will be derived from a specific claim within
+        ///     any inbound JWT payload
+        /// </summary>
+        private string? ImpersonationUser { get; }
 
         /// <summary>
         ///     Late-bound accessor for an instance of <see cref="DocumentManagement" />
@@ -233,7 +272,21 @@ namespace JCS.Argon.Services.Soap.Opentext
                             break;
                     }
 
-                    UpdateAuthenticationToken(new OTAuthentication {AuthenticationToken = token});
+                    if (ImpersonationUser == null)
+                    {
+                        LogVerbose(_log, "Authenticating using raw credentials - no impersonation");
+                        UpdateAuthenticationToken(new OTAuthentication {AuthenticationToken = token});
+                    }
+                    else
+                    {
+                        LogVerbose(_log, $"Authenticating user impersonation credentials.  Impersonation user is \"{ImpersonationUser}\"");
+                        var response = await AuthenticationService.ImpersonateUserAsync(new ImpersonateUserRequest
+                        {
+                            OTAuthentication = new OTAuthentication {AuthenticationToken = token},
+                            userName = ImpersonationUser
+                        });
+                        UpdateAuthenticationToken(response.OTAuthentication);
+                    }
                 }
 
                 LogVerbose(_log, "Currently authenticated, so using cached credentials");
@@ -341,7 +394,7 @@ namespace JCS.Argon.Services.Soap.Opentext
                 {
                     OTAuthentication = _currentAuthentication,
                     ID = nodeId,
-                    versionNum = versionNum 
+                    versionNum = versionNum
                 });
                 UpdateAuthenticationToken(response.OTAuthentication);
                 return response.GetVersionResult;
@@ -473,7 +526,7 @@ namespace JCS.Argon.Services.Soap.Opentext
         /// <param name="documentId">The id of an existing document</param>
         /// <param name="attachment">The actual <see cref="Attachment" /> containing the contents of the new version</param>
         /// <param name="metadata">Optional <see cref="Metadata" /> structure</param>
-        /// <returns>A new <see cref="String" /> instance</returns>
+        /// <returns>A new <see cref="string" /> instance</returns>
         /// <exception cref="WebServiceClientException"></exception>
         public async Task<Version> AddVersion(long documentId, Attachment attachment, Metadata metadata = null)
         {
