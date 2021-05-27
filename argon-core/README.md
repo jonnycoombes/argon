@@ -193,7 +193,8 @@ Build has been testsed against .NET Core 3.x in the following environments:
 3. `Mac OSX Big Sur`
 4. `Ubuntu 16.04 LTS`
 5. `Ubuntu 18.04 LTS`
-6. `Kali Linux 2020.4`
+6. `Ubuntu 20.10 (Groovy Gorilla)`   
+7. `Kali Linux 2020.4`
 
 #### Running Unit Tests
 
