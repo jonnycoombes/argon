@@ -127,6 +127,55 @@ The available native filesystem storage provider configuration options are summa
 
 ## Archiving Support
 
+In addition to the support of "native" Argon collections, from version 1.0.2.1 and above Argon also provides support for
+the configuration of *archive* collections which are bound to underlying instances of OpenText Content Server 16.  The
+configuration for such archives shares similarities with the configuration of the OTCS Storage Provider in that each 
+archive binding requires a set of parameters defining the location and credentials for a valid CWS (Content Web Services)
+endpoint.
+
+Each archive collection may be configured by adding an entry to the *argon:archiveStorageOptions:bindings* array.  Each 
+entry within this array may have the following configuration parameters:
+
+| Configuration Key | Description | Example                     |
+|:------------------|:------------|:----------------------------|
+|`tag`|The user-defined tag used to identify the archive|`"tag": "testOTCSArchive"`|
+|`endpoint`|The base endpoint address for CWS web services|`"endpoint": "https://<otcs.somehost>/cws"`|
+|`user`|The name of the authentication user to be used by the underlying service client|`"user": "MrFluffy"`|
+|`password`|The password for be used within authentication calls by the underlying service client|`"password": "VerySecret"`|
+
+As with the OTCS VSP provider, if no user and password are supplied within binding definition, then Argon will assume that 
+integrated authentication is to be used, and the service identity associated with the running Argon process will be used 
+during initial authentication outcalls to the CWS layer.
+
+It is possible to utilise user *impersonation* within archiving endpoints, whereby initial authentication into OTCS is
+performed using the configured credentials (either Basic or Integrated) but then a given impersonation user identity is
+then extracted from the claims within an inbound JWT bearer token. By default, the claim "otcsimp" claim is looked for 
+within the inbound token.
+
+### Archiving Paths
+Retrieval of content from within a given configured OTCS archive is performed through the */archive* endpoint defined 
+within the Swagger API definition for the Argon service.  Rather than the client having to know the *node ID* of a 
+specific item during retrieval operations, the archive endpoint utilises *paths* to individual items *relative to the CS
+Enterprise* root volume node.
+
+For example, in order to retrieve the contents of a document named *test.docx* located within a folder underneath the
+Enterprise within a sub-folder called *Test Archive*, the format of the endpoint request would be as follows:
+
+> https://<argon.host>/api/v1/archive/{tag}/Test%20Archive/test.docx?meta=false
+
+The operations associated with the archive endpoint are much simpler than those associated with *native* Argon 
+collections and are summarised within the following table:
+
+|Operation|HTTP Verb|Description|meta|archive|Example|
+|:--------|:--------|:----------|:---|:------|:------|
+|Download file|GET|Download a single file|`false`|`null`|`https://argon/api/v1/archive/{tag}/{Sub-Folder}/{File}`
+|Download file meta|GET|Download meta for a single file|`true`|`null`|`https://argon/api/v1/archive/{tag}/{Sub-Folder}/{File}?meta=true`
+|Download folder archive (Zip)|GET|Download folder contents as a zip archive|`false`|`zip`|`https://argon/api/v1/archive/{tag}/{Sub-Folder}?meta=false&archive=zip`
+|Download folder archive (Pdf)|GET|Download folder contents as a single PDF|`false`|`pdf`|`https://argon/api/v1/archive/{tag}/{Sub-Folder}?meta=false&archive=pdf`
+
+These four operations should form the basis of any integration testing scripts performed upon a deployed instance of
+Argon.
+
 ## Building
 
 Build of the Content Service Layer is standard and can be performed (subject to satisfying all necessary dependencies)
