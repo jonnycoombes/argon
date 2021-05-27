@@ -35,19 +35,21 @@ namespace JCS.Argon.Services.Core
         ///     The <see cref="ArchiveType" /> specified (defaults to
         ///     <see cref="ArchiveType.ZipArchive" />
         /// </param>
+        /// <param name="impersonationUser">An optional impersonation user to pass through to the web service client</param>
         /// <returns>A tuple, where the first element is the MIME type of the returned content, the second is a stream over the content</returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
         public Task<DownloadContentResult> DownloadArchivedDocument(string tag, string path,
-            ArchiveType archiveType = ArchiveType.ZipArchive);
+            ArchiveType archiveType = ArchiveType.ZipArchive, string? impersonationUser= null);
 
         /// <summary>
         ///     Downloads a JSON representation of the meta-data associated with an existing archive object.  (Either a document or a folder).
         /// </summary>
         /// <param name="tag">The archive tag</param>
         /// <param name="path">The path to the archived item</param>
+        /// <param name="impersonationUser">An optional impersonation user to pass through to the underlying web service client</param>
         /// <returns></returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault</exception>
-        public Task<string> DownloadArchivedMetadata(string tag, string path);
+        public Task<string> DownloadArchivedMetadata(string tag, string path, string? impersonationUser = null);
 
         /// <summary>
         ///     Class used to represent the result of a download operation within the archive

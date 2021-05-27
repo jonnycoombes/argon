@@ -53,10 +53,10 @@ namespace JCS.Argon.Services.Core
 
         /// <inheritdoc cref="IArchiveManager.DownloadArchivedDocument" />
         public async Task<IArchiveManager.DownloadContentResult> DownloadArchivedDocument(string tag, string path,
-            IArchiveManager.ArchiveType archiveType = IArchiveManager.ArchiveType.ZipArchive)
+            IArchiveManager.ArchiveType archiveType = IArchiveManager.ArchiveType.ZipArchive, string? impersonationUser= null)
         {
             LogMethodCall(_log);
-            var client = BindWebServiceClient(tag);
+            var client = BindWebServiceClient(tag, impersonationUser);
             try
             {
                 var elements = path.Split(PathSeperator);
@@ -85,10 +85,10 @@ namespace JCS.Argon.Services.Core
         }
 
         /// <inheritdoc cref="IArchiveManager.DownloadArchivedMetadata" />
-        public async Task<string> DownloadArchivedMetadata(string tag, string path)
+        public async Task<string> DownloadArchivedMetadata(string tag, string path, string? impersonationUser)
         {
             LogMethodCall(_log);
-            var client = BindWebServiceClient(tag);
+            var client = BindWebServiceClient(tag,impersonationUser);
 
             try
             {
@@ -310,9 +310,10 @@ namespace JCS.Argon.Services.Core
         ///     Resolves and instantiates a new instance of <see cref="WebServiceClient" /> based on the binding tag supplied
         /// </summary>
         /// <param name="tag">The binding tag used to look up the client settings</param>
+        /// <param name="impersonationUser">An optional impersonation user to utilise during bind operations</param>
         /// <returns>A new instance of <see cref="WebServiceClient" /></returns>
         /// <exception cref="ArchiveManagerException">Thrown in the event of a fault occurring</exception>
-        private WebServiceClient BindWebServiceClient(string tag)
+        private WebServiceClient BindWebServiceClient(string tag, string? impersonationUser = null)
         {
             LogMethodCall(_log);
             if (_options == null)
@@ -325,10 +326,24 @@ namespace JCS.Argon.Services.Core
                 var binding = _options.Bindings.First(b => b.Tag == tag);
                 if (!string.IsNullOrEmpty(binding.User) && !string.IsNullOrEmpty(binding.Password))
                 {
-                    return new WebServiceClient(binding.Endpoint, binding.User, binding.Password);
+                    if (impersonationUser == null)
+                    {
+                        return new WebServiceClient(binding.Endpoint, binding.User, binding.Password);
+                    }
+                    else
+                    {
+                        return new WebServiceClient(binding.Endpoint, binding.User, binding.Password, impersonationUser);
+                    }
                 }
 
-                return new WebServiceClient(binding.Endpoint);
+                if (impersonationUser == null)
+                {
+                    return new WebServiceClient(binding.Endpoint);
+                }
+                else
+                {
+                    return new WebServiceClient(binding.Endpoint, impersonationUser);
+                }
             }
 
             throw new ArchiveManagerException(StatusCodes.Status400BadRequest, $"No archive binding  found for tag \"{tag}\"");

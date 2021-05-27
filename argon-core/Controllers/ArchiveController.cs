@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using JCS.Argon.Services.Core;
@@ -64,6 +65,7 @@ namespace JCS.Argon.Controllers
             string archive = "zip")
         {
             LogMethodCall(_log);
+            var impersonationUser = ResolveImpersonationUser();
             if (!meta)
             {
                 var archiveType = IArchiveManager.ArchiveType.ZipArchive;
@@ -72,7 +74,8 @@ namespace JCS.Argon.Controllers
                     archiveType = IArchiveManager.ArchiveType.PdfArchive;
                 }
 
-                var response = await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path), archiveType);
+                var response =
+                    await _archiveManager.DownloadArchivedDocument(tag, Uri.UnescapeDataString(path), archiveType, impersonationUser);
                 return new FileStreamResult(response.Stream, response.MimeType)
                 {
                     FileDownloadName = response.Filename
@@ -83,6 +86,15 @@ namespace JCS.Argon.Controllers
                 var response = await _archiveManager.DownloadArchivedMetadata(tag, Uri.UnescapeDataString(path));
                 return new JsonResult(JsonDocument.Parse(response));
             }
+        }
+
+        /// <summary>
+        ///     Function which will attempt to extract an impersonation user from an inbound request/claimset
+        /// </summary>
+        /// <returns>A nullable string.  If non-null, the value is passed through to underlying services as an impersonation identity</returns>
+        private string? ResolveImpersonationUser()
+        {
+            return null;
         }
     }
 }
