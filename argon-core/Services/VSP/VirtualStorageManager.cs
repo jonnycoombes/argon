@@ -16,10 +16,11 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Services.VSP
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Default implementation of the VSP registry
     /// </summary>
-    public class VirtualStorageManager : IVirtualStorageManager
+    public sealed class VirtualStorageManager : IVirtualStorageManager
     {
         /// <summary>
         ///     Static logger
@@ -106,7 +107,7 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         /// <param name="providerType"></param>
         /// <returns></returns>
-        protected bool ProviderExists(string providerType)
+        private bool ProviderExists(string providerType)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Checking for existence of provider with type \"{providerType}\"");
@@ -118,7 +119,7 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         /// <param name="tag">The tag for the provider</param>
         /// <returns></returns>
-        protected bool BindingExistsForTag(string tag)
+        private bool BindingExistsForTag(string tag)
         {
             LogMethodCall(_log);
             return _virtualStorageOptions.Bindings.Any(b => b.Tag == tag);
@@ -132,7 +133,7 @@ namespace JCS.Argon.Services.VSP
         /// a
         /// <returns></returns>
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
-        protected IVirtualStorageProvider CreateProviderInstance(string providerType)
+        private IVirtualStorageProvider CreateProviderInstance(string providerType)
         {
             LogMethodCall(_log);
             LogDebug(_log, $"Instantiating a virtual storage provider of type [{providerType}]");
@@ -141,10 +142,10 @@ namespace JCS.Argon.Services.VSP
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
                     $"Request for a virtual storage provider which doesn't appear to exist: [{providerType}]");
             }
-#pragma warning disable 8600
+            #pragma warning disable 8600
             var instance =
                 (IVirtualStorageProvider) ReflectionHelper.InstantiateType(_providerTypesMap[providerType]);
-#pragma warning restore 8600
+            #pragma warning restore 8600
             if (instance == null)
             {
                 throw new IVirtualStorageManager.VirtualStorageManagerException(StatusCodes.Status500InternalServerError,
@@ -160,7 +161,7 @@ namespace JCS.Argon.Services.VSP
         ///     interface
         /// </summary>
         /// <exception cref="IVirtualStorageManager.VirtualStorageManagerException"></exception>
-        protected void ResolveProviders()
+        private void ResolveProviders()
         {
             LogMethodCall(_log);
             LogInformation(_log, "Resolving providers within the current runtime environment");
@@ -196,7 +197,7 @@ namespace JCS.Argon.Services.VSP
         /// </summary>
         /// <param name="tag">The tag to use</param>
         /// <returns></returns>
-        protected VirtualStorageBinding? GetBindingFromTag(string tag)
+        private VirtualStorageBinding? GetBindingFromTag(string tag)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Scanning for binding with tag \"{tag}\"");

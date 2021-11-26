@@ -10,6 +10,7 @@ using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Argon.Controllers
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Abstract base class for all API controllers
     /// </summary>

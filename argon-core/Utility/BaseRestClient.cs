@@ -259,13 +259,17 @@ namespace JCS.Argon.Utility
             };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private sealed class BaseRestClientException : ResponseAwareException
         {
-            public BaseRestClientException(int? statusHint, string? message) : base(statusHint, message)
-            {
-                Source = nameof(BaseRestClient);
-            }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="statusHint"></param>
+            /// <param name="message"></param>
+            /// <param name="inner"></param>
             public BaseRestClientException(int? statusHint, string? message, Exception? inner) : base(statusHint, message, inner)
             {
                 Source = nameof(BaseRestClient);
